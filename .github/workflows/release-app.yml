@@ -2,6 +2,7 @@ name: Build & Release Executable and Installer
 
 on:
   push:
+    branches: [main]
     tags:
       - 'v*'
   workflow_dispatch:
@@ -37,9 +38,14 @@ jobs:
           if ("${{ github.event_name }}" -eq "workflow_dispatch") {
             $ver = "${{ github.event.inputs.version }}".TrimStart('v')
             $tag = "v$ver"
-          } else {
+          } elseif ("${{ github.ref }}".StartsWith("refs/tags/")) {
             $tag = "${{ github.ref_name }}"
             $ver = $tag.TrimStart('v')
+          } else {
+            [xml]$xml = Get-Content "CGPDI.StudyLab/CGPDI.StudyLab.csproj"
+            $ver = $xml.Project.PropertyGroup.Version
+            if ([string]::IsNullOrWhiteSpace($ver)) { $ver = "1.0.0" }
+            $tag = "v$ver"
           }
           Write-Host "Tag: $tag, Version: $ver"
           echo "VERSION=$ver" >> $env:GITHUB_OUTPUT
@@ -64,7 +70,7 @@ jobs:
         shell: pwsh
         run: |
           Compress-Archive -Path "publish/win-x64/*" -DestinationPath "CGPDI-StudyLab-Portable-win-x64.zip" -CompressionLevel Optimal
-          Write-Host "Portable ZIP created successfully."
+          Write-Host "Portable ZIP created successfully: CGPDI-StudyLab-Portable-win-x64.zip"
 
       - name: Install Inno Setup
         shell: pwsh
@@ -77,12 +83,22 @@ jobs:
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=${{ steps.get_version.outputs.VERSION }} installer/setup_script.iss
           if (Test-Path "dist-installer/CGPDI-StudyLab-Setup.exe") {
             Move-Item -Path "dist-installer/CGPDI-StudyLab-Setup.exe" -Destination "CGPDI-StudyLab-Setup.exe" -Force
-            Write-Host "Installer created: CGPDI-StudyLab-Setup.exe"
+            Write-Host "Installer created successfully: CGPDI-StudyLab-Setup.exe"
           } else {
             throw "Installer binary was not generated."
           }
 
-      - name: Create GitHub Release
+      - name: Upload Binaries to GitHub Actions Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: CGPDI-StudyLab-v${{ steps.get_version.outputs.VERSION }}-Binaries
+          path: |
+            CGPDI-StudyLab-Setup.exe
+            CGPDI-StudyLab-Portable-win-x64.zip
+          retention-days: 30
+
+      - name: Create or Update GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.TAG_NAME }}
