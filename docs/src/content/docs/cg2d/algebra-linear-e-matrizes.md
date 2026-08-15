@@ -3,24 +3,24 @@ title: Álgebra Linear 2D & Coordenadas Homogêneas (Matrix2D.cs)
 description: Por que usamos matrizes 3x3 no plano 2D, coordenadas homogêneas, translação, rotação, escala, cisalhamento e composição afim.
 ---
 
-A base matemática de toda a Computação Gráfica moderna é a **Álgebra Linear Matricial**.
+A base matemática de toda a Computação Gráfica é a **Álgebra Linear Matricial**.
 
 O arquivo [`Matrix2D.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/Graphics2D/Matrix2D.cs) encapsula as matrizes de transformação afim no plano bidimensional.
 
 ---
 
-## ❓ 1. Por que Usamos Matrizes $3 \times 3$ no Espaço 2D?
+## 1. Por que Usamos Matrizes 3x3 no Espaço 2D?
 
-No plano bidimensional, rotação e escala podem ser representadas por matrizes $2 \times 2$:
+No plano bidimensional, rotação e escala podem ser calculadas por matrizes $2 \times 2$:
 
 $$
 \begin{bmatrix} x' \\ y' \end{bmatrix} = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix}
 $$
 
-Entretanto, a **Translação** $(x + t_x, \; y + t_y)$ é uma soma vetorial, **não uma multiplicação linear** de matriz $2 \times 2$. Isso impediria encadear rotações e translações em uma única matriz!
+Entretanto, mover um ponto de lugar (**Translação**) exige uma soma $(x + t_x, \; y + t_y)$, e somas não podem ser multiplicadas diretamente com matrizes $2 \times 2$.
 
 ### A Solução: Coordenadas Homogêneas ($x, y, 1$)
-Ao adicionar uma terceira dimensão auxiliar $w = 1$, conseguimos unificar todas as transformações afins em **matrizes $3 \times 3$** que podem ser multiplicadas entre si:
+Ao adicionar uma dimensão auxiliar $w = 1$, conseguimos unificar todas as operações (translação, rotação, escala) em **matrizes $3 \times 3$**:
 
 $$
 \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix} = 
@@ -34,51 +34,31 @@ $$
 
 ---
 
-## 📐 2. As Matrizes Elementares 2D
+## 2. Matrizes Elementares 2D
 
-### 1. Matriz Identidade ($I$)
-$$
-I = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-### 2. Matriz de Translação ($T$)
-$$
-T(t_x, t_y) = \begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-### 3. Matriz de Rotação em Torno da Origem ($R$)
-$$
-R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-### 4. Matriz de Escala ($S$)
-$$
-S(s_x, s_y) = \begin{bmatrix} s_x & 0 & 0 \\ 0 & s_y & 0 \\ 0 & 0 & 1 \end{bmatrix}
-$$
-
-### 5. Matriz de Cisalhamento / Deformação Angular ($Sh$)
-$$
-Sh(k_x, k_y) = \begin{bmatrix} 1 & k_x & 0 \\ k_y & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
-$$
+- **Translação:** Move o objeto no plano por $(t_x, t_y)$.
+- **Rotação:** Gira o objeto por um ângulo $\theta$.
+- **Escala:** Aumenta ou diminui o tamanho do objeto por $(s_x, s_y)$.
+- **Cisalhamento (Shear):** Inclina e deforma a geometria lateralmente.
 
 ---
 
-## 🔄 3. Rotação em Torno de um Ponto Arbitrário $(P_x, P_y)$
+## 3. Rotação ao Redor de um Ponto Arbitrário
 
-Para rotacionar um polígono ao redor de seu próprio centro e não da origem $(0,0)$ da tela:
+Para girar um desenho ao redor do seu próprio centro $(P_x, P_y)$:
 
 ```mermaid
 graph LR
-    A["1️⃣ Translação para a Origem\nT(-Px, -Py)"] --> B["2️⃣ Rotação Angular\nR(θ)"]
-    B --> C["3️⃣ Translação de Volta\nT(+Px, +Py)"]
+    A[1. Translacao para a Origem: T de -Px, -Py] --> B[2. Rotacao Angular: R de theta]
+    B --> C[3. Translacao de Volta: T de +Px, +Py]
 ```
 
 $$
 M_{\text{final}} = T(P_x, P_y) \times R(\theta) \times T(-P_x, -P_y)
 $$
 
-:::caution[Atenção à Ordem de Multiplicação]
-A multiplicação de matrizes **não é comutativa** ($A \times B \neq B \times A$). A ordem das operações afeta radicalmente o resultado visual!
+:::caution[Ordem de Multiplicação]
+A multiplicação de matrizes **não é comutativa** ($A \times B \neq B \times A$). A ordem das operações afeta diretamente o resultado visual.
 :::
 
 ---

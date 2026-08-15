@@ -3,21 +3,20 @@ title: Filtros Espaciais & Convoluções 2D (SpatialFilters.cs)
 description: A teoria matemática da convolução discreta 2D, matrizes de kernel, filtro Gaussiano com desvio padrão, Unsharp Masking e filtro da Mediana.
 ---
 
-Diferente das operações pontuais, a **Filtragem Espacial** calcula o novo valor de um pixel $g(x, y)$ levando em consideração uma vizinhança de pixels ao seu redor (geralmente uma janela de tamanho $3 \times 3$, $5 \times 5$ ou $7 \times 7$).
+Diferente das operações pontuais, a **Filtragem Espacial** calcula o novo valor de um pixel $g(x, y)$ considerando a vizinhança de pontos ao seu redor (geralmente uma janela de $3 \times 3$ ou $5 \times 5$ pixels).
 
-O arquivo [`SpatialFilters.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/ImageProcessing/SpatialFilters.cs) reúne os principais operadores lineares e não-lineares.
+O arquivo [`SpatialFilters.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/ImageProcessing/SpatialFilters.cs) reúne os operadores lineares e de ordenação.
 
 ---
 
-## 🧮 1. A Equação da Convolução Discreta 2D
+## 1. O que é uma Convolução 2D?
 
-A convolução espacial discreta consiste em deslizar uma pequena matriz de pesos chamada **Kernel (ou Máscara)** $K$ sobre cada pixel $(x, y)$ da imagem $f$:
+### A Analogia da Lupa de Mistura:
+Imagine colocar uma pequena lupa de $3 \times 3$ quadradinhos sobre a imagem. A lupa lê a cor dos 9 pixels vizinhos, multiplica cada um pelo peso indicado na matriz (**Kernel**) e soma tudo para descobrir a cor do quadradinho central:
 
 $$
 g(x, y) = \sum_{u=-k}^{k} \sum_{v=-k}^{k} f(x - u, \; y - v) \cdot K(u, v)
 $$
-
-Onde $k$ é o raio do kernel (para um kernel $3 \times 3$, $k = 1$; para $5 \times 5$, $k = 2$).
 
 ```
 Janela da Imagem:          Kernel K (3x3):
@@ -30,83 +29,60 @@ Novo Pixel Central = (p00*w00 + p01*w01 + ... + p22*w22) / Divisor + Bias
 
 ---
 
-## 📦 2. Filtro da Média (Box Blur)
+## 2. Filtro da Média (Box Blur)
 
-O filtro da média substitui cada pixel pela média aritmética simples de seus $3 \times 3 = 9$ vizinhos:
+Substitui cada ponto pela média aritmética simples dos seus $3 \times 3 = 9$ vizinhos:
 
 $$
 K_{\text{box}} = \frac{1}{9} \begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}
 $$
 
-- **Efeito:** Suaviza ruído de alta frequência, mas borra arestas e detalhes nítidos.
-
 ---
 
-## 🔔 3. Filtro Gaussiano 2D (Gaussian Blur)
+## 3. Filtro Gaussiano 2D (Gaussian Blur)
 
-O filtro Gaussiano pondera os vizinhos usando a **Distribuição Normal / Curva de Sino 2D**, dando peso máximo ao pixel central e diminuindo suavemente com a distância euclidiana:
+O filtro Gaussiano dá mais importância ao pixel central e diminui o peso suavemente conforme nos afastamos, seguindo a **Curva de Sino Normal 2D**:
 
 $$
 G(x, y) = \frac{1}{2\pi \sigma^2} e^{-\frac{x^2 + y^2}{2\sigma^2}}
 $$
 
-Onde $\sigma$ (sigma) é o desvio padrão da curva que controla a intensidade do desfoque.
-
-### Matriz Gaussiana Discreta $3 \times 3$ ($\sigma \approx 1.0$):
-
+### Matriz Gaussiana Discreta $3 \times 3$:
 $$
 K_{\text{gauss}} = \frac{1}{16} \begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix}
 $$
 
-### Matriz Gaussiana $5 \times 5$:
-$$
-K_{\text{gauss5}} = \frac{1}{273} \begin{bmatrix} 
-1 & 4 & 7 & 4 & 1 \\ 
-4 & 16 & 26 & 16 & 4 \\ 
-7 & 26 & 41 & 26 & 7 \\ 
-4 & 16 & 26 & 16 & 4 \\ 
-1 & 4 & 7 & 4 & 1 
-\end{bmatrix}
-$$
-
 ---
 
-## 🗡️ 4. Máscara de Desfoque & Nitidez (Unsharp Masking)
+## 4. Máscara de Desfoque & Nitidez (Unsharp Masking)
 
-O **Unsharp Masking** é o algoritmo clássico usado pelo Adobe Photoshop e câmeras digitais para aumentar a nitidez aparente de contornos.
-
-### As 3 Etapas do Algoritmo:
-1. Cria uma versão desfocada da imagem original $f_{\text{blur}}$ via Filtro Gaussiano.
-2. Extrai a "máscara de detalhes de alta frequência":
+### Como Deixar uma Imagem Mais Nítida?
+1. Desfocamos uma cópia da imagem original com o Filtro Gaussiano.
+2. Subtraímos a cópia borrada da imagem original para isolar apenas os contornos finos:
 $$
 \text{Máscara}(x, y) = f(x, y) - f_{\text{blur}}(x, y)
 $$
-3. Soma a máscara de volta à imagem original multiplicada por um fator de ganho (*Amount* $k$):
+3. Somamos esses contornos de volta com um fator de ganho $k$:
 $$
 g(x, y) = f(x, y) + k \cdot \left[ f(x, y) - f_{\text{blur}}(x, y) \right]
 $$
 
 ---
 
-## 🧂 5. Filtro da Mediana (Filtro Não-Linear para Ruído Sal & Pimenta)
+## 5. Filtro da Mediana (Eliminação de Ruído Sal & Pimenta)
 
-Filtros lineares de convolução (como a Média e o Gaussiano) falham miseravelmente ao tentar remover o ruído de impulsos extremos (**Sal & Pimenta** - pixels aleatórios totalmente pretos ou brancos), pois eles apenas espalham o ponto preto/branco na vizinhança.
-
-O **Filtro da Mediana** é uma operação estatística de ordenação:
-1. Coleta os 9 valores da vizinhança $3 \times 3$ em um vetor.
-2. **Ordena o vetor** do menor para o maior (`Array.Sort`).
-3. Substitui o pixel central pelo valor que ficou **exatamente no meio** (índice 4 do vetor ordenado).
+### A Analogia da Votação Democrática:
+Quando a imagem tem pontinhos brancos ou pretos aleatórios (**ruído Sal & Pimenta**), a média borra o defeito. O **Filtro da Mediana** faz algo mais inteligente:
+1. Pega os 9 números da vizinhança;
+2. Organiza em ordem crescente (`Array.Sort`);
+3. Escolhe o número que ficou exatamente no meio (o 5º número).
 
 ```
-Vizinhança com Ruído Sal (255): [12, 14, 15, 13, 255, 14, 15, 12, 13]
-Valores Ordenados:               [12, 12, 13, 13,  14, 14, 15, 15, 255]
-                                                    ^
-                                               Mediana = 14 (Ruído 255 eliminado!)
+Vizinhanca com Ruido Branco (255): [12, 14, 15, 13, 255, 14, 15, 12, 13]
+Valores Ordenados:                  [12, 12, 13, 13,  14, 14, 15, 15, 255]
+                                                       ^
+                                                  Mediana = 14 (Ruido eliminado!)
 ```
-
-:::note[Vantagem Exclusiva]
-O filtro da mediana elimina $100\%$ do ruído Sal & Pimenta preservando as bordas e contornos das imagens sem criar borramento difuso!
-:::
 
 ---
 

@@ -3,15 +3,15 @@ title: Algoritmos de Rasterização de Linhas (Rasterizer2D.cs)
 description: Comparativo aprofundado entre DDA, o Algoritmo de Linha de Bresenham (aritmética 100% inteira) e Anti-Aliasing de Xiaolin Wu.
 ---
 
-Como uma tela digital formada por uma grade discreta de quadradinhos (pixels) consegue desenhar uma linha contínua perfeita que passa em diagonal?
+Como uma tela digital formada por uma grade discreta de quadradinhos consegue desenhar uma linha diagonal suave e contínua?
 
-O arquivo [`Rasterizer2D.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/Graphics2D/Rasterizer2D.cs) implementa os três algoritmos históricos mais importantes da Computação Gráfica.
+O arquivo [`Rasterizer2D.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/Graphics2D/Rasterizer2D.cs) reúne os principais métodos de traçado de retas.
 
 ---
 
-## 📏 1. Algoritmo DDA (Digital Differential Analyzer)
+## 1. Algoritmo DDA (Digital Differential Analyzer)
 
-O **DDA** calcula a variação incremental de $x$ e $y$ ao longo do eixo de maior deslocamento utilizando números reais de ponto flutuante (*floating-point*):
+O **DDA** calcula passos fracionários ao longo do eixo de maior deslocamento utilizando números reais de ponto flutuante (*float* ou *double*):
 
 ```csharp
 public static void DrawLineDDA(DirectBitmap bmp, int x0, int y0, int x1, int y1, Color color)
@@ -35,30 +35,21 @@ public static void DrawLineDDA(DirectBitmap bmp, int x0, int y0, int x1, int y1,
 }
 ```
 
-### Limitações do DDA:
-1. Requer divisões e somas contínuas em `double` / `float`.
-2. A função `Math.Round` consome ciclos de clock caros da CPU/GPU.
-3. Acúmulo de erro de arredondamento em linhas muito longas.
-
 ---
 
-## ⚡ 2. O Algoritmo de Reta de Bresenham (1965)
+## 2. O Algoritmo de Reta de Bresenham (1965)
 
-Criado por Jack Bresenham na IBM em 1965, este algoritmo revolucionou a computação gráfica mundial ao provar que é possível desenhar qualquer reta usando **exclusivamente somas e subtrações com números inteiros**!
-
-### Dedução Matemática da Variável de Decisão de Erro:
-A inclinação da reta é $m = \frac{\Delta y}{\Delta x}$. 
-A cada incremento horizontal em $x$, o valor ideal contínuo de $y$ cresce por $m$. O algoritmo mantém uma variável acumuladora de erro $e$:
+Criado por Jack Bresenham na IBM, este método calcula retas perfeitas utilizando **exclusivamente somas e subtrações com números inteiros**, sem nenhuma divisão ou ponto flutuante:
 
 $$
 e = 2 \Delta y - \Delta x
 $$
 
-- Se $e \ge 0$: O ponto real cruzou a metade do pixel superior! Incrementamos $y$ em $+1$ e subtraímos $2(\Delta y - \Delta x)$ de $e$.
-- Se $e < 0$: O ponto real ainda está mais próximo da linha atual. Mantemos $y$ inalterado e somamos $2\Delta y$ a $e$.
+- Se $e \ge 0$: Incrementa $y$ e atualiza $e = e + 2(\Delta y - \Delta x)$.
+- Se $e < 0$: Mantém $y$ e atualiza $e = e + 2\Delta y$.
 
 ```csharp
-// Implementação Completa em C# (Bresenham Generalizado para Todos os Octantes):
+// Implementacao em C# de Bresenham:
 public static void DrawLineBresenham(DirectBitmap bmp, int x0, int y0, int x1, int y1, Color color)
 {
     int dx = Math.Abs(x1 - x0);
@@ -81,21 +72,9 @@ public static void DrawLineBresenham(DirectBitmap bmp, int x0, int y0, int x1, i
 
 ---
 
-## 🖌️ 3. Algoritmo de Linhas Suavizadas de Xiaolin Wu (Anti-Aliasing)
+## 3. Algoritmo de Linhas Suavizadas de Xiaolin Wu (Anti-Aliasing)
 
-Tanto o DDA quanto o Bresenham desenham linhas com o efeito "escada" (*jagged / aliased*).
-
-Criado por Xiaolin Wu em 1991, este algoritmo calcula a **fração subpixel exata** que a reta corta em dois pixels vizinhos e divide a opacidade (Alpha) proporcionalmente:
-
-```
-Linha Real passa em y = 10.3:
-------------------------------------------
-Pixel (x, 10): Recebe (1.0 - 0.3) = 70% de Opacidade
-Pixel (x, 11): Recebe (0.3)       = 30% de Opacidade
-------------------------------------------
-```
-
-O resultado visual é uma reta perfeitamente suave e contínua aos olhos humanos, eliminando 100% dos serrilhados!
+O algoritmo de Xiaolin Wu elimina o aspecto serrilhado (*pixelado*) calculando a fração exata de cobertura subpixel da reta entre dois pixels vizinhos e ajustando a transparência (Alpha) proporcionalmente. O resultado visual é uma linha suave e nítida.
 
 ---
 

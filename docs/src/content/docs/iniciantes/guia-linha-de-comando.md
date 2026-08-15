@@ -1,16 +1,16 @@
 ---
-title: Executando pela Linha de Comando (PowerShell / Terminal)
-description: Como compilar e executar o CGPDI.StudyLab sem abrir o Visual Studio usando apenas comandos do .NET CLI.
+title: Execução pela Linha de Comando (PowerShell / Terminal)
+description: Como compilar e executar o CGPDI.StudyLab sem abrir o Visual Studio utilizando os comandos do .NET CLI.
 ---
 
-Se você prefere programar pelo VS Code, Cursor, Neovim ou simplesmente quer rodar o projeto rapidamente através do terminal do Windows (PowerShell ou Prompt de Comando CMD), o **.NET SDK** oferece comandos de linha de comando (*CLI*) extremamente fáceis.
+Para quem utiliza editores leves como VS Code, Cursor ou prefere automatizar tarefas pelo terminal do Windows (PowerShell ou Prompt de Comando), o **.NET SDK** oferece uma interface de linha de comando (*CLI*) simples e direta.
 
 ---
 
-## 💻 1. Abrindo o Terminal
+## 1. Abrindo o Terminal
 
-1. Pressione as teclas `Win + X` no teclado e escolha **Terminal** ou **PowerShell** (ou abra o menu Iniciar e digite `PowerShell`).
-2. Navegue até a pasta do projeto com o comando `cd`:
+1. Abra o menu Iniciar do Windows e digite **PowerShell** (ou pressione as teclas `Win + X` e selecione **Terminal**).
+2. Navegue até o diretório do projeto:
 
 ```powershell
 cd D:\source\repos\CGPDI.StudyLab\CGPDI.StudyLab
@@ -18,62 +18,61 @@ cd D:\source\repos\CGPDI.StudyLab\CGPDI.StudyLab
 
 ---
 
-## 🔍 2. Verificando o .NET SDK Instalado
+## 2. Verificação do Ambiente .NET
 
-Antes de compilar, teste se o .NET está acessível no seu computador digitando:
+Antes da compilação, verifique se o compilador está acessível no sistema:
 
 ```powershell
 dotnet --version
 ```
 
-A saída esperada deve ser algo como `10.0.xxx` (ou superior). Se o comando não for reconhecido, certifique-se de instalar o [.NET SDK](https://dotnet.microsoft.com/download).
+A saída deverá exibir a versão instalada (por exemplo, `10.0.xxx`).
 
 ---
 
-## 🔨 3. Compilando o Projeto (`dotnet build`)
+## 3. Compilando o Projeto (dotnet build)
 
-Para verificar se há algum erro no código e compilar todos os módulos em binários executáveis:
+Para verificar se o código não possui erros de sintaxe e gerar os arquivos binários:
 
 ```powershell
 dotnet build
 ```
 
-**Saída esperada:**
+**Resultado esperado:**
 ```
 Determinando os projetos a serem restaurados...
-Todos os projetos estão atualizados para restauração.
+Todos os projetos estao atualizados para restauracao.
 CGPDI.StudyLab -> D:\source\repos\CGPDI.StudyLab\CGPDI.StudyLab\bin\Debug\net10.0-windows\CGPDI.StudyLab.dll
 
-Compilação com êxito.
+Compilacao com exito.
     0 Aviso(s)
     0 Erro(s)
 ```
 
 ---
 
-## 🚀 4. Executando a Aplicação (`dotnet run`)
+## 4. Executando a Aplicação (dotnet run)
 
-Para iniciar a aplicação gráfica imediatamente:
+Para iniciar o aplicativo imediatamente:
 
 ```powershell
 dotnet run
 ```
 
-A janela do **CGPDI.StudyLab** se abrirá imediatamente na sua área de trabalho!
+A janela gráfica do **CGPDI.StudyLab** será aberta na área de trabalho.
 
-:::tip[Executando em Modo Release (Máxima Performance)]
-Por padrão, `dotnet run` compila no modo `Debug` (com verificações adicionais). Se você quiser testar algoritmos pesados como Ray Tracing em alta resolução com a velocidade máxima do processador, use:
+:::tip[Modo Release para Máximo Desempenho]
+Por padrão, `dotnet run` utiliza o modo `Debug`. Para avaliar algoritmos pesados (como o Ray Tracer) com máxima otimização do compilador:
 ```powershell
 dotnet run -c Release
 ```
-Isso ativa todas as otimizações do compilador do .NET 10 (vetorização SIMD e *inlining* agressivo).
 :::
 
 ---
 
-## 🧹 5. Limpando Arquivos Temporários (`dotnet clean`)
+## 5. Limpeza de Arquivos Temporários (dotnet clean)
 
-Se algum dia você quiser limpar caches antigos de compilação da pasta `bin/` e `obj/`:
+Para limpar os arquivos temporários de compilação das pastas `bin/` e `obj/`:
 
 ```powershell
 dotnet clean
@@ -81,4 +80,4 @@ dotnet clean
 
 ---
 
-👉 **Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Breakpoints](/CGPDI.StudyLab/iniciantes/depuracao-e-truques/).
+👉 **Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Pontos de Interrupção](/CGPDI.StudyLab/iniciantes/depuracao-e-truques/).

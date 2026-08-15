@@ -3,31 +3,27 @@ title: Domínio da Frequência (DFT 2D) & Texturas Procedurais (FrequencyAndProc
 description: Transformada Discreta de Fourier 2D, FFTShift, filtragem em frequência, Ruído de Perlin, terrenos fractais fBm, Voronoi e conjuntos de Mandelbrot e Julia.
 ---
 
-O arquivo [`FrequencyAndProcedural.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/ImageProcessing/FrequencyAndProcedural.cs) implementa a matemática avançada de análise espectral no domínio da frequência e geradores matemáticos de mundos procedurais.
+O arquivo [`FrequencyAndProcedural.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/ImageProcessing/FrequencyAndProcedural.cs) implementa a análise espectral de Fourier e algoritmos matemáticos de geração procedural.
 
 ---
 
-## 🌊 1. A Transformada Discreta de Fourier 2D (DFT)
+## 1. A Transformada Discreta de Fourier 2D (DFT)
 
-A Transformada de Fourier decompõe qualquer imagem digital $f(x, y)$ em uma soma infinita de ondas senoidais e cossenoidais puras com diferentes frequências, amplitudes e orientações espaciais.
+### A Analogia da Partitura Musical:
+Imagine uma música de orquestra: ela é uma mistura de vários instrumentos tocando ao mesmo tempo (flautas com notas agudas, violoncelos com notas graves). A Transformada de Fourier é como um maestro que escuta a música inteira e **escreve a partitura exata de cada frequência separadamente**.
 
-### Equação de Análise 2D (Direta):
+Em uma imagem digital, as variações de intensidade são decompostas em ondas senoidais e cossenoidais puras:
+
 $$
 F(u, v) = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} f(x, y) \cdot e^{-j 2\pi \left( \frac{ux}{M} + \frac{vy}{N} \right)}
 $$
 
-Pela **Fórmula de Euler** ($e^{-j\theta} = \cos\theta - j\sin\theta$):
-$$
-F(u, v) = R(u, v) + j \cdot I(u, v)
-$$
-
 ---
 
-## 🌌 2. Espectro de Magnitude e Centralização `FFTShift`
+## 2. Espectro de Magnitude e `FFTShift`
 
-O olho humano não enxerga números complexos. Para visualizar o espectro de frequências:
+O espectro de frequências é visualizado calculando a magnitude com compressão logarítmica:
 
-### Espectro de Magnitude com Compressão Logarítmica:
 $$
 |F(u, v)| = \sqrt{R(u, v)^2 + I(u, v)^2}
 $$
@@ -35,58 +31,26 @@ $$
 S(u, v) = c \cdot \ln\left(1 + |F(u, v)|\right)
 $$
 
-### Centralização com `FFTShift`:
-Por padrão, a frequência contínua DC ($u=0, v=0$ - brilho médio da imagem) fica nos 4 cantos da matriz. 
-O algoritmo **`FFTShift`** troca os quadrantes diagonais $1 \leftrightarrow 4$ e $2 \leftrightarrow 3$, movendo a frequência zero para o **centro exato da imagem**.
-
-```
-[ Quadrante 1 | Quadrante 2 ]       [ Quadrante 4 | Quadrante 3 ]
------------------------------ --->  -----------------------------
-[ Quadrante 3 | Quadrante 4 ]       [ Quadrante 2 | Quadrante 1 ]
-   (Antes do FFTShift)                   (Centro Espectral)
-```
+O algoritmo **`FFTShift`** troca os quadrantes diagonais para posicionar a frequência contínua zero (o brilho médio) no **centro exato da imagem**.
 
 ---
 
-## 🌫️ 3. Geração Procedural: Ruído de Perlin & fBm
+## 3. Ruído de Perlin & Terrenos Fractais (fBm)
 
-Criado por Ken Perlin para o filme *Tron* (1982) (o que lhe rendeu um Oscar Técnico), o **Perlin Noise** é um ruído gradiente suave e natural.
+Criado por Ken Perlin para efeitos cinematográficos, o **Ruído de Perlin** gera variações suaves e orgânicas.
 
-### Movimento Browniano Fracionário (fBm - Fractal Brownian Motion):
-Soma múltiplas "oitavas" de ruído de Perlin dobrando a frequência e diminuindo a amplitude pela metade:
+Ao somar várias camadas (*oitavas*) de ruído com o método de **Movimento Browniano Fracionário (fBm)**, o sistema produz mapas de montanhas, relevo geográfico e nuvens realistas:
 
 $$
 \text{fBm}(x, y) = \sum_{i=0}^{\text{octaves}-1} \text{amplitude}^i \cdot \text{Perlin}\left(x \cdot \text{frequency}^i, \; y \cdot \text{frequency}^i\right)
 $$
 
-- **Aplicações:** Geração de nuvens realistas, mapas de relevo geográfico e texturas de madeira e mármore.
-
 ---
 
-## 💎 4. Diagramas de Voronoi (Células Orgânicas)
+## 4. Diagramas de Voronoi e Fractais
 
-Distribui $N$ pontos sementes $P_i = (x_i, y_i)$ aleatoriamente no espaço. Para cada pixel $(x, y)$, encontra a semente mais próxima:
-
-$$
-d(x, y) = \min_{i=1 \dots N} \sqrt{(x - x_i)^2 + (y - y_i)^2}
-$$
-
-- **Aplicações:** Simulação de pele de répteis, tecidos celulares biológicos, vitrais e rachaduras em pedra.
-
----
-
-## 🌀 5. Fractais de Mandelbrot & Julia
-
-Baseados na iteração de números complexos no plano de Argand-Gauss:
-
-$$
-z_{n+1} = z_n^2 + c
-$$
-
-- **Conjunto de Mandelbrot:** $z_0 = 0$, variando $c = x + jy$.
-- **Conjunto de Julia:** $c$ é fixo (ex: $c = -0.7 + 0.27015j$), variando $z_0 = x + jy$.
-
-Se a magnitude $|z_n| = \sqrt{x_n^2 + y_n^2} > 2$, a órbita escapa para o infinito. O número de iterações até o escape define a cor psicodélica do fractal!
+- **Diagramas de Voronoi:** Divide o espaço em células baseadas na distância para a semente mais próxima (usado para peles de animais e pedras).
+- **Fractais de Mandelbrot e Julia:** Gerados pela iteração matemática de números complexos $z_{n+1} = z_n^2 + c$.
 
 ---
 

@@ -3,20 +3,20 @@ title: Publicação no GitHub Pages & Automação CI/CD
 description: Como configurar o repositório no GitHub para publicar este site de documentação Astro Starlight automaticamente a cada commit.
 ---
 
-Esta documentação foi construída com **Astro e Starlight** e está pronta para ser publicada no **GitHub Pages** de forma 100% gratuita e automatizada através do **GitHub Actions**.
+Esta documentação foi construída com **Astro e Starlight** e está configurada para publicação contínua no **GitHub Pages** por meio do **GitHub Actions**.
 
 ---
 
-## 🚀 1. O Workflow Automatizado (`.github/workflows/deploy-docs.yml`)
+## 1. O Workflow Automatizado (.github/workflows/deploy-docs.yml)
 
-O repositório já inclui o arquivo de automação [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml):
+O repositório inclui o arquivo de automação [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml):
 
 ```yaml
 name: Deploy Documentation to GitHub Pages
 
 on:
   push:
-    branches: [master, main]
+    branches: [main]
     paths:
       - 'docs/**'
       - '.github/workflows/deploy-docs.yml'
@@ -62,54 +62,39 @@ jobs:
 
 ---
 
-## ⚙️ 2. Ativando o GitHub Pages no seu Repositório (Passo a Passo)
+## 2. Ativação do GitHub Pages no Repositório
 
-Para habilitar a publicação no GitHub pela primeira vez:
+Para habilitar a publicação no GitHub:
 
-1. Acesse seu repositório no GitHub: `https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab`.
-2. Clique na aba **Settings** (Configurações) no menu superior do repositório.
-3. Na barra lateral esquerda, clique em **Pages** (dentro da seção *Code and automation*).
-4. Em **Build and deployment $\to$ Source**, mude de *"Deploy from a branch"* para:
-   👉 **`GitHub Actions`**.
-5. Salve a alteração!
-
-```
-[ Build and deployment ]
-Source: [ GitHub Actions ▼ ]
-```
+1. Acesse o repositório no GitHub: `https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab`.
+2. Acesse a aba **Settings** (Configurações) no menu superior do repositório.
+3. Na barra lateral esquerda, clique em **Pages** (na seção *Code and automation*).
+4. Em **Build and deployment $\to$ Source**, selecione a opção:
+   - **`GitHub Actions`**.
+5. Salve a configuração.
 
 ---
 
-## 🌐 3. Endereço Oficial da Documentação Online
+## 3. Endereço da Documentação Online
 
-Assim que você fizer um `git push` para o branch `main`, o GitHub Actions compilará os arquivos e seu site estará disponível mundialmente em:
+Após o envio de novos commits para a branch `main`, o GitHub Actions processará o build e o site estará disponível em:
 
 👉 **`https://gabriel-freitas-s.github.io/CGPDI.StudyLab/`**
 
 ---
 
-## 💻 4. Testando a Documentação Localmente
+## 4. Execução Local
 
-Se você quiser testar ou editar os textos da documentação no seu computador antes de enviar para o GitHub:
+Para testar as páginas localmente no seu computador:
 
 1. Abra o terminal na pasta `docs`:
 ```powershell
 cd D:\source\repos\CGPDI.StudyLab\docs
 ```
 
-2. Inicie o servidor local de desenvolvimento do Astro:
+2. Inicie o servidor de desenvolvimento:
 ```powershell
 npm run dev
 ```
 
-3. Abra seu navegador no endereço: `http://localhost:4321/CGPDI.StudyLab/`. 
-Todas as alterações em arquivos `.md` e fórmulas KaTeX serão atualizadas instantaneamente com *Live Reload*!
-
-4. Para testar o build final de produção:
-```powershell
-npm run build
-```
-
----
-
-🎉 **Parabéns!** Você tem agora uma documentação de nível internacional, interativa, didática e pronta para a nuvem!
+3. Abra o navegador no endereço: `http://localhost:4321/CGPDI.StudyLab/`.

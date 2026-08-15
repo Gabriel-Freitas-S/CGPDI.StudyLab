@@ -1,88 +1,85 @@
 ---
-title: Como Instalar o Visual Studio & Rodar o Projeto (Passo a Passo)
-description: Guia completo para instalar o Visual Studio Community, configurar o ambiente .NET 10 e executar o CGPDI.StudyLab com 1 clique.
+title: Instalação do Visual Studio & Execução do Projeto
+description: Guia passo a passo para instalar o Visual Studio Community, configurar o ambiente .NET 10 e executar o CGPDI.StudyLab.
 ---
 
-Se você nunca instalou o Visual Studio no seu computador, siga este guia passo a passo ilustrado. Em menos de 10 minutos você terá o projeto rodando na sua tela!
+Se você nunca instalou o Visual Studio no seu computador, siga este roteiro ilustrado. Em poucos minutos o projeto estará em execução na sua tela.
 
 ---
 
-## 📋 Pré-Requisitos do Sistema
+## 1. Pré-Requisitos do Sistema
 
 - **Sistema Operacional:** Windows 10 ou Windows 11 (64-bits).
 - **Processador:** Qualquer CPU moderna (Intel Core i3/i5/i7/i9 ou AMD Ryzen).
-- **Memória RAM:** 4 GB mínimo (8 GB ou mais recomendado).
+- **Memória RAM:** 4 GB mínimo (8 GB recomendado).
 - **Espaço em Disco:** Cerca de 4 a 6 GB livres.
 
 ---
 
-## 🛠️ Passo 1: Baixar o Visual Studio Community (Gratuito)
+## 2. Passo 1: Baixar o Visual Studio Community (Gratuito)
 
-1. Acesse o site oficial da Microsoft: [visualstudio.microsoft.com](https://visualstudio.microsoft.com/pt-br/vs/community/).
-2. Clique no botão azul **"Baixar o Visual Studio Community"** (é 100% gratuito para estudantes, professores e código aberto).
-3. Um arquivo chamado `VisualStudioSetup.exe` será baixado. Abra-o e clique em **Continuar**.
+1. Acesse a página oficial da Microsoft: [visualstudio.microsoft.com](https://visualstudio.microsoft.com/pt-br/vs/community/).
+2. Clique no botão **"Baixar o Visual Studio Community"** (licença gratuita para estudantes, professores e código aberto).
+3. Abra o arquivo executável baixado (`VisualStudioSetup.exe`) e clique em **Continuar**.
 
 ---
 
-## 📦 Passo 2: Selecionar a Carga de Trabalho Obrigatória
+## 3. Passo 2: Selecionar a Carga de Trabalho
 
-Durante a instalação, o instalador do Visual Studio perguntará o que você deseja desenvolver.
+Durante a instalação, o instalador perguntará quais ferramentas você deseja instalar.
 
-:::caution[Atenção: Marque esta opção!]
+:::caution[Seleção Obrigatória]
 Na aba **"Cargas de trabalho" (Workloads)**, localize e marque a opção:
-✅ **"Desenvolvimento para desktop com .NET"** (*.NET desktop development*).
+- **"Desenvolvimento para desktop com .NET"** (*.NET desktop development*).
 :::
 
-Na coluna da direita, certifique-se de que estão marcados:
+No painel lateral direito, certifique-se de que estejam marcados:
 - Ferramentas de desenvolvimento do .NET
 - Suporte a WPF / Windows Forms
-- .NET 10 Runtime / SDK (ou superior)
+- .NET 10 Runtime / SDK (ou versão mais recente)
 
-Clique em **Instalar** (ou *Modificar*) no canto inferior direito e aguarde o download finalizar.
+Clique em **Instalar** no canto inferior direito e aguarde a conclusão do download.
 
 ---
 
-## 📂 Passo 3: Abrir o Projeto CGPDI.StudyLab
+## 4. Passo 3: Abrir o Projeto CGPDI.StudyLab
 
-Após a instalação terminar:
+Após a conclusão da instalação:
 
-1. Abra a pasta onde você baixou ou clonou este repositório:
+1. Abra a pasta do repositório no seu computador:
    ```
    D:\source\repos\CGPDI.StudyLab
    ```
 2. Localize o arquivo de solução **`CGPDI.StudyLab.slnx`** (ou `CGPDI.StudyLab.csproj`).
-3. Dê **duplo clique** sobre ele. O Visual Studio será iniciado automaticamente com todos os arquivos do projeto carregados na barra lateral (*Gerenciador de Soluções* / *Solution Explorer*).
+3. Dê **duplo clique** sobre o arquivo. O Visual Studio será aberto com a estrutura completa do projeto no *Gerenciador de Soluções* (*Solution Explorer*).
 
 ---
 
-## ▶️ Passo 4: Compilar e Executar com 1 Clique
+## 5. Passo 4: Compilar e Executar
 
-No topo da janela do Visual Studio, você verá uma barra de ferramentas com um botão verde com o símbolo de "Play" escrito **`CGPDI.StudyLab`**:
+No topo da janela do Visual Studio, localize a barra de ferramentas principal com o botão de início:
 
 ```
-[ ▶ CGPDI.StudyLab ]  |  [ Debug ]  |  [ Any CPU ]
+[ Iniciar: CGPDI.StudyLab ]  |  [ Debug ]  |  [ Any CPU ]
 ```
 
-1. Clique no botão verde de **Play** (ou simplesmente aperte a tecla **`F5`** no seu teclado).
-2. O Visual Studio irá compilar o código C# e em poucos segundos a janela do **CGPDI.StudyLab** se abrirá em tela cheia!
+1. Clique no botão de **Iniciar** (ou pressione a tecla **`F5`**).
+2. O compilador processará o código C# e abrirá a janela do **CGPDI.StudyLab** em tela cheia.
 
-:::tip[Dica de Atalho]
-Se quiser rodar o programa sem o depurador anexado (para máxima velocidade de processamento de imagem), pressione **`Ctrl + F5`** (*Iniciar Sem Depurar*).
+:::tip[Execução em Alta Performance]
+Para rodar a aplicação com velocidade máxima de processamento de imagem sem o depurador anexado, pressione **`Ctrl + F5`** (*Iniciar Sem Depurar*).
 :::
 
 ---
 
-## ❓ Perguntas Frequentes (FAQ do Iniciante)
+## 6. Perguntas Frequentes
 
 ### 1. Apareceu um aviso sobre "Código Não Seguro" (`unsafe`)?
-Não se preocupe! O projeto utiliza o modificador `unsafe` para manipular pixels diretamente na memória RAM com ponteiros `byte*`. O arquivo `.csproj` já vem com a configuração `<AllowUnsafeBlocks>true</AllowUnsafeBlocks>` habilitada por padrão.
+Isso é esperado. O projeto utiliza blocos `unsafe` para acessar os pixels diretamente na memória RAM em alta velocidade. O arquivo de configuração `.csproj` já possui a opção `<AllowUnsafeBlocks>true</AllowUnsafeBlocks>` habilitada por padrão.
 
-### 2. O Visual Studio diz que o .NET 10 não foi encontrado?
-Se você estiver em uma versão mais antiga do Visual Studio, baixe o [.NET 10 SDK Oficial da Microsoft](https://dotnet.microsoft.com/download/dotnet/10.0) e instale o arquivo `.exe`. Depois feche e reabra o Visual Studio.
-
-### 3. Como vejo os arquivos do código no Visual Studio?
-Na barra lateral direita, procure pela janela chamada **Gerenciador de Soluções** (*Solution Explorer*). Se ela estiver oculta, clique no menu superior **Exibir** $\to$ **Gerenciador de Soluções** (ou pressione `Ctrl + Alt + L`).
+### 2. O Visual Studio informou que o .NET 10 não foi localizado?
+Se sua instalação do Visual Studio for anterior à disponibilização do .NET 10, instale o [.NET 10 SDK Oficial](https://dotnet.microsoft.com/download/dotnet/10.0) e reinicie o Visual Studio.
 
 ---
 
-👉 **Próximo Passo:** Se você prefere usar o terminal sem abrir o Visual Studio, leia o [Guia da Linha de Comando (CLI)](/CGPDI.StudyLab/iniciantes/guia-linha-de-comando/).
+👉 **Próximo Passo:** Se você prefere trabalhar pelo terminal sem a interface do Visual Studio, consulte o [Guia de Linha de Comando (CLI)](/CGPDI.StudyLab/iniciantes/guia-linha-de-comando/).

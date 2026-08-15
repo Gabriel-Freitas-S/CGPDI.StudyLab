@@ -3,21 +3,22 @@ title: Operações Pontuais & Histogramas (PointAndHistograms.cs)
 description: Teoria e implementação de Brilho, Contraste, LUTs, Correção Gamma, Equalização de Histograma por CDF e Normalização Min-Max.
 ---
 
-As **Operações Pontuais** constituem a classe mais elementar e computacionalmente rápida de processamento de imagens.
+As **Operações Pontuais** constituem a classe elementar e mais rápida de processamento de imagens.
 
-Nelas, o valor de intensidade do pixel resultante $g(x, y)$ depende **exclusivamente** da intensidade do pixel original correspondente $f(x, y)$, sem levar em consideração os pixels vizinhos:
+Nelas, a nova cor de um pixel $g(x, y)$ depende **exclusivamente** da cor original daquele mesmo ponto $f(x, y)$, sem depender dos vizinhos:
 
 $$
 g(x, y) = T\left[ f(x, y) \right]
 $$
 
-Onde $T$ é uma função de transformação de intensidade.
+Onde $T$ é a função de transformação de intensidade.
 
 ---
 
-## ☀️ 1. Ajuste Linear de Brilho
+## 1. Ajuste Linear de Brilho
 
-O ajuste de brilho é uma transformação **aditiva** simples:
+### A Analogia do Interruptor com Dimmer:
+O brilho funciona como girar o botão dimmer de uma lâmpada: todos os pontos da imagem recebem um valor fixo a mais (ou a menos) de luz:
 
 $$
 g(x, y) = \text{clamp}\left( f(x, y) + \beta, \; 0, \; 255 \right)
@@ -28,27 +29,27 @@ $$
 
 ---
 
-## 🌓 2. Ajuste de Contraste com Pivô Central
+## 2. Ajuste de Contraste com Pivô Central
 
-O contraste mede a amplitude da faixa dinâmica entre os tons mais escuros e mais claros. Para não alterar o nível médio de cinza da imagem, o contraste é calculado usando o **pivô central $128$**:
+### A Analogia do Elástico Esticado:
+O contraste funciona como puxar um elástico fixo no meio ($128$). Os tons claros são esticados para ficarem ainda mais claros, e os escuros são esticados para ficarem ainda mais escuros:
 
 $$
 g(x, y) = \text{clamp}\left( \alpha \cdot (f(x, y) - 128) + 128, \; 0, \; 255 \right)
 $$
 
-- $\alpha > 1$: Aumenta o contraste (tons claros ficam mais claros, escuros ficam mais escuros).
-- $0 \le \alpha < 1$: Diminui o contraste (aproxima todos os tons do cinza médio).
+- $\alpha > 1$: Aumenta o contraste (separa mais os tons claros e escuros).
+- $0 \le \alpha < 1$: Reduz o contraste (aproxima todos os tons do cinza neutro).
 
 ---
 
-## ⚡ 3. Otimização Crítica: Look-Up Tables (LUTs)
+## 3. Otimização por Look-Up Tables (LUTs)
 
-Como uma imagem de $512 \times 512$ pixels tem $262.144$ pixels, mas os valores de entrada possíveis para cada canal de cor são **apenas 256 inteiros** ($0$ a $255$), é computacionalmente tolo recalcular a fórmula de contraste $262.144$ vezes.
-
-Em vez disso, usamos uma **Look-Up Table (LUT)**:
+### A Analogia da Tabuada Pronta:
+Em vez de calcular a mesma fórmula matemática $262.144$ vezes para cada pixel, calculamos uma tabela de respostas pronta de 0 a 255 (apenas 256 números) antes de começar. Durante o processamento, o computador apenas consulta o valor na tabela instantaneamente ($O(1)$):
 
 ```csharp
-// 1. Pré-calculamos a tabela apenas 256 vezes:
+// 1. Tabela pre-calculada de 256 posicoes:
 byte[] lut = new byte[256];
 for (int i = 0; i < 256; i++)
 {
@@ -56,7 +57,7 @@ for (int i = 0; i < 256; i++)
     lut[i] = (byte)Math.Clamp(val, 0, 255);
 }
 
-// 2. No laço dos pixels, fazemos apenas indexação instantânea O(1):
+// 2. Consulta direta nos pixels:
 Parallel.For(0, height, y =>
 {
     byte* pDst = dst.BackBuffer + (y * dst.Stride);
@@ -73,71 +74,33 @@ Parallel.For(0, height, y =>
 
 ---
 
-## 🌈 4. Correção Gamma (Power-Law Transform)
+## 4. Correção Gamma (Power-Law Transform)
 
-A percepção humana de brilho e a resposta dos monitores físicos não são lineares, seguindo uma curva exponencial:
+A percepção de claridade dos olhos humanos segue uma curva exponencial:
 
 $$
 g(x, y) = 255 \times \left( \frac{f(x, y)}{255} \right)^\gamma
 $$
 
-- $\gamma < 1$ (ex: $\gamma = 0.5$): Expande tons escuros e sombras (clareamento não-linear).
-- $\gamma > 1$ (ex: $\gamma = 2.2$): Comprime sombras e destaca altas luzes.
+- $\gamma < 1$ (ex: $\gamma = 0.5$): Clareia sombras e áreas escuras suavemente.
+- $\gamma > 1$ (ex: $\gamma = 2.2$): Aprofunda sombras e acentua realces.
 
 ---
 
-## 📊 5. Histograma de Intensidade
+## 5. Histograma e Equalização por CDF Acumulada
 
-O histograma de uma imagem digital é um vetor $H$ de $256$ posições onde cada posição $H[i]$ representa a contagem exata de pixels que possuem o nível de cinza $i \in [0, 255]$:
+O histograma é o gráfico que mostra quantos pixels de cada tom de cinza (de 0 a 255) existem na imagem.
 
-$$
-H[i] = \sum_{y=0}^{H-1} \sum_{x=0}^{W-1} \begin{cases} 1, & \text{se } f(x, y) = i \\ 0, & \text{caso contrário} \end{cases}
-$$
+A **Equalização de Histograma** redistribui as intensidades para que os tons fiquem bem espalhados por toda a faixa dinâmica:
 
-A **Função de Probabilidade Normalizada (PDF)** é dada por:
-
-$$
-P(i) = \frac{H[i]}{W \times H}
-$$
-
----
-
-## 📈 6. Equalização de Histograma por CDF Acumulada
-
-Imagens de baixo contraste possuem histogramas concentrados em uma faixa estreita de tons. A **Equalização de Histograma** redistribui as intensidades de forma que o histograma resultante seja aproximadamente uniforme e plano.
-
-### Algoritmo Matemático:
-
-1. **Calcula o Histograma $H[i]$** de $0$ a $255$.
-2. **Calcula a Função de Distribuição Acumulada (CDF - Cumulative Distribution Function):**
+1. **Calcula o Histograma $H[i]$.**
+2. **Calcula a Função de Distribuição Acumulada (CDF):**
 $$
 \text{CDF}(i) = \sum_{j=0}^{i} H[j]
 $$
-3. **Identifica o primeiro valor não-nulo $\text{CDF}_{\min}$.**
-4. **Mapeia cada pixel original $v$ para o novo valor equalizado $h_{\text{eq}}(v)$:**
+3. **Mapeia cada tom de pixel original $v$ para o valor equalizado:**
 $$
 h_{\text{eq}}(v) = \text{round}\left( \frac{\text{CDF}(v) - \text{CDF}_{\min}}{(W \times H) - \text{CDF}_{\min}} \times 255 \right)
-$$
-
-```csharp
-// Mapeamento em C# no PointAndHistograms.cs:
-byte[] eqLut = new byte[256];
-int totalPixels = src.Width * src.Height;
-
-for (int i = 0; i < 256; i++)
-{
-    eqLut[i] = (byte)Math.Clamp((int)Math.Round(((double)(cdf[i] - cdfMin) / (totalPixels - cdfMin)) * 255.0), 0, 255);
-}
-```
-
----
-
-## 📏 7. Normalização de Histograma (Min-Max Stretching)
-
-Expande linearmente uma imagem com valores concentrados entre $[\text{Min}, \text{Max}]$ para utilizar toda a escala $[0, 255]$:
-
-$$
-g(x, y) = \text{round}\left( \frac{f(x, y) - \text{Min}}{\text{Max} - \text{Min}} \times 255 \right)
 $$
 
 ---
