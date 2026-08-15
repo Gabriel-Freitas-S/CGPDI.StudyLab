@@ -1,113 +1,129 @@
-# 🎓 CGPDI.StudyLab — Laboratório Universitário de Computação Gráfica & PDI (.NET 10 WPF)
+# 🎓 CGPDI StudyLab
 
-[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![C# 13](https://img.shields.io/badge/C%23-13.0-239120?logo=c-sharp)](https://docs.microsoft.com/dotnet/csharp/)
-[![WPF DirectX](https://img.shields.io/badge/UI-WPF%20%2F%20DirectX-0078D6?logo=windows)](https://learn.microsoft.com/dotnet/desktop/wpf/)
-[![Astro Starlight](https://img.shields.io/badge/Docs-Astro%20Starlight-FF5D01?logo=astro)](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/)
-[![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-22c55e?logo=github)](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-Um ecossistema educacional e prático de alta performance para o estudo de **Processamento Digital de Imagens (PDI)**, **Computação Gráfica 2D (Rasterização dos Primeiros Princípios)**, **Computação Gráfica 3D (Pipeline em Software e Aceleração por Hardware)**, **Modelagem Hierárquica / Cinemática Direta** e **Renderização Realística (Ray Tracing)**.
-
-Desenvolvido integralmente em conformidade com o **Plano de Ensino Universitário** para cursos de Bacharelado em Ciência/Engenharia da Computação.
+<div align="center">
+  <img src="./CGPDI.StudyLab/Assets/logo_full.svg" alt="CGPDI StudyLab Logo" width="720" />
+  <p><strong>Plataforma Educacional Interativa para Computação Gráfica 2D/3D & Processamento Digital de Imagens em .NET 10, C# e WPF com Aceleração por Hardware GPU</strong></p>
+</div>
 
 ---
 
-## 🌐 📖 Site Oficial de Documentação & Wiki
+## 🌟 Visão Geral
 
-Acesse a documentação completa, interativa e detalhada no GitHub Pages:
+O **CGPDI StudyLab** é um ambiente de aprendizado imersivo projetado para que estudantes, professores e engenheiros de software dominem os conceitos fundamentais e avançados de **Computação Gráfica** e **Processamento Digital de Imagens**. 
 
-👉 **[https://gabriel-freitas-s.github.io/CGPDI.StudyLab/](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/)**
-
-### 📑 Sumário da Documentação no Astro Starlight (`docs/`):
-
-1. 🚀 **[Começando do Zero (Guia para Iniciantes)](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/)**: O que é C#, .NET 10, WPF, como instalar o Visual Studio passo a passo, executar pelo terminal e depurar com Breakpoints.
-2. 🏗️ **[Arquitetura do Software](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/arquitetura/visao-geral/)**: Camadas, fluxo de dados, estrutura de pastas e integração DirectX.
-3. 🧠 **[Núcleo de Memória & Hardware](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/core/fundamentos-de-memoria/)**: `DirectBitmap`, ponteiros `unsafe byte*`, formato `Bgra32`, `Stride` e modelos de cores (`ColorSpaces.cs`).
-4. 🖼️ **[Processamento Digital de Imagens (PDI)](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/pdi/operacoes-pontuais-e-histogramas/)**: Operações pontuais, histogramas e CDF, convoluções espaciais 2D, Canny em 5 etapas, morfologia matemática (Otsu), transformações geométricas e Transformada de Fourier 2D (DFT).
-5. ✏️ **[Computação Gráfica 2D](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/cg2d/algebra-linear-e-matrizes/)**: Álgebra linear homogênea 3x3, retas de Bresenham e Xiaolin Wu, círculo/elipse do ponto médio, curvas de Bézier e preenchimento Scanline.
-6. 🧊 **[Computação Gráfica 3D](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/cg3d/matematica-vetorial-e-mvp/)**: Pipeline MVP, renderizador em software na CPU com Z-Buffer baricêntrico e Viewport3D DirectX com câmera Arcball.
-7. 🤖 **[Modelagem Hierárquica](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/)**: Grafos de cena (Scene Graphs), propagação de matrizes pai-filho e braço robótico com cinemática direta.
-8. ⚡ **[Ray Tracing Realístico](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/raytracing/fundamentos-e-fisica-da-luz/)**: Whitted Ray Tracer, interseção analítica raio-esfera, sombras nítidas, reflexões e refração com a Lei de Snell e Fresnel.
-9. 🎓 **[Guia Acadêmico](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/academico/mapeamento-do-plano/)**: Mapeamento completo da Ementa e roteiro de estudos para os trabalhos T1, T2 e T3.
-10. 🌐 **[Publicação & GitHub Pages](https://gabriel-freitas-s.github.io/CGPDI.StudyLab/deploy/github-pages-e-ci-cd/)**: Como ativar o GitHub Pages com GitHub Actions.
+Diferente de ferramentas estáticas, o StudyLab integra um **compilador Roslyn C# em tempo real** diretamente ao pipeline de renderização gráfica (`DirectBitmap`). Isso significa que **qualquer alteração no código C# — seja trocar canais de cor, alterar matrizes ou modificar equações de iluminação — atualiza imediatamente o Canvas visual e a memória RAM!**
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🎨 Identidade Visual & Assets SVG
+
+Os arquivos vetoriais oficiais do projeto estão localizados em `CGPDI.StudyLab/Assets/`:
+- **`logo.svg`**: Ícone vetorial do cubo 3D isométrico com canais RGB, matriz de pixels e feixes de ray tracing.
+- **`logo_full.svg`**: Banner institucional completo com tipografia e identidade visual em alta definição.
+- **`app_icon.ico`**: Ícone oficial multi-resolução para o executável Windows (`.exe`), barra de tarefas e título de janelas.
+
+---
+
+## 🏗️ Arquitetura do Software
+
+```mermaid
+graph TD
+    UI[Interface do Usuário WPF / XAML] --> Controller[Controlador de Janelas & Estúdio]
+    Controller --> Compiler[Motor de Compilação ao Vivo Roslyn CSharpScript]
+    Controller --> LabManager[Gerenciador Pedagógico 12 Lições]
+    
+    Compiler --> DynamicEval[Avaliação Dinâmica & Testes Unitários]
+    DynamicEval --> DirectBitmap[DirectBitmap - Buffer de Pixels BGRA32 Unsafe]
+    LabManager --> DirectBitmap
+    
+    DirectBitmap --> GPU[DirectX / Direct3D milcore Tier 2 Aceleração GPU]
+    GPU --> Screen[Canvas Gráfico a 60+ FPS]
+```
+
+---
+
+## 🚀 Trilha de Aprendizado Completa (12 Lições Interativas)
+
+### 🔵 Módulo 1: Fundamentos de C# para Gráficos
+1. **Tipos Primitivos & Formato BGRA32 na Memória RAM**:
+   - Manipulação de canais de cor de 8 bits (`byte`) e empacotamento em inteiros de 32 bits (`uint`) com operadores bitwise `|` e `<<`.
+2. **Data Binding Reativo & `INotifyPropertyChanged`**:
+   - Padrão MVVM com sincronização de propriedades C# diretamente na interface gráfica XAML sem acoplamento.
+3. **Ponteiros Não Gerenciados (`unsafe byte*`) & Stride**:
+   - Endereçamento de memória linear em buffers de imagem 2D: $\text{Offset} = (Y \times \text{Stride}) + (X \times 4)$.
+
+### 🟢 Módulo 2: O Pipeline WPF & Manipulação Direta
+4. **Dependency Properties & Ciclo de Layout (`MeasureOverride` / `ArrangeOverride`)**:
+   - Como a árvore visual do WPF calcula o tamanho desejado e organiza os elementos na tela.
+5. **Ciclo de Vida do `WriteableBitmap` & BackBuffer da GPU**:
+   - Sequência de alto desempenho: $\text{Lock()} \to \text{Escrita de Pixels} \to \text{AddDirtyRect()} \to \text{Unlock()}$.
+
+### 🟡 Módulo 3: Processamento Digital de Imagens (PDI)
+6. **Convolução Espacial 2D & Filtro Box Blur 3x3**:
+   - Aplicação de máscaras de convolução e filtros espaciais sobre matrizes de vizinhança $3 \times 3$.
+7. **Limiarização Automática pelo Critério de Otsu**:
+   - Algoritmo estatístico que maximiza a variância inter-classes ($\sigma^2_B$) em complexidade $O(256)$.
+
+### 🟠 Módulo 4: Computação Gráfica 2D (Rasterização)
+8. **Algoritmo de Reta de Bresenham (Aritmética 100% Inteira)**:
+   - Traçado de retas discretas sem ponto flutuante ou divisões usando variável de decisão de erro $e$.
+9. **Álgebra Linear 2D & Coordenadas Homogêneas 3x3**:
+   - Unificação de Translação, Rotação e Escala em vetores $[x, y, 1]^T$ e matrizes afins $3 \times 3$.
+
+### 🟣 Módulo 5: Computação Gráfica 3D
+10. **O Pipeline MVP & A Divisão Perspectiva ($1/Z$)**:
+    - Transformações Model $\to$ View $\to$ Projection e projeção perspectiva de vértices 3D em NDC e pixels de tela.
+11. **Modelagem Hierárquica & Cinemática Direta (Grafo de Cena)**:
+    - Árvores de nós e propagação matricial em cadeia $M_{\text{global}} = M_{\text{pai}} \times M_{\text{local}}$ para robôs articulados.
+
+### 🔴 Módulo 6: Renderização Realística
+12. **Ray Tracing & Interseção Analítica Raio-Esfera**:
+    - Resolução da equação quadrática $at^2 + bt + c = 0$, teste do discriminante $\Delta$ e iluminação Phong com normais unitárias.
+
+---
+
+## ⚡ Principais Recursos
+
+- **🎓 Estúdio de Código em Janela Dedicada**: Janela independente maximizável com suporte a múltiplos monitores e layout retrátil (Trilha, Editor de Código C# e Canvas Gráfico).
+- **🚀 Compilação ao Vivo com Roslyn**: Escreva ou altere qualquer valor no código e veja a renderização gráfica responder na hora.
+- **🧪 Testes Unitários Automatizados**: Bateria de validação pedagógica com diagnóstico detalhado (esperado vs. obtido).
+- **💡 Gabaritos 100% Funcionais**: Solução oficial de referência pronta para carregar e testar com 1 clique.
+- **❓ Quizzes com Quebra Automática de Linha**: Avaliações conceituais com formatação fluida para qualquer tamanho de texto.
+- **🖼️ Laboratório de PDI**: Mais de 20 filtros (Sobel, Canny, Laplace, Equalização de Histograma, Morfologia Matemática).
+- **📦 Pipeline 3D Duplo**: Renderizador 3D em Software (com Z-Buffer) + Renderizador por Hardware WPF `Viewport3D`.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Linguagem & Runtime**: C# 13 / .NET 10 (Windows Desktop)
+- **Compilador Dinâmico**: `Microsoft.CodeAnalysis.CSharp.Scripting` (Roslyn 5.6)
+- **Manipulação de Memória**: `DirectBitmap` com ponteiros `unsafe byte*` e multithreading via `Parallel.For`
+- **Aceleração Gráfica**: Direct3D / WPF Hardware Acceleration (Tier 2)
+
+---
+
+## 💻 Como Compilar e Executar
 
 ### Pré-requisitos
-* [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) ou superior instalado.
-* Sistema Operacional Windows 10/11 (necessário para o subsistema WPF / DirectX).
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- Windows 10 / 11
 
-### Linha de Comando (PowerShell / Terminal)
-```powershell
-# 1. Clone ou navegue até o repositório
-cd D:\source\repos\CGPDI.StudyLab\CGPDI.StudyLab
+### Passos
+```bash
+# 1. Clone o repositório
+git clone https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab.git
+cd CGPDI.StudyLab
 
-# 2. Restaure as dependências e compile
+# 2. Compile a solução
 dotnet build
 
 # 3. Execute a aplicação
-dotnet run
-```
-
-### Executar a Documentação Localmente (Astro Starlight)
-```powershell
-cd docs
-npm install
-npm run dev
-# Acesse http://localhost:4321/CGPDI.StudyLab/
+dotnet run --project CGPDI.StudyLab/CGPDI.StudyLab.csproj
 ```
 
 ---
 
-## 🌟 Funcionalidades e Módulos do Sistema
-
-```
-📦 Solução CGPDI.StudyLab
-├── 📂 docs/                     -> Site oficial de documentação em Astro Starlight
-├── 📂 .github/workflows/        -> Automação de CI/CD para o GitHub Pages
-├── 📂 CGPDI.StudyLab/
-│   ├── 📂 Core/
-│   │   ├── DirectBitmap.cs          -> Manipulação de memória direta via ponteiros (unsafe byte*) e Stride
-│   │   ├── ColorSpaces.cs           -> Modelos de cores (RGB, HSV, HSL, YCbCr, CMYK, BT.709, BT.601, Sépia)
-│   │   ├── ImageSampleGenerator.cs  -> Gerador procedual de cenas de calibração ótica e testes de PDI
-│   │   └── StudyGuideData.cs        -> Central de estudos embutida com teoria e códigos comentados
-│   ├── 📂 ImageProcessing/
-│   │   ├── PointAndHistograms.cs    -> Brilho, contraste, Gamma, Equalização CDF, Normalização Min-Max
-│   │   ├── SpatialFilters.cs        -> Convoluções 2D, Gaussian, Unsharp Mask, Mediana, Canny de 5 etapas
-│   │   ├── Morphology.cs            -> Binarização de Otsu, Erosão, Dilatação, Abertura, Fechamento
-│   │   ├── GeometricTransforms.cs   -> Mapeamento Inverso, Interpolação Bilinear/Bicúbica, Swirl, Ripple, Fisheye
-│   │   └── FrequencyAndProcedural.cs-> DFT 2D + FFTShift, Perlin Noise, Terrenos fBm, Voronoi, Mandelbrot/Julia
-│   ├── 📂 Graphics2D/
-│   │   ├── Matrix2D.cs              -> Álgebra Linear 2D (Matrizes 3x3 Homogêneas, Composição Afim)
-│   │   └── Rasterizer2D.cs          -> Bresenham, DDA, Wu Anti-aliased, Círculo/Elipse Ponto Médio, Bézier, Scanline
-│   ├── 📂 Graphics3D/
-│   │   ├── Math3D.cs                -> Vetores 3D/4D, Matrizes 4x4 MVP, Quaternions, Raios
-│   │   ├── SoftwareRenderer3D.cs    -> Pipeline 3D CPU (Back-face Culling, Z-Buffer, Baricêntricas)
-│   │   ├── WpfViewport3DManager.cs  -> Viewport3D Hardware (Câmera Orbital Arcball, Projeções, Phong)
-│   │   ├── HierarchicalModeling.cs  -> Grafo de Cena (Scene Graph) e Robô Articulado com Cinemática Direta
-│   │   └── Raytracer3D.cs           -> Ray Tracer de Whitted (Sombras, Reflexões, Refração Snell/Fresnel)
-│   └── 📂 UI/
-│       ├── MainWindow.xaml          -> Interface escura em alta resolução, responsiva em tela cheia
-│       └── MainWindow.xaml.cs       -> Controlador de eventos e cronômetro de alta precisão
-```
-
----
-
-## 🎯 Destaques de Engenharia e Desempenho
-
-| Métrica / Técnica | Implementação no Projeto | Benefício |
-| :--- | :--- | :--- |
-| **Acesso Direto à Memória** | `unsafe byte*` sobre buffer `Bgra32` | Elimina cópias intermediárias e overhead do GDI+ |
-| **Paralelismo Multinúcleo** | `Parallel.For(0, Height, y => ...)` | Processamento em tempo real a **60+ FPS** em CPU moderna |
-| **Câmera Orbital Arcball** | Coordenadas esféricas ($r, \theta, \phi$) | Rotação suave de 360° com arrasto de mouse e zoom óptico |
-| **Renderizador em Software** | Pipeline gráfico completo do zero em C# | Compreensão total da GPU sem abstrações opacas |
-| **Ray Tracer Físico** | Resolução analítica de equações quadráticas | Reflexões fotorrealistas e refração em vidro com Lei de Snell |
-
----
-
-## 📄 Licença
-
-Este projeto é disponibilizado sob a licença [MIT](./LICENSE), sendo livre para fins educacionais, acadêmicos e comerciais.
+<div align="center">
+  <sub>Desenvolvido com foco em excelência acadêmica e inovação no ensino de Computação Gráfica e PDI.</sub>
+</div>

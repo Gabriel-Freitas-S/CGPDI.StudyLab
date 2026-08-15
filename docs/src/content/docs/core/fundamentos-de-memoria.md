@@ -109,4 +109,16 @@ Com essa técnica combinada com `Parallel.For`, o mesmo cálculo é concluído e
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Aprofunde seus conhecimentos na documentação oficial da Microsoft sobre memória e ponteiros no .NET:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code" target="_blank" rel="noopener">Tipos de ponteiro e código não seguro (unsafe) no C#</a> — Sintaxe de <code>fixed</code>, <code>stackalloc</code> e aritmética de ponteiros.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/standard/garbage-collection/" target="_blank" rel="noopener">Gerenciamento de Memória e Coleta de Lixo (GC) no .NET</a> — Como funciona o Heap gerenciado e por que fixamos buffers na memória.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/standard/parallel-programming/how-to-write-a-simple-parallel-for-loop" target="_blank" rel="noopener">Paralelismo de Dados com Parallel.For</a> — Utilização da Task Parallel Library (TPL) para distribuição de carga em múltiplos núcleos de CPU.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Analise o código completo da classe [DirectBitmap.cs](/CGPDI.StudyLab/core/directbitmap/).

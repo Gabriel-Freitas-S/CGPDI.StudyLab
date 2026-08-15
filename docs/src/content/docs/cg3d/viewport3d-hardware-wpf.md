@@ -27,4 +27,16 @@ $$
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Documentação da API de Gráficos 3D do WPF:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.controls.viewport3d" target="_blank" rel="noopener">Classe Viewport3D (System.Windows.Controls)</a> — Container visual para renderização de cenas 3D no espaço de interface 2D.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.perspectivecamera" target="_blank" rel="noopener">Classe PerspectiveCamera</a> — Configuração de posição, vetor <code>LookDirection</code>, <code>UpDirection</code> e campo de visão (<code>FieldOfView</code>).</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.material" target="_blank" rel="noopener">Classe Material (System.Windows.Media.Media3D)</a> — Composição de materiais com <code>DiffuseMaterial</code>, <code>SpecularMaterial</code> e <code>EmissiveMaterial</code>.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/).

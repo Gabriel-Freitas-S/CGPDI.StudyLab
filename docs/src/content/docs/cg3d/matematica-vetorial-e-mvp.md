@@ -22,11 +22,11 @@ Para transformar um ponto 3D em um pixel na tela:
 
 ```mermaid
 graph LR
-    Local[1. Espaco do Objeto] -->|Model Matrix| World[2. Espaco de Mundo]
-    World -->|View Matrix| Camera[3. Espaco da Camera]
-    Camera -->|Projection Matrix| Clip[4. Espaco de Corte 4D]
-    Clip -->|Divisao Perspectiva por w| NDC[5. Coordenadas NDC]
-    NDC -->|Mapeamento de Viewport| Screen[6. Pixels na Tela]
+    Local["1. Espaco do Objeto"] -->|Model Matrix| World["2. Espaco de Mundo"]
+    World -->|View Matrix| Camera["3. Espaco da Camera"]
+    Camera -->|Projection Matrix| Clip["4. Espaco de Corte 4D"]
+    Clip -->|Divisao Perspectiva por w| NDC["5. Coordenadas NDC"]
+    NDC -->|Mapeamento de Viewport| Screen["6. Pixels na Tela"]
 ```
 
 1. **Model Matrix ($M_{\text{model}}$):** Posiciona e rotaciona o objeto no mundo.
@@ -34,6 +34,18 @@ graph LR
 3. **Projection Matrix ($M_{\text{proj}}$):** Aplica a perspectiva (objetos distantes parecem menores).
 4. **Divisão Perspectiva:** Converte para coordenadas normalizadas (NDC $[-1, 1]$).
 5. **Mapeamento de Viewport:** Converte para a resolução em pixels da janela do aplicativo.
+
+---
+
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Conceitos matemáticos e classes do .NET para transformações geométricas e gráficos 3D:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.numerics" target="_blank" rel="noopener">System.Numerics Namespace</a> — Tipos acelerados por hardware via SIMD: <code>Vector3</code>, <code>Vector4</code>, <code>Matrix4x4</code> e <code>Quaternion</code>.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/transforms-overview" target="_blank" rel="noopener">Visão Geral de Transformações no WPF</a> — Operações matriciais de translação, rotação e escala.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.matrix3d" target="_blank" rel="noopener">Estrutura Matrix3D (System.Windows.Media.Media3D)</a> — Representação de matriz de transformação afim 4x4 em ponto flutuante.</li>
+  </ul>
+</div>
 
 ---
 

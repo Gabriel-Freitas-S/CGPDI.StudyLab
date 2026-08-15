@@ -21,31 +21,53 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## Visão Geral dos Módulos
 
 Esta documentação foi elaborada com foco na clareza pedagógica: conceitos matemáticos complexos são apresentados por meio de analogias intuitivas do dia a dia, acompanhados da fundamentação teórica rigorosa e do código-fonte comentado em C#.
 
-<CardGrid stagger>
-  <Card title="1. Guia para Iniciantes" icon="rocket">
-    Introdução ao C#, funcionamento do .NET 10, instalação do Visual Studio passo a passo, compilação em um clique e depuração com pontos de interrupção (breakpoints).
-  </Card>
-  <Card title="2. Processamento Digital de Imagens (PDI)" icon="puzzle">
-    Espaços de cor (RGB, HSV, YCbCr), convoluções espaciais, detector Canny de 5 etapas, morfologia matemática (Otsu), transformações geométricas e Transformada de Fourier 2D.
-  </Card>
-  <Card title="3. Rasterização 2D (Primeiros Princípios)" icon="pencil">
-    Como as placas de vídeo desenham formas geométricas: reta de Bresenham em números inteiros, suavização de Xiaolin Wu, círculo do ponto médio e preenchimento de polígonos.
-  </Card>
-  <Card title="4. Computação Gráfica 3D & Pipeline" icon="laptop">
-    A trajetória do vértice 3D até a tela 2D: matrizes MVP, renderizador em software na CPU com Z-Buffer baricêntrico e Viewport3D com aceleração DirectX.
-  </Card>
-  <Card title="5. Modelagem Hierárquica & Cinemática" icon="setting">
-    Grafos de cena (Scene Graph), acumulação de matrizes pai-filho e controle de robô articulado com cinemática direta e limites de rotação.
-  </Card>
-  <Card title="6. Ray Tracing Fotorrealista" icon="star">
-    Simulação física da trajetória da luz: cálculo analítico de interseção raio-esfera, sombras nítidas, reflexões recursivas e refração com a Lei de Snell e Fresnel.
-  </Card>
+<CardGrid>
+  <LinkCard
+    title="🎓 Estúdio de Código & Compilador Roslyn"
+    description="Escreva código C# e veja a compilação ao vivo atualizar o Canvas e a memória RAM em tempo real. Janela dedicada com Modo Foco e testes unitários."
+    href="/CGPDI.StudyLab/iniciantes/modo-interativo-e-playground/"
+  />
+  <LinkCard
+    title="🚀 1. Guia para Iniciantes (12 Lições C#)"
+    description="Trilha de aprendizado cobrindo desde tipos primitivos (byte, uint), ponteiros unsafe, Data Binding reativo até Ray Tracing."
+    href="/CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/"
+  />
+  <LinkCard
+    title="🖼️ 2. Processamento Digital de Imagens (PDI)"
+    description="Espaços de cor (RGB, HSV, YCbCr), convoluções espaciais, detector Canny de 5 etapas, morfologia matemática e Fourier 2D."
+    href="/CGPDI.StudyLab/pdi/operacoes-pontuais-e-histogramas/"
+  />
+  <LinkCard
+    title="✏️ 3. Rasterização 2D (Primeiros Princípios)"
+    description="Como as GPUs desenham: reta de Bresenham inteira, suavização Xiaolin Wu, círculo do ponto médio e matrizes afins 3×3."
+    href="/CGPDI.StudyLab/cg2d/algebra-linear-e-matrizes/"
+  />
+  <LinkCard
+    title="📦 4. Computação Gráfica 3D & Pipeline"
+    description="A trajetória do vértice 3D até a tela: matrizes MVP, renderizador em software na CPU com Z-Buffer e Viewport3D DirectX."
+    href="/CGPDI.StudyLab/cg3d/matematica-vetorial-e-mvp/"
+  />
+  <LinkCard
+    title="🤖 5. Modelagem Hierárquica (Cinemática)"
+    description="Grafos de cena para robôs articulados e sistema solar com propagação matricial em cadeia pai-filho e cinemática direta."
+    href="/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/"
+  />
+  <LinkCard
+    title="🌟 6. Ray Tracing Fotorrealista"
+    description="Simulação física da luz: cálculo analítico de interseção raio-esfera, modelo Phong, sombras nítidas e refração com a Lei de Snell."
+    href="/CGPDI.StudyLab/raytracing/fundamentos-e-fisica-da-luz/"
+  />
+  <LinkCard
+    title="🏛️ 7. Arquitetura do Software & DirectX Tier"
+    description="Desacoplamento de camadas, subsistema milcore, ponteiros não gerenciados e aceleração de hardware Direct3D Tier 2."
+    href="/CGPDI.StudyLab/arquitetura/visao-geral/"
+  />
 </CardGrid>
 
 ---
@@ -56,12 +78,12 @@ O projeto [`CGPDI.StudyLab`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab
 
 ```mermaid
 graph TD
-    A[Interface de Usuario WPF / XAML] --> B[Core: DirectBitmap e ColorSpaces]
-    B --> C[ImageProcessing: Modulos de PDI]
-    B --> D[Graphics2D: Rasterizacao dos Primeiros Principios]
-    B --> E[Graphics3D: Software Renderer e Ray Tracer]
-    A --> F[Graphics3D: WpfViewport3DManager Hardware]
-    F --> G[HierarchicalModeling: Grafo de Cena e Robo]
+    A["Interface de Usuario WPF / XAML"] --> B["Core: DirectBitmap e ColorSpaces"]
+    B --> C["ImageProcessing: Modulos de PDI"]
+    B --> D["Graphics2D: Rasterizacao dos Primeiros Principios"]
+    B --> E["Graphics3D: Software Renderer e Ray Tracer"]
+    A --> F["Graphics3D: WpfViewport3DManager Hardware"]
+    F --> G["HierarchicalModeling: Grafo de Cena e Robo"]
 ```
 
 ---

@@ -18,10 +18,10 @@ Se o computador simulasse a luz saindo da lâmpada, passaria 99.9% do tempo calc
 
 ```mermaid
 graph LR
-    Camera[Camera e Olho] -->|1. Raio Primario| Pixel[Pixel da Tela]
-    Pixel --> HitPoint[Ponto de Impacto na Esfera]
-    HitPoint -->|2. Raio de Sombra| Light[Fonte de Luz]
-    HitPoint -->|3. Raio Refletido| Mirror[Espelho e Reflexo]
+    Camera["Camera e Olho"] -->|1. Raio Primario| Pixel["Pixel da Tela"]
+    Pixel --> HitPoint["Ponto de Impacto na Esfera"]
+    HitPoint -->|2. Raio de Sombra| Light["Fonte de Luz"]
+    HitPoint -->|3. Raio Refletido| Mirror["Espelho e Reflexo"]
 ```
 
 ---

@@ -49,8 +49,8 @@ Para girar um desenho ao redor do seu próprio centro $(P_x, P_y)$:
 
 ```mermaid
 graph LR
-    A[1. Translacao para a Origem: T de -Px, -Py] --> B[2. Rotacao Angular: R de theta]
-    B --> C[3. Translacao de Volta: T de +Px, +Py]
+    A["1. Translacao para a Origem: T(-Px, -Py)"] --> B["2. Rotacao Angular: R(theta)"]
+    B --> C["3. Translacao de Volta: T(+Px, +Py)"]
 ```
 
 $$

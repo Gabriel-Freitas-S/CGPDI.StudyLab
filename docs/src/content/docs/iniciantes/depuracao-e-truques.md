@@ -65,4 +65,16 @@ O .NET 10 permite ajustar valores numéricos ou fórmulas e visualizar o resulta
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Recursos para depuração e diagnóstico de performance no Visual Studio:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/visualstudio/debugger/debugger-feature-tour" target="_blank" rel="noopener">Tour de Recursos do Depurador do Visual Studio</a> — Como utilizar Breakpoints, DataTips, Watch e Janela de Memória.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/visualstudio/profiling/profiling-feature-tour" target="_blank" rel="noopener">Ferramentas de Criação de Perfil (Profiling) no Visual Studio</a> — Diagnóstico de CPU, alocação de memória e uso de GPU.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.diagnostics.stopwatch" target="_blank" rel="noopener">Classe Stopwatch (System.Diagnostics)</a> — Medição precisa de intervalos de tempo em milissegundos e tiques de CPU.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Conheça a [Visão Geral da Arquitetura do Software](/CGPDI.StudyLab/arquitetura/visao-geral/).

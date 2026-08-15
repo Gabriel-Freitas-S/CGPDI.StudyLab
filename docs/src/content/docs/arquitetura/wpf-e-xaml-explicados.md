@@ -91,4 +91,16 @@ Para a exibição 3D acelerada por hardware, o WPF fornece o elemento **`<Viewpo
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Recursos fundamentais para desenvolvimento com WPF e XAML no .NET:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/fundamentals/xaml" target="_blank" rel="noopener">Visão Geral da Linguagem XAML no WPF</a> — Sintaxe declarativa, propriedades de dependência e ciclo de vida de elementos visuais.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview" target="_blank" rel="noopener">Visão Geral de Gráficos 3D no WPF</a> — Criação de malhas <code>MeshGeometry3D</code>, iluminação e gerenciamento de câmeras.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/advanced/threading-model" target="_blank" rel="noopener">Modelo de Threading do WPF (Dispatcher)</a> — Entenda o Dispatcher e como atualizar elementos de interface a partir de threads secundárias.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Entre no [Módulo de Núcleo de Memória & Ponteiros](/CGPDI.StudyLab/core/fundamentos-de-memoria/).

@@ -24,10 +24,10 @@ Na interface (aba **Computação Gráfica 3D** $\to$ **Modelagem Hierárquica**)
 
 ```mermaid
 graph TD
-    Sol[Sol - Centro do Sistema] -->|Orbita da Terra| OrbitaTerra[Orbita Terrestre]
-    OrbitaTerra --> Terra[Terra - Rotacao Propria]
-    Terra -->|Orbita da Lua| OrbitaLua[Orbita Lunar]
-    OrbitaLua --> Lua[Lua - Gira ao redor da Terra]
+    Sol["Sol - Centro do Sistema"] -->|Orbita da Terra| OrbitaTerra["Orbita Terrestre"]
+    OrbitaTerra --> Terra["Terra - Rotacao Propria"]
+    Terra -->|Orbita da Lua| OrbitaLua["Orbita Lunar"]
+    OrbitaLua --> Lua["Lua - Gira ao redor da Terra"]
 ```
 
 - A Terra apenas calcula seu movimento ao redor do Sol.

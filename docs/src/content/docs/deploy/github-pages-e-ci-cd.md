@@ -1,100 +1,65 @@
 ---
-title: Publicação no GitHub Pages & Automação CI/CD
-description: Como configurar o repositório no GitHub para publicar este site de documentação Astro Starlight automaticamente a cada commit.
+title: Publicação no GitHub Pages & CI/CD de Releases do Aplicativo
+description: Automação completa no GitHub Actions para deploy contínuo da documentação e geração de instaladores (.exe) e pacotes portáteis (.zip) com auto-updater.
 ---
 
-Esta documentação foi construída com **Astro e Starlight** e está configurada para publicação contínua no **GitHub Pages** por meio do **GitHub Actions**.
+O projeto [`CGPDI.StudyLab`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab) conta com uma esteira completa de **Integração e Entrega Contínuas (CI/CD)** dividida em dois workflows:
+
+1. **Deploy Contínuo da Documentação**: Compila o site Astro Starlight e publica no GitHub Pages.
+2. **Build & Release do Aplicativo Windows**: Compila o .NET 10, empacota o executável portátil (`.zip`) e o instalador oficial (`.exe` com Inno Setup) e publica no GitHub Releases.
 
 ---
 
-## 1. O Workflow Automatizado (.github/workflows/deploy-docs.yml)
+## 🚀 1. Pipeline de Release do Aplicativo (`release-app.yml`)
 
-O repositório inclui o arquivo de automação [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml):
+O workflow [`.github/workflows/release-app.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/release-app.yml) é disparado automaticamente ao criar uma tag (ex: `v1.0.1`) ou manualmente via `workflow_dispatch`:
 
-```yaml
-name: Deploy Documentation to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - '.github/workflows/deploy-docs.yml'
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: docs/package-lock.json
-      - run: npm ci || npm install
-        working-directory: ./docs
-      - run: npm run build
-        working-directory: ./docs
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./docs/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+```mermaid
+graph TD
+    A["Tag Git vX.Y.Z ou Disparo Manual"] --> B["GitHub Actions Windows Runner"]
+    B --> C["Compilação .NET 10 Release"]
+    C --> D["dotnet publish win-x64 Self-Contained"]
+    D --> E["Compactação ZIP Portátil"]
+    D --> F["Compilação do Instalador com Inno Setup"]
+    E --> G["GitHub Releases Oficial"]
+    F --> G
+    G --> H["Auto-Updater no Aplicativo Notifica os Usuários"]
 ```
 
----
-
-## 2. Ativação do GitHub Pages no Repositório
-
-Para habilitar a publicação no GitHub:
-
-1. Acesse o repositório no GitHub: `https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab`.
-2. Acesse a aba **Settings** (Configurações) no menu superior do repositório.
-3. Na barra lateral esquerda, clique em **Pages** (na seção *Code and automation*).
-4. Em **Build and deployment $\to$ Source**, selecione a opção:
-   - **`GitHub Actions`**.
-5. Salve a configuração.
+### Artefatos Gerados em Cada Release:
+* **`CGPDI-StudyLab-Setup.exe`**: Instalador clássico para Windows com atalho na Área de Trabalho, Menu Iniciar e desinstalador completo.
+* **`CGPDI-StudyLab-Portable-win-x64.zip`**: Versão portátil autônoma pronta para rodar sem necessidade de instalação ou direitos de administrador.
 
 ---
 
-## 3. Endereço da Documentação Online
+## 🔄 2. Sistema de Auto-Update Integrado
 
-Após o envio de novos commits para a branch `main`, o GitHub Actions processará o build e o site estará disponível em:
+O aplicativo possui um sistema inteligente de verificação e atualização automática ([`UpdateManager.cs`](file:///d:/source/repos/CGPDI.StudyLab/CGPDI.StudyLab/Core/UpdateManager.cs)):
 
+1. **Verificação em Segundo Plano:** Ao iniciar, o app consulta a API do GitHub Releases (`/releases/latest`) de forma não bloqueante.
+2. **Diálogo de Atualização:** Se uma versão mais recente for encontrada (ex: `v1.0.1 > v1.0.0`), uma janela moderna exibe o changelog e pergunta ao usuário se deseja atualizar.
+3. **Download e Aplicação Automática:**
+   - **Instalador:** Faz o download e executa o assistente de instalação silencioso.
+   - **Portátil:** Baixa o `.zip`, descompacta em segundo plano e reinicia a aplicação atualizada.
+4. **Verificação Manual:** O botão **`🔔 Atualizações`** na barra superior permite checar novidades a qualquer momento.
+
+---
+
+## 🌐 3. Deploy da Documentação no GitHub Pages (`deploy-docs.yml`)
+
+O repositório inclui o workflow [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml) que sincroniza a documentação a cada commit na branch `main`.
+
+A documentação está publicada em:
 👉 **`https://gabriel-freitas-s.github.io/CGPDI.StudyLab/`**
 
 ---
 
-## 4. Execução Local
+## 💻 4. Geração Local de Release
 
-Para testar as páginas localmente no seu computador:
+Para compilar o pacote de release localmente sem enviar para o GitHub, basta executar o script PowerShell:
 
-1. Abra o terminal na pasta `docs`:
 ```powershell
-cd D:\source\repos\CGPDI.StudyLab\docs
+.\build_release.ps1 -Version "1.0.0"
 ```
 
-2. Inicie o servidor de desenvolvimento:
-```powershell
-npm run dev
-```
-
-3. Abra o navegador no endereço: `http://localhost:4321/CGPDI.StudyLab/`.
+Os arquivos finais serão gerados na pasta `dist/`.

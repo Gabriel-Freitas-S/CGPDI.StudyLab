@@ -57,10 +57,10 @@ Ele funciona separando a aplicação em dois papéis claros:
 
 ```mermaid
 graph LR
-    User[Usuario clica no botao] --> XAML[Interface MainWindow.xaml]
-    XAML --> CodeBehind[Controlador MainWindow.xaml.cs]
-    CodeBehind --> Algorithms[Algoritmos Matematicos de Imagem e 3D]
-    Algorithms --> GPU[Tela e Placa de Video]
+    User["Usuario clica no botao"] --> XAML["Interface MainWindow.xaml"]
+    XAML --> CodeBehind["Controlador MainWindow.xaml.cs"]
+    CodeBehind --> Algorithms["Algoritmos Matematicos de Imagem e 3D"]
+    Algorithms --> GPU["Tela e Placa de Video"]
 ```
 
 ---
@@ -84,5 +84,19 @@ Ao explorar a pasta do código, você verá extensões diferentes:
 - **.NET 10** é o motor que executa o código com alta performance.
 - **WPF** é o sistema visual que desenha a interface na tela com aceleração gráfica.
 - **DirectBitmap** é o bloco de memória onde calculamos a cor de cada ponto da imagem.
+
+---
+
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Comece a explorar a documentação oficial da Microsoft para novos desenvolvedores:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/" target="_blank" rel="noopener">Documentação Oficial do .NET</a> — Guias de início rápido, arquitetura e conceitos fundamentais do ecossistema .NET.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/tour-of-csharp/" target="_blank" rel="noopener">Tour pela Linguagem C#</a> — Visão geral da sintaxe moderna do C#, tipos de dados, estruturas e orientação a objetos.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/get-started/create-app-visual-studio" target="_blank" rel="noopener">Criar o Primeiro Aplicativo WPF no Visual Studio</a> — Tutorial guiado para iniciantes na criação de janelas desktop.</li>
+  </ul>
+</div>
+
+---
 
 👉 **Próximo Passo:** Aprenda a [Instalar o Visual Studio Passo a Passo](/CGPDI.StudyLab/iniciantes/instalacao-visual-studio/) para rodar o projeto no seu computador.

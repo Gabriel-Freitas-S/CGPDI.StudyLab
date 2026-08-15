@@ -23,10 +23,10 @@ $$
 
 ```mermaid
 graph TD
-    Delta[Avaliacao do Discriminante Delta]
-    Delta -->|Delta menor que 0| Errou[O raio passa no vazio - Sem contato]
-    Delta -->|Delta igual a 0| Tangente[O raio raspa a borda - 1 ponto]
-    Delta -->|Delta maior que 0| Atravessou[O raio atravessa a esfera - 2 pontos]
+    Delta["Avaliacao do Discriminante Delta"]
+    Delta -->|Delta menor que 0| Errou["O raio passa no vazio - Sem contato"]
+    Delta -->|Delta igual a 0| Tangente["O raio raspa a borda - 1 ponto"]
+    Delta -->|Delta maior que 0| Atravessou["O raio atravessa a esfera - 2 pontos"]
 ```
 
 ```csharp

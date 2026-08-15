@@ -27,9 +27,9 @@ $$
 
 ```mermaid
 graph TD
-    K_Test[Teste de k = 1 - eta ao quadrado de 1 - cos ao quadrado]
-    K_Test -->|k menor que 0| TIR[Reflexao Interna Total - O raio vira espelho 100 porcento]
-    K_Test -->|k maior ou igual a 0| Refratado[Raio Refratado - Atravessa o vidro curvando a trajetoria]
+    K_Test["Teste de k = 1 - eta^2 * (1 - cos^2)"]
+    K_Test -->|k menor que 0| TIR["Reflexao Interna Total - O raio vira espelho 100 porcento"]
+    K_Test -->|k maior ou igual a 0| Refratado["Raio Refratado - Atravessa o vidro curvando a trajetoria"]
 ```
 
 ---

@@ -29,12 +29,12 @@ Criado por John F. Canny em 1986, este método é o padrão da visão computacio
 
 ```mermaid
 graph TD
-    A[Imagem Original] --> B[1. Suavizacao Gaussiana - Remove ruido de alta frequencia]
-    B --> C[2. Gradiente Sobel - Calcula Magnitude G e Angulo]
-    C --> D[3. Supressao de Nao-Maximos NMS - Afina contornos para 1 pixel]
-    D --> E[4. Limiarizacao Dupla - Classifica bordas fortes e fracas]
-    E --> F[5. Rastreamento por Histerese - Conecta bordas fracas com busca BFS]
-    F --> G[Contornos Binarios Finais]
+    A["Imagem Original"] --> B["1. Suavizacao Gaussiana - Remove ruido de alta frequencia"]
+    B --> C["2. Gradiente Sobel - Calcula Magnitude G e Angulo"]
+    C --> D["3. Supressao de Nao-Maximos NMS - Afina contornos para 1 pixel"]
+    D --> E["4. Limiarizacao Dupla - Classifica bordas fortes e fracas"]
+    E --> F["5. Rastreamento por Histerese - Conecta bordas fracas com busca BFS"]
+    F --> G["Contornos Binarios Finais"]
 ```
 
 ### Explicação Passo a Passo:

@@ -123,4 +123,16 @@ Parallel.For(0, Height, y =>
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <p>Consulte a documentação técnica da API da Microsoft utilizada nesta implementação:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap" target="_blank" rel="noopener">Classe WriteableBitmap (System.Windows.Media.Imaging)</a> — Métodos <code>Lock()</code>, <code>Unlock()</code>, <code>AddDirtyRect()</code> e propriedade <code>BackBuffer</code>.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.runtime.compilerservices.methodimploptions" target="_blank" rel="noopener">Enumeração MethodImplOptions</a> — Otimizações do JIT como <code>AggressiveInlining</code> e <code>AggressiveOptimization</code>.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.pixelformats.bgra32" target="_blank" rel="noopener">PixelFormats.Bgra32 Property</a> — Especificação técnica do formato de cor nativo de 32 bits no WPF.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Explore os [Modelos de Cores & Percepção Humana](/CGPDI.StudyLab/core/modelos-de-cor/).

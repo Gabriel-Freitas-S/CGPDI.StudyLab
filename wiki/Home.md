@@ -54,3 +54,14 @@ Esta Wiki serve como o **manual de referência técnica, matemática e pedagógi
 
 * [**Capítulo 7: Mapeamento Completo do Plano de Ensino**](./7-Mapeamento-do-Plano-de-Ensino.md)
   * Matriz cruzada de correspondência com todas as unidades curriculares da disciplina universitária.
+
+---
+
+## 📚 Referências Oficiais da Microsoft Learn
+
+* [Documentação Oficial do .NET](https://learn.microsoft.com/pt-br/dotnet/)
+* [Guia da Linguagem C# e Tipos de Ponteiro (unsafe)](https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code)
+* [Classe WriteableBitmap e Formatos de Pixel no WPF](https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap)
+* [Visão Geral de Gráficos 3D e Transformações no WPF](https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview)
+* [Paralelismo de Dados com Parallel.For (TPL)](https://learn.microsoft.com/pt-br/dotnet/standard/parallel-programming/how-to-write-a-simple-parallel-for-loop)
+* [Namespace System.Numerics (SIMD)](https://learn.microsoft.com/pt-br/dotnet/api/system.numerics)

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,6 +14,7 @@ using CGPDI.StudyLab.Core;
 using CGPDI.StudyLab.Graphics2D;
 using CGPDI.StudyLab.Graphics3D;
 using CGPDI.StudyLab.ImageProcessing;
+using CGPDI.StudyLab.Views;
 
 namespace CGPDI.StudyLab
 {
@@ -36,9 +38,16 @@ namespace CGPDI.StudyLab
         // Base de dados pedagógica de estudos
         private List<StudyTopic> _allStudyTopics = new List<StudyTopic>();
 
+        // Estado do Laboratório Interativo (C# e WPF Guiado)
+        private List<InteractiveLesson> _interactiveLessons = new List<InteractiveLesson>();
+        private int _currentLessonIndex = 0;
+        private int _simulationStepIndex = 0;
+        private DirectBitmap _labBitmap = null!;
+
         public MainWindow()
         {
             InitializeComponent();
+            Icon = AppIconHelper.GetAppIcon();
             Loaded += MainWindow_Loaded;
         }
 
@@ -80,7 +89,35 @@ namespace CGPDI.StudyLab
                 }
             }
 
+            // 6. Inicializa Laboratório Interativo (Aprenda C# & WPF Passo a Passo)
+            _labBitmap = new DirectBitmap(512, 512);
+            ImgLabSimulation.Source = _labBitmap.Bitmap;
+            _interactiveLessons = InteractiveLabManager.GetLessons();
+            if (LstInteractiveLessons != null)
+            {
+                LstInteractiveLessons.ItemsSource = _interactiveLessons;
+                if (_interactiveLessons.Count > 0)
+                {
+                    LstInteractiveLessons.SelectedIndex = 0;
+                }
+            }
+
             UpdateStatus("Ambiente carregado com sucesso. Selecione qualquer algoritmo para testar.", 0);
+
+            // 7. Verificação não bloqueante de atualizações no GitHub Releases
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(3000);
+                var release = await UpdateManager.CheckForUpdatesAsync();
+                if (release != null)
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        var dlg = new UpdateDialogWindow(release) { Owner = this };
+                        dlg.ShowDialog();
+                    });
+                }
+            });
         }
 
         #region Utilitários de Atualização e Medição de Desempenho
@@ -1215,6 +1252,10 @@ namespace CGPDI.StudyLab
                 TxtDocSnippet.Text = topic.CodeSnippet;
                 TxtDocComplexity.Text = topic.ComplexityAndTips;
                 TxtDocWhereToTest.Text = topic.WhereToTest;
+                if (IcMicrosoftRefs != null)
+                {
+                    IcMicrosoftRefs.ItemsSource = topic.MicrosoftReferences;
+                }
             }
         }
 
@@ -1242,6 +1283,655 @@ namespace CGPDI.StudyLab
                 LstStudyTopics.SelectedIndex = 0;
             }
         }
+
+        private void BtnOpenOnlineDocs_Click(object sender, RoutedEventArgs e)
+        {
+            OpenBrowserUrl("https://gabriel-freitas-s.github.io/CGPDI.StudyLab/");
+        }
+
+        private void BtnOpenMsRef_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string url)
+            {
+                OpenBrowserUrl(url);
+            }
+        }
+
+        private void OpenBrowserUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return;
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Não foi possível abrir o navegador: {ex.Message}", "Erro ao Abrir Link", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        #endregion
+
+        #region 🎓 ABA 6: LABORATÓRIO INTERATIVO & PLAYGROUND GUIADO
+
+        private void LstInteractiveLessons_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LstInteractiveLessons.SelectedItem is InteractiveLesson lesson)
+            {
+                _currentLessonIndex = _interactiveLessons.IndexOf(lesson);
+                LoadLesson(lesson);
+            }
+        }
+
+        private void BtnPrevLesson_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentLessonIndex > 0)
+            {
+                _currentLessonIndex--;
+                LstInteractiveLessons.SelectedIndex = _currentLessonIndex;
+            }
+        }
+
+        private void BtnNextLesson_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentLessonIndex < _interactiveLessons.Count - 1)
+            {
+                _currentLessonIndex++;
+                LstInteractiveLessons.SelectedIndex = _currentLessonIndex;
+            }
+        }
+
+        private void LoadLesson(InteractiveLesson lesson)
+        {
+            _simulationStepIndex = 0;
+
+            int currentStep = lesson.Number;
+            int totalSteps = _interactiveLessons.Count;
+            TxtLessonProgressHeader.Text = $"Trilha de Estudos (Passo {currentStep} de {totalSteps})";
+            TxtLessonPercent.Text = $"{(currentStep * 100 / totalSteps)}%";
+            PbLessonProgress.Maximum = totalSteps;
+            PbLessonProgress.Value = currentStep;
+
+            TxtLessonModule.Text = lesson.Module.ToUpper();
+            TxtLessonTitle.Text = lesson.Title;
+            TxtLessonSummary.Text = lesson.Summary;
+            TxtLabCode.Text = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
+            TxtLabExplanation.Text = lesson.CodeExplanation;
+
+            // Configuração do Desafio de Código do Aluno
+            if (TxtChallengeGoal != null) TxtChallengeGoal.Text = lesson.ChallengeGoal;
+            if (TxtLabEditableCode != null) TxtLabEditableCode.Text = lesson.StarterTemplate;
+            if (TxtCompilerReport != null)
+            {
+                TxtCompilerReport.Text = "Pronto para testar. Escreva seu código e clique em '🚀 Compilar & Executar' ou '🧪 Rodar Testes'.";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
+            }
+
+            ConfigureLabSliders(lesson);
+            LoadQuiz(lesson);
+
+            IcLessonMsRefs.ItemsSource = lesson.MicrosoftReferences;
+            UpdateLabSimulation();
+        }
+
+        private void ConfigureLabSliders(InteractiveLesson lesson)
+        {
+            SliderLab1.ValueChanged -= SliderLab_ValueChanged;
+            SliderLab2.ValueChanged -= SliderLab_ValueChanged;
+            SliderLab3.ValueChanged -= SliderLab_ValueChanged;
+
+            switch (lesson.Type)
+            {
+                case LessonType.BgraMemoryLayout:
+                    TxtLabParam1.Text = "Canal Azul (Blue: 0-255):";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 255; SliderLab1.Value = 255;
+                    TxtLabParam2.Text = "Canal Verde (Green: 0-255):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 255; SliderLab2.Value = 120;
+                    TxtLabParam3.Text = "Canal Vermelho (Red: 0-255):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 255; SliderLab3.Value = 30;
+                    break;
+
+                case LessonType.CSharpPropertiesAndNotify:
+                    TxtLabParam1.Text = "Valor da Propriedade (0-255):";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 255; SliderLab1.Value = 140;
+                    TxtLabParam2.Text = "(Data Binding Reativo):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 1; SliderLab2.Value = 1;
+                    TxtLabParam3.Text = "(Não utilizado):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.PointerStrideOffset:
+                    TxtLabParam1.Text = "Coluna X (0 a 7):";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 7; SliderLab1.Value = 3;
+                    TxtLabParam2.Text = "Linha Y (0 a 7):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 7; SliderLab2.Value = 2;
+                    TxtLabParam3.Text = "(Não utilizado nesta lição):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.WpfXamlAndDependencyProps:
+                    TxtLabParam1.Text = "Escala Desejada (%):";
+                    SliderLab1.Minimum = 20; SliderLab1.Maximum = 200; SliderLab1.Value = 100;
+                    TxtLabParam2.Text = "Espaço Disponível Pai:";
+                    SliderLab2.Minimum = 100; SliderLab2.Maximum = 450; SliderLab2.Value = 300;
+                    TxtLabParam3.Text = "(Não utilizado):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.WriteableBitmapLifecycle:
+                    TxtLabParam1.Text = "Etapa do Ciclo (1 a 4):";
+                    SliderLab1.Minimum = 1; SliderLab1.Maximum = 4; SliderLab1.Value = 1;
+                    TxtLabParam2.Text = "(Buffer Traseiro GPU):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 1; SliderLab2.Value = 1;
+                    TxtLabParam3.Text = "(Não utilizado):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.ConvolutionStepByStep:
+                    TxtLabParam1.Text = "Posição X da Máscara 3x3:";
+                    SliderLab1.Minimum = 1; SliderLab1.Maximum = 6; SliderLab1.Value = 2;
+                    TxtLabParam2.Text = "Posição Y da Máscara 3x3:";
+                    SliderLab2.Minimum = 1; SliderLab2.Maximum = 6; SliderLab2.Value = 2;
+                    TxtLabParam3.Text = "Divisor de Normalização:";
+                    SliderLab3.Minimum = 1; SliderLab3.Maximum = 16; SliderLab3.Value = 9;
+                    break;
+
+                case LessonType.OtsuThresholdSearch:
+                    TxtLabParam1.Text = "Limiar de Corte T (0-255):";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 255; SliderLab1.Value = 118;
+                    TxtLabParam2.Text = "(Automático):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 1; SliderLab2.Value = 0;
+                    TxtLabParam3.Text = "(Automático):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.BresenhamStepByStep:
+                    TxtLabParam1.Text = "Destino X1 (3 a 15):";
+                    SliderLab1.Minimum = 3; SliderLab1.Maximum = 15; SliderLab1.Value = 12;
+                    TxtLabParam2.Text = "Destino Y1 (2 a 12):";
+                    SliderLab2.Minimum = 2; SliderLab2.Maximum = 12; SliderLab2.Value = 8;
+                    TxtLabParam3.Text = "(Automático):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.MatrixTransform2D:
+                    TxtLabParam1.Text = "Translação X (Tx: -100 a +100):";
+                    SliderLab1.Minimum = -100; SliderLab1.Maximum = 100; SliderLab1.Value = 0;
+                    TxtLabParam2.Text = "Rotação Angular (Graus: 0-360°):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 360; SliderLab2.Value = 45;
+                    TxtLabParam3.Text = "Escala (0.5x a 2.5x):";
+                    SliderLab3.Minimum = 0.5; SliderLab3.Maximum = 2.5; SliderLab3.Value = 1.2;
+                    break;
+
+                case LessonType.PipelineMVP3D:
+                    TxtLabParam1.Text = "Distância Z da Câmera (Profundidade):";
+                    SliderLab1.Minimum = 1.5; SliderLab1.Maximum = 8.0; SliderLab1.Value = 3.0;
+                    TxtLabParam2.Text = "Campo de Visão (FOV em Graus):";
+                    SliderLab2.Minimum = 45; SliderLab2.Maximum = 110; SliderLab2.Value = 60;
+                    TxtLabParam3.Text = "(Perspectiva):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                case LessonType.HierarchicalSceneGraph:
+                    TxtLabParam1.Text = "Rotação da Base (Eixo Y):";
+                    SliderLab1.Minimum = -90; SliderLab1.Maximum = 90; SliderLab1.Value = 15;
+                    TxtLabParam2.Text = "Inclinação do Ombro (Eixo Z):";
+                    SliderLab2.Minimum = -60; SliderLab2.Maximum = 60; SliderLab2.Value = 35;
+                    TxtLabParam3.Text = "Articulação do Cotovelo (Eixo Z):";
+                    SliderLab3.Minimum = -90; SliderLab3.Maximum = 90; SliderLab3.Value = -40;
+                    break;
+
+                case LessonType.RayTracingIntersection:
+                    TxtLabParam1.Text = "Posição Vertical do Raio (Offset Y):";
+                    SliderLab1.Minimum = -120; SliderLab1.Maximum = 120; SliderLab1.Value = -20;
+                    TxtLabParam2.Text = "(Automático):";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 1; SliderLab2.Value = 0;
+                    TxtLabParam3.Text = "(Automático):";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    break;
+
+                default:
+                    TxtLabParam1.Text = "Parâmetro 1:";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 255; SliderLab1.Value = 128;
+                    TxtLabParam2.Text = "Parâmetro 2:";
+                    SliderLab2.Minimum = 0; SliderLab2.Maximum = 255; SliderLab2.Value = 128;
+                    TxtLabParam3.Text = "Parâmetro 3:";
+                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 255; SliderLab3.Value = 128;
+                    break;
+            }
+
+            SliderLab1.ValueChanged += SliderLab_ValueChanged;
+            SliderLab2.ValueChanged += SliderLab_ValueChanged;
+            SliderLab3.ValueChanged += SliderLab_ValueChanged;
+        }
+
+        private void LoadQuiz(InteractiveLesson lesson)
+        {
+            TxtQuizQuestion.Text = lesson.QuizQuestion;
+            BrdQuizFeedback.Visibility = Visibility.Collapsed;
+
+            ResetQuizButton(BtnQuizOpt0);
+            ResetQuizButton(BtnQuizOpt1);
+            ResetQuizButton(BtnQuizOpt2);
+
+            if (lesson.QuizOptions.Count > 0)
+            {
+                BtnQuizOpt0.Content = "A) " + lesson.QuizOptions[0].Text;
+                BtnQuizOpt0.Visibility = Visibility.Visible;
+            }
+            else BtnQuizOpt0.Visibility = Visibility.Collapsed;
+
+            if (lesson.QuizOptions.Count > 1)
+            {
+                BtnQuizOpt1.Content = "B) " + lesson.QuizOptions[1].Text;
+                BtnQuizOpt1.Visibility = Visibility.Visible;
+            }
+            else BtnQuizOpt1.Visibility = Visibility.Collapsed;
+
+            if (lesson.QuizOptions.Count > 2)
+            {
+                BtnQuizOpt2.Content = "C) " + lesson.QuizOptions[2].Text;
+                BtnQuizOpt2.Visibility = Visibility.Visible;
+            }
+            else BtnQuizOpt2.Visibility = Visibility.Collapsed;
+        }
+
+        private void ResetQuizButton(Button btn)
+        {
+            btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E1E2A"));
+            btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323246"));
+            btn.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0E0EC"));
+        }
+
+        private void BtnQuizOption_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && int.TryParse(btn.Tag?.ToString(), out int optIndex))
+            {
+                if (LstInteractiveLessons.SelectedItem is InteractiveLesson lesson && optIndex < lesson.QuizOptions.Count)
+                {
+                    var opt = lesson.QuizOptions[optIndex];
+                    BrdQuizFeedback.Visibility = Visibility.Visible;
+
+                    ResetQuizButton(BtnQuizOpt0);
+                    ResetQuizButton(BtnQuizOpt1);
+                    ResetQuizButton(BtnQuizOpt2);
+
+                    if (opt.IsCorrect)
+                    {
+                        btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1B5E20"));
+                        btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                        BrdQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E2A20"));
+                        BrdQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"));
+                        TxtQuizFeedback.Text = "✅ RESPOSTA CORRETA!\n" + opt.Explanation;
+                    }
+                    else
+                    {
+                        btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5C1A1A"));
+                        btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E53935"));
+                        BrdQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A1E1E"));
+                        BrdQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7D2E2E"));
+                        TxtQuizFeedback.Text = "❌ RESPOSTA INCORRETA.\n" + opt.Explanation;
+                    }
+                }
+            }
+        }
+
+        private void SliderLab_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            UpdateLabSimulation();
+        }
+
+        private void BtnStepSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            _simulationStepIndex++;
+            UpdateLabSimulation();
+        }
+
+        private void BtnRunAllSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            _simulationStepIndex = 25;
+            UpdateLabSimulation();
+        }
+
+        private void BtnResetSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            _simulationStepIndex = 0;
+            UpdateLabSimulation();
+        }
+
+        private void UpdateLabSimulation()
+        {
+            if (_labBitmap == null || LstInteractiveLessons?.SelectedItem is not InteractiveLesson lesson) return;
+
+            // Atualiza badges visuais com valores numéricos
+            if (TxtLabVal1 != null) TxtLabVal1.Text = $"[ {SliderLab1.Value:F0} ]";
+            if (TxtLabVal2 != null) TxtLabVal2.Text = $"[ {SliderLab2.Value:F0} ]";
+            if (TxtLabVal3 != null) TxtLabVal3.Text = $"[ {SliderLab3.Value:F0} ]";
+
+            StringBuilder log = new StringBuilder();
+            InteractiveLabManager.RenderSimulation(
+                _labBitmap,
+                lesson,
+                SliderLab1.Value,
+                SliderLab2.Value,
+                SliderLab3.Value,
+                255,
+                _simulationStepIndex,
+                log);
+
+            TxtLabConsole.Text = log.ToString();
+        }
+
+        #region Controles de Zoom e Cópia de Código & Texto
+
+        // --- Zoom & Cópia para Tab 5 (Documentação Integrada) ---
+        private void BtnZoomInDocCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtDocSnippet.FontSize < 28) TxtDocSnippet.FontSize += 1.5;
+        }
+
+        private void BtnZoomOutDocCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtDocSnippet.FontSize > 10) TxtDocSnippet.FontSize -= 1.5;
+        }
+
+        private void BtnResetDocCodeZoom_Click(object sender, RoutedEventArgs e)
+        {
+            TxtDocSnippet.FontSize = 13.5;
+        }
+
+        private void BtnCopyDocCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtDocSnippet.Text))
+            {
+                Clipboard.SetText(TxtDocSnippet.Text);
+                UpdateStatus("Código C# copiado para a área de transferência!", 0);
+            }
+        }
+
+        // --- Zoom & Cópia para Tab 6 (Laboratório Interativo) ---
+        private void BtnZoomInLab_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLessonSummary.FontSize < 22) TxtLessonSummary.FontSize += 1.5;
+        }
+
+        private void BtnZoomOutLab_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLessonSummary.FontSize > 10) TxtLessonSummary.FontSize -= 1.5;
+        }
+
+        private void BtnZoomInLabCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabCode.FontSize < 28) TxtLabCode.FontSize += 1.5;
+            if (TxtLabExplanation.FontSize < 24) TxtLabExplanation.FontSize += 1.0;
+        }
+
+        private void BtnZoomOutLabCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabCode.FontSize > 10) TxtLabCode.FontSize -= 1.5;
+            if (TxtLabExplanation.FontSize > 9) TxtLabExplanation.FontSize -= 1.0;
+        }
+
+        private void BtnResetLabCodeZoom_Click(object sender, RoutedEventArgs e)
+        {
+            TxtLabCode.FontSize = 14.0;
+            TxtLabExplanation.FontSize = 13.0;
+        }
+
+        private void BtnCopyLabCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtLabCode.Text))
+            {
+                Clipboard.SetText(TxtLabCode.Text);
+                UpdateStatus("Código C# da lição copiado para a área de transferência!", 0);
+            }
+        }
+
+        private void BtnZoomInConsole_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabConsole.FontSize < 26) TxtLabConsole.FontSize += 1.5;
+        }
+
+        private void BtnZoomOutConsole_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabConsole.FontSize > 10) TxtLabConsole.FontSize -= 1.5;
+        }
+
+        private void BtnCopyConsole_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtLabConsole.Text))
+            {
+                Clipboard.SetText(TxtLabConsole.Text);
+                UpdateStatus("Logs do console copiados para a área de transferência!", 0);
+            }
+        }
+
+        // --- Controles de Compilação Dinâmica & Testes Automatizados (Roslyn) ---
+
+        private async void BtnRunUserCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is not InteractiveLesson lesson) return;
+
+            BtnRunUserCode.IsEnabled = false;
+            BtnRunTests.IsEnabled = false;
+            TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
+            TxtCompilerReport.Text = "⏳ Compilando com Roslyn e executando testes em tempo real...";
+
+            var report = await LiveCodeCompiler.RunTestsAndEvaluateAsync(
+                lesson,
+                TxtLabEditableCode.Text,
+                _labBitmap,
+                SliderLab1.Value,
+                SliderLab2.Value,
+                SliderLab3.Value);
+
+            BtnRunUserCode.IsEnabled = true;
+            BtnRunTests.IsEnabled = true;
+
+            DisplayCompilerReport(report);
+        }
+
+        private async void BtnRunTests_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is not InteractiveLesson lesson) return;
+
+            BtnRunUserCode.IsEnabled = false;
+            BtnRunTests.IsEnabled = false;
+            TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
+            TxtCompilerReport.Text = "⏳ Executando bateria de testes unitários automatizados...";
+
+            var report = await LiveCodeCompiler.RunTestsAndEvaluateAsync(
+                lesson,
+                TxtLabEditableCode.Text,
+                null, // Apenas testes, sem renderizar no canvas
+                SliderLab1.Value,
+                SliderLab2.Value,
+                SliderLab3.Value);
+
+            BtnRunUserCode.IsEnabled = true;
+            BtnRunTests.IsEnabled = true;
+
+            DisplayCompilerReport(report);
+        }
+
+        private void DisplayCompilerReport(EvaluationReport report)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"⏱️ Tempo de Execução: {report.ExecutionTimeMs:F1} ms");
+
+            bool isCustomSuccess = !report.Success && string.IsNullOrEmpty(report.CompilerError) && report.RenderApplied;
+            if (report.Success)
+            {
+                sb.AppendLine("📊 Status: ✅ APROVADO EM TODOS OS TESTES (100% Compatível)");
+            }
+            else if (isCustomSuccess)
+            {
+                sb.AppendLine("📊 Status: 🧪 CÓDIGO PERSONALIZADO EXECUTADO COM SUCESSO NO CANVAS");
+            }
+            else
+            {
+                sb.AppendLine("📊 Status: ❌ ERRO DE COMPILAÇÃO OU ASSERÇÃO");
+            }
+
+            sb.AppendLine(new string('-', 60));
+
+            if (report.Tests.Count > 0)
+            {
+                sb.AppendLine("🧪 RESULTADOS DOS TESTES UNITÁRIOS:");
+                foreach (var t in report.Tests)
+                {
+                    sb.AppendLine($" {(t.Passed ? "✅" : "⚠️")} {t.Name}");
+                    sb.AppendLine($"    • Esperado: {t.Expected}");
+                    sb.AppendLine($"    • Obtido:   {t.Actual}");
+                    sb.AppendLine($"    • Detalhe:  {t.Details}");
+                }
+                sb.AppendLine();
+            }
+
+            if (!string.IsNullOrEmpty(report.CompilerError))
+            {
+                sb.AppendLine("❌ DIAGNÓSTICO DO COMPILADOR ROSLYN:");
+                sb.AppendLine(report.CompilerError);
+            }
+
+            if (report.RenderApplied)
+            {
+                sb.AppendLine("\n🎨 Resultado visual renderizado diretamente no Canvas pelo seu código!");
+            }
+
+            TxtCompilerReport.Text = sb.ToString();
+            TxtCompilerReport.Foreground = new SolidColorBrush(
+                (Color)ColorConverter.ConvertFromString(report.Success ? "#86EFAC" : (isCustomSuccess ? "#38BDF8" : "#FCA5A5")));
+
+            UpdateStatus(report.Success ? "Código compilado e testado com 100% de sucesso!" : (isCustomSuccess ? "Código personalizado renderizado no Canvas." : "Erros encontrados no código do aluno."), report.ExecutionTimeMs);
+        }
+
+        private void BtnBlankCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
+            {
+                TxtLabEditableCode.Text = lesson.BlankTemplate;
+                TxtCompilerReport.Text = "Modo 'Em Branco' ativado. Escreva o algoritmo do zero e clique em '🚀 Compilar & Executar'.";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
+            }
+        }
+
+        private void BtnStarterCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
+            {
+                TxtLabEditableCode.Text = lesson.StarterTemplate;
+                TxtCompilerReport.Text = "Template inicial carregado com comentários orientadores (TODOs).";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
+            }
+        }
+
+        private void BtnRestoreOfficialCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
+            {
+                TxtLabEditableCode.Text = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
+                TxtCompilerReport.Text = "Gabarito oficial de referência carregado no editor. Clique em '🚀 Compilar & Executar' ou '🧪 Rodar Testes'.";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
+            }
+        }
+
+        private void BtnZoomInEditableCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabEditableCode.FontSize < 32) TxtLabEditableCode.FontSize += 1.5;
+        }
+
+        private void BtnZoomOutEditableCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtLabEditableCode.FontSize > 10) TxtLabEditableCode.FontSize -= 1.5;
+        }
+
+        // --- Controles de Layout Retrátil & Estúdio em Janela Dedicada ---
+
+        private void BtnOpenPopoutStudio_Click(object sender, RoutedEventArgs e)
+        {
+            int currentLessonNum = (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson) ? lesson.Number : 1;
+            var studio = new CodeStudioWindow(currentLessonNum);
+            studio.Show();
+            studio.Activate();
+        }
+
+        private void BtnToggleLabTrack_Click(object sender, RoutedEventArgs e)
+        {
+            if (ColLabTrack.Width.Value > 0)
+            {
+                ColLabTrack.Width = new GridLength(0);
+                ColLabSplitter1.Width = new GridLength(0);
+                BtnToggleLabTrack.Content = "▶ Expandir Trilha";
+            }
+            else
+            {
+                ColLabTrack.Width = new GridLength(390);
+                ColLabSplitter1.Width = new GridLength(5);
+                BtnToggleLabTrack.Content = "◀ Recolher Trilha";
+            }
+        }
+
+        private void BtnTogglePlayground_Click(object sender, RoutedEventArgs e)
+        {
+            if (ColLabPlayground.Width.Value > 0)
+            {
+                ColLabPlayground.Width = new GridLength(0);
+                ColLabSplitter2.Width = new GridLength(0);
+                BtnTogglePlayground.Content = "▶ Expandir Canvas";
+            }
+            else
+            {
+                ColLabPlayground.Width = new GridLength(380);
+                ColLabSplitter2.Width = new GridLength(5);
+                BtnTogglePlayground.Content = "◀ Recolher Canvas";
+            }
+        }
+
+        private void BtnFocusCode_Click(object sender, RoutedEventArgs e)
+        {
+            ColLabTrack.Width = new GridLength(0);
+            ColLabSplitter1.Width = new GridLength(0);
+            ColLabPlayground.Width = new GridLength(0);
+            ColLabSplitter2.Width = new GridLength(0);
+            BtnToggleLabTrack.Content = "▶ Expandir Trilha";
+            BtnTogglePlayground.Content = "▶ Expandir Canvas";
+            UpdateStatus("Modo Foco ativado: 100% da largura alocada ao editor de código e testes.", 0);
+        }
+
+        private void BtnResetColumns_Click(object sender, RoutedEventArgs e)
+        {
+            ColLabTrack.Width = new GridLength(390);
+            ColLabSplitter1.Width = new GridLength(5);
+            ColLabPlayground.Width = new GridLength(380);
+            ColLabSplitter2.Width = new GridLength(5);
+            BtnToggleLabTrack.Content = "◀ Recolher Trilha";
+            BtnTogglePlayground.Content = "◀ Recolher Canvas";
+            UpdateStatus("Painéis restaurados para a disposição balanceada de 3 colunas.", 0);
+        }
+
+        private async void BtnCheckUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateStatus("Verificando novas versões no GitHub Releases...", 0);
+            var release = await UpdateManager.CheckForUpdatesAsync();
+            if (release != null)
+            {
+                var dlg = new UpdateDialogWindow(release) { Owner = this };
+                dlg.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show($"Você já está usando a versão mais recente (v{UpdateManager.CurrentVersionString}) do CGPDI StudyLab!",
+                    "Nenhuma Atualização Pendente", MessageBoxButton.OK, MessageBoxImage.Information);
+                UpdateStatus($"Aplicação atualizada na versão mais recente (v{UpdateManager.CurrentVersionString}).", 0);
+            }
+        }
+
+        #endregion
 
         #endregion
     }

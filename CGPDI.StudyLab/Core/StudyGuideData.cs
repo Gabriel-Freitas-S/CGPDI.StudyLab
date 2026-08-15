@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace CGPDI.StudyLab.Core
 {
+    public class DocReference
+    {
+        public string Title { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
     public class StudyTopic
     {
         public string Id { get; set; } = "";
@@ -14,11 +21,12 @@ namespace CGPDI.StudyLab.Core
         public string CodeSnippet { get; set; } = "";
         public string ComplexityAndTips { get; set; } = "";
         public string WhereToTest { get; set; } = "";
+        public List<DocReference> MicrosoftReferences { get; set; } = new List<DocReference>();
     }
 
     /// <summary>
     /// Base de conhecimento e documentação pedagógica completa integrada ao software.
-    /// Explica passo a passo a teoria matemática e a implementação em C# de cada algoritmo.
+    /// Explica passo a passo a teoria matemática, a implementação em C# e fornece referências oficiais da Microsoft Learn.
     /// </summary>
     public static class StudyGuideData
     {
@@ -56,7 +64,28 @@ namespace CGPDI.StudyLab.Core
     byte a = pixelPtr[3]; // Alpha
 }",
                     ComplexityAndTips = "• Complexidade: O(W * H) com paralelismo multinúcleo O((W*H)/N_cores). 100x mais rápido que GetPixel do GDI+.",
-                    WhereToTest = "Base de todo o processamento de imagens (PDI), Rasterização 2D e Ray Tracer."
+                    WhereToTest = "Base de todo o processamento de imagens (PDI), Rasterização 2D e Ray Tracer.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Código não seguro e ponteiros no C# (unsafe)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code",
+                            Description = "Guia oficial de ponteiros brutos, tipos não gerenciados e a palavra-chave unsafe no C#."
+                        },
+                        new DocReference
+                        {
+                            Title = "Classe WriteableBitmap (System.Windows.Media.Imaging)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap",
+                            Description = "Documentação oficial dos métodos Lock, Unlock, AddDirtyRect e propriedade BackBuffer."
+                        },
+                        new DocReference
+                        {
+                            Title = "Gerenciamento de Memória & Garbage Collection no .NET",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/standard/garbage-collection/",
+                            Description = "Como o GC gerencia o Heap gerenciado e por que fixamos ponteiros para evitar realocações."
+                        }
+                    }
                 },
                 #endregion
 
@@ -88,7 +117,22 @@ namespace CGPDI.StudyLab.Core
 @"// Conversão rápida de luminância inteira sem ponto flutuante:
 byte lum = (byte)((r * 2126 + g * 7152 + b * 722) / 10000);",
                     ComplexityAndTips = "• Complexidade: O(1) por pixel. LUTs podem pré-computar transformações.",
-                    WhereToTest = "Aba PDI -> Seção 1: 'Modelos de Cor & Canais'."
+                    WhereToTest = "Aba PDI -> Seção 1: 'Modelos de Cor & Canais'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "PixelFormats.Bgra32 Property (System.Windows.Media)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.pixelformats.bgra32",
+                            Description = "Especificação do formato Bgra32 com 32 bits por pixel e suporte nativo a canal alfa."
+                        },
+                        new DocReference
+                        {
+                            Title = "Estrutura Color (System.Windows.Media)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.color",
+                            Description = "Estrutura padrão do WPF para representação de cores com canais A, R, G, B."
+                        }
+                    }
                 },
                 #endregion
 
@@ -126,7 +170,22 @@ Parallel.For(0, height, y => {
     }
 });",
                     ComplexityAndTips = "• Complexidade: O(W * H * K^2). Filtros Gaussianos grandes podem ser separados em 1D horizontal + 1D vertical reduzindo para O(W * H * 2K).",
-                    WhereToTest = "Aba PDI -> Seção 4: 'Filtros Espaciais (Convoluções)'."
+                    WhereToTest = "Aba PDI -> Seção 4: 'Filtros Espaciais (Convoluções)'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Parallel (System.Threading.Tasks)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.threading.tasks.parallel",
+                            Description = "Execução de laços paralelos em múltiplos núcleos de CPU com particionamento automático de carga."
+                        },
+                        new DocReference
+                        {
+                            Title = "Método Math.Clamp no .NET",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.math.clamp",
+                            Description = "Tratamento de contorno e limites numéricos sem desvios condicionais lentos."
+                        }
+                    }
                 },
                 #endregion
 
@@ -168,7 +227,22 @@ while (edgeQueue.Count > 0) {
     }
 }",
                     ComplexityAndTips = "• Complexidade: O(W * H). Considerado o algoritmo padrão-ouro para segmentação de contornos.",
-                    WhereToTest = "Aba PDI -> Seção 5: 'Detecção de Bordas & Gradientes'."
+                    WhereToTest = "Aba PDI -> Seção 5: 'Detecção de Bordas & Gradientes'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Queue<T> (System.Collections.Generic)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.collections.generic.queue-1",
+                            Description = "Fila FIFO de alta performance para busca em largura (BFS) na histerese do Canny."
+                        },
+                        new DocReference
+                        {
+                            Title = "Otimização de Métodos com AggressiveInlining",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.runtime.compilerservices.methodimploptions",
+                            Description = "Como orientar o compilador JIT a embutir rotinas críticas de cálculo de gradiente."
+                        }
+                    }
                 },
                 #endregion
 
@@ -208,7 +282,16 @@ for (int ky = -radius; ky <= radius; ky++) {
 }
 dstPixel = minVal;",
                     ComplexityAndTips = "• Complexidade Otsu: O(W*H + 256). Extremamente eficiente para segmentação automática.",
-                    WhereToTest = "Aba PDI -> Seção 3 e Seção 6."
+                    WhereToTest = "Aba PDI -> Seção 3 e Seção 6.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Array (System.Array)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.array",
+                            Description = "Alocação e manipulação de vetores contíguos para cálculo de histogramas de 256 posições."
+                        }
+                    }
                 },
                 #endregion
 
@@ -251,7 +334,22 @@ while (true) {
     if (e2 < dy) { err += dx; y0 += sy; }
 }",
                     ComplexityAndTips = "• Complexidade: Bresenham é O(max(Δx, Δy)). É a base da rasterização de triângulos em placas gráficas.",
-                    WhereToTest = "Aba '✏️ Computação Gráfica 2D (Rasterização)'."
+                    WhereToTest = "Aba '✏️ Computação Gráfica 2D (Rasterização)'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Point (System.Windows)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.point",
+                            Description = "Representação de coordenadas cartesianas (X, Y) no espaço bidimensional."
+                        },
+                        new DocReference
+                        {
+                            Title = "Matrizes de Transformação 2D no WPF",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.matrix",
+                            Description = "Estrutura Matrix 3x3 homogênea para transformações afins no WPF."
+                        }
+                    }
                 },
                 #endregion
 
@@ -289,7 +387,28 @@ if (z < zBuffer[zIdx]) {
     row[x] = colorBgra; // Escreve cor
 }",
                     ComplexityAndTips = "• Complexidade: O(Triângulos * Pixels/Triângulo). Paralelizável nativamente em GPUs.",
-                    WhereToTest = "Aba '🧊 CG 3D' e Aba '⚡ Software 3D & Ray Tracing'."
+                    WhereToTest = "Aba '🧊 CG 3D' e Aba '⚡ Software 3D & Ray Tracing'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Visão geral de gráficos 3D no WPF",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview",
+                            Description = "Guia completo de geometria 3D, câmeras, luzes e materiais acelerados por hardware no WPF."
+                        },
+                        new DocReference
+                        {
+                            Title = "System.Numerics.Matrix4x4 Struct",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.numerics.matrix4x4",
+                            Description = "Matriz de transformação 4x4 otimizada com aceleração por instruções de hardware SIMD."
+                        },
+                        new DocReference
+                        {
+                            Title = "Classe MeshGeometry3D (System.Windows.Media.Media3D)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.meshgeometry3d",
+                            Description = "Construção de malhas triangulares através de posições, normais e índices de triângulos."
+                        }
+                    }
                 },
                 #endregion
 
@@ -319,7 +438,22 @@ baseNode.AddChild(armNode);
 armNode.AddChild(forearmNode);
 // A matriz de transformação do pai afeta automaticamente os filhos!",
                     ComplexityAndTips = "• Design Top-Down: Planeja o sistema completo. Construção Bottom-Up: Monta as peças primitivas e conecta nas juntas.",
-                    WhereToTest = "Aba '🧊 Computação Gráfica 3D' -> Seção 3: 'Modelagem Hierárquica (Unidade 3)'."
+                    WhereToTest = "Aba '🧊 Computação Gráfica 3D' -> Seção 3: 'Modelagem Hierárquica (Unidade 3)'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Transform3DGroup (System.Windows.Media.Media3D)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.transform3dgroup",
+                            Description = "Agrupamento e composição de transformações hierárquicas compostas no WPF."
+                        },
+                        new DocReference
+                        {
+                            Title = "Classe Model3DGroup (System.Windows.Media.Media3D)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.model3dgroup",
+                            Description = "Coleção de modelos tridimensionais tratados como uma única unidade lógica."
+                        }
+                    }
                 },
                 #endregion
 
@@ -353,7 +487,154 @@ if (mat.Reflectivity > 0 && depth < maxDepth) {
     finalColor = Vec3.Lerp(finalColor, reflectColor, mat.Reflectivity);
 }",
                     ComplexityAndTips = "• Complexidade: O(Pixels * Objetos * Profundidade_Rebatimento * Luzes). Gera fotorrealismo espetacular com reflexões e vidros perfeitos.",
-                    WhereToTest = "Aba '⚡ Software 3D & Ray Tracing' -> Seção 2: 'Ray Tracer Matemático'."
+                    WhereToTest = "Aba '⚡ Software 3D & Ray Tracing' -> Seção 2: 'Ray Tracer Matemático'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Estrutura Vector3 (System.Numerics)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.numerics.vector3",
+                            Description = "Operações vetoriais de produto escalar, produto vetorial, reflexão e normalização."
+                        },
+                        new DocReference
+                        {
+                            Title = "Instruções Intrínsecas de Hardware no .NET (AVX/SSE)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.runtime.intrinsics.x86",
+                            Description = "Como o .NET utiliza instruções vetoriais da CPU para acelerar cálculos matemáticos de Ray Tracing."
+                        }
+                    }
+                },
+                #endregion
+
+                #region 10. Arquitetura do Software & DirectX Tier
+                new StudyTopic
+                {
+                    Id = "arch_wpf_directx",
+                    Category = "10. Arquitetura & Aceleração GPU",
+                    Title = "Arquitetura do Software, Subsistema milcore e DirectX Rendering Tier",
+                    Summary = "Como o WPF orquestra a comunicação entre a CPU gerenciada e a placa de vídeo via DirectX.",
+                    MathFormulas =
+                        "• Hierarquia de Renderização WPF:\n" +
+                        "  C# Gerenciado (UI Thread) -> Render Thread -> milcore (C++ Não Gerenciado) -> Direct3D (GPU)\n\n" +
+                        "• Níveis de Aceleração por Hardware (Graphics Tiers):\n" +
+                        "  - Tier 0: Sem aceleração por hardware (DirectX < 9.0 ou desativado).\n" +
+                        "  - Tier 1: Aceleração parcial por hardware (DirectX 9.0 Shader Model 2.0).\n" +
+                        "  - Tier 2: Aceleração completa por hardware (DirectX 9.0Ex / 11 / Shader Model 3.0+).",
+                    CodeExplanation =
+                        "1. O CGPDI.StudyLab desacopla a interface do usuário (XAML) do motor de computação gráfica.\n" +
+                        "2. Os pixels gerados no WriteableBitmap são copiados diretamente para superfícies de textura Direct3D sem passar pela CPU intermediária do Windows GDI.\n" +
+                        "3. A medição de desempenho é realizada através de contadores de alta frequência (QueryPerformanceCounter) via System.Diagnostics.Stopwatch.",
+                    CodeSnippet =
+@"// Consulta do nível de aceleração por hardware da GPU:
+int renderingTier = (RenderCapability.Tier >> 16);
+if (renderingTier >= 2)
+{
+    // Aceleração total por hardware ativada (Tier 2)!
+}",
+                    ComplexityAndTips = "• Dica: Manter zero alocações (GC Gen0 = 0) garante taxa constante de 60 FPS sem engasgos de renderização.",
+                    WhereToTest = "HUD de Status no rodapé do aplicativo com medição de tempo em tempo real.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Níveis de Renderização de Gráficos (Graphics Tiers)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/advanced/graphics-rendering-tiers",
+                            Description = "Documentação oficial dos níveis de aceleração por hardware e recursos de GPU no WPF."
+                        },
+                        new DocReference
+                        {
+                            Title = "Classe RenderCapability (System.Windows.Media)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.rendercapability",
+                            Description = "API para inspeção do nível de suporte gráfico do hardware em tempo de execução."
+                        }
+                    }
+                },
+                #endregion
+
+                #region 11. Guia Acadêmico & Trabalhos Práticos
+                new StudyTopic
+                {
+                    Id = "academic_t1_t2_t3",
+                    Category = "11. Plano de Ensino & Avaliações",
+                    Title = "Roteiro de Estudos para os Trabalhos Acadêmicos (T1, T2 e T3)",
+                    Summary = "Guia passo a passo para preparação e desenvolvimento das avaliações práticas da disciplina universitária.",
+                    MathFormulas =
+                        "• Divisão do Conteúdo Programático:\n" +
+                        "  - T1: Processamento Digital de Imagens (Canais, Filtros Convolucionais, Canny, Histograma e Morfologia).\n" +
+                        "  - T2: Computação Gráfica 2D e 3D (Bresenham, Bézier, MVP, Pipeline em Software e Z-Buffer).\n" +
+                        "  - T3: Modelagem Hierárquica (Grafos de Cena, Robô Articulado) e Ray Tracing Fotorrealista.",
+                    CodeExplanation =
+                        "1. Para o Trabalho T1: Explore os módulos em ImageProcessing/ e teste cada filtro na Aba PDI.\n" +
+                        "2. Para o Trabalho T2: Analise Graphics2D/Rasterizer2D.cs e Graphics3D/SoftwareRenderer3D.cs para entender a rasterização.\n" +
+                        "3. Para o Trabalho T3: Experimente a articulação do robô em Graphics3D/HierarchicalModeling.cs e o traçado de raios em Graphics3D/Raytracer3D.cs.",
+                    CodeSnippet =
+@"// Roteiro de estudos interativo:
+// Navegue pelas abas superiores do programa e compare os resultados
+// visuais com as fórmulas matemáticas da documentação!",
+                    ComplexityAndTips = "• Consulte o site online para explicações teóricas detalhadas com analogias do dia a dia.",
+                    WhereToTest = "Aba '📖 Central de Estudos' e documentação online.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Roteiros de Aprendizagem do .NET no Microsoft Learn",
+                            Url = "https://learn.microsoft.com/pt-br/training/dotnet/",
+                            Description = "Cursos e trilhas de aprendizagem oficiais gratuitas da Microsoft."
+                        },
+                        new DocReference
+                        {
+                            Title = "Documentação Oficial do .NET",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/",
+                            Description = "Portal principal com tutoriais, guias conceituais e documentação de APIs."
+                        }
+                    }
+                },
+                #endregion
+
+                #region 12. Estúdio Interativo de Código & Compilador Roslyn
+                new StudyTopic
+                {
+                    Id = "roslyn_live_studio",
+                    Category = "12. Estúdio de Código & Roslyn",
+                    Title = "Estúdio de Código C#, Compilação Roslyn & Renderização Dinâmica em Tempo Real",
+                    Summary = "Como o StudyLab utiliza o Microsoft.CodeAnalysis (Roslyn) para compilar, testar e renderizar dinamicamente algoritmos escritos pelo aluno em tempo de execução.",
+                    MathFormulas =
+                        "• Pipeline de Execução Dinâmica:\n" +
+                        "  Código C# do Aluno -> Compilação Roslyn (CSharpScript.EvaluateAsync) -> Testes Unitários -> Injeção Gráfica em DirectBitmap -> Renderização a 60 FPS\n\n" +
+                        "• Isolamento e Desempenho:\n" +
+                        "  - Tempo médio de compilação e execução de testes: < 80 ms.\n" +
+                        "  - Renderização direta no DirectBitmap usando o retorno do código do aluno.\n" +
+                        "  - Feedback instantâneo no Canvas e no mapa de memória RAM.",
+                    CodeExplanation =
+                        "1. O editor de código C# permite que o aluno escreva do zero ou modifique valores, fórmulas e matrizes.\n" +
+                        "2. O motor Roslyn avalia a função C# e extrai os resultados matemáticos e gráficos.\n" +
+                        "3. O Canvas e as células de memória RAM são redesenhados imediatamente com base nos valores retornados pelo código do aluno.\n" +
+                        "4. Baterias de testes unitários automatizados fornecem diagnóstico pedagógico em tempo real.",
+                    CodeSnippet =
+@"// Exemplo de compilação dinâmica com Roslyn Scripting:
+var scriptOptions = ScriptOptions.Default
+    .WithReferences(typeof(System.Math).Assembly)
+    .WithImports(""System"", ""System.Math"");
+
+var resultado = await CSharpScript.EvaluateAsync<uint>(userCode, scriptOptions);
+// O valor retornado é injetado diretamente nos pixels do DirectBitmap!",
+                    ComplexityAndTips = "• Dica: Experimente alterar os canais de cor, fatores de escala ou matrizes para ver o resultado visual mudar na hora no Canvas!",
+                    WhereToTest = "Aba '🎓 Trilha & Estúdio C#' e botão '🗖 Estúdio em Nova Janela'.",
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Visão Geral dos Compiladores .NET (Roslyn APIs)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/csharp/roslyn-overview",
+                            Description = "Guia oficial da plataforma de compiladores .NET e APIs de análise sintática e semântica."
+                        },
+                        new DocReference
+                        {
+                            Title = "Microsoft.CodeAnalysis.CSharp.Scripting Namespace",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/microsoft.codeanalysis.csharp.scripting",
+                            Description = "Documentação oficial da biblioteca de execução e avaliação de scripts C# em tempo de execução."
+                        }
+                    }
                 }
                 #endregion
             };

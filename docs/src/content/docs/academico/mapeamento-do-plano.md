@@ -29,4 +29,16 @@ O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da
 
 ---
 
+<div class="ms-ref-card">
+  <h4>📚 Referências Oficiais Microsoft Learn para Estudantes</h4>
+  <p>Portais e materiais de referência recomendados para o aprendizado acadêmico:</p>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/training/dotnet/" target="_blank" rel="noopener">Roteiros de Aprendizagem do .NET no Microsoft Learn</a> — Cursos e trilhas gratuitas do iniciante ao avançado.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/" target="_blank" rel="noopener">Documentação da Linguagem C#</a> — Guia completo de referência do compilador Roslyn e especificações da linguagem.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/" target="_blank" rel="noopener">Documentação do Windows Presentation Foundation (WPF)</a> — Referência completa para criação de interfaces gráficas para Windows.</li>
+  </ul>
+</div>
+
+---
+
 👉 **Próximo Passo:** Veja o [Roteiro de Estudos para os Trabalhos T1, T2 e T3](/CGPDI.StudyLab/academico/roteiro-de-estudos-e-avaliacoes/).

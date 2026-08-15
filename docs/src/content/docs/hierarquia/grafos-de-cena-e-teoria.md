@@ -18,10 +18,10 @@ Quando você levanta o seu ombro, o seu braço, o seu cotovelo, o seu pulso e os
 
 ```mermaid
 graph TD
-    Root[Raiz do Mundo] --> Base[Base do Robo - Rotacao Eixo Y]
-    Base --> Ombro[Braco e Ombro - Rotacao Eixo Z]
-    Ombro --> Cotovelo[Antebraco e Cotovelo - Rotacao Eixo Z]
-    Cotovelo --> Pulso[Pulso e Garra - Rotacao Eixo X]
+    Root["Raiz do Mundo"] --> Base["Base do Robo - Rotacao Eixo Y"]
+    Base --> Ombro["Braco e Ombro - Rotacao Eixo Z"]
+    Ombro --> Cotovelo["Antebraco e Cotovelo - Rotacao Eixo Z"]
+    Cotovelo --> Pulso["Pulso e Garra - Rotacao Eixo X"]
 ```
 
 ---

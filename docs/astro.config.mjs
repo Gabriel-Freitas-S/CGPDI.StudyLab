@@ -45,45 +45,115 @@ export default defineConfig({
           },
           content: `
             import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-            
-            function initMermaid() {
+
+            let currentTheme = '';
+
+            function getMermaidTheme() {
               const isDark = document.documentElement.dataset.theme !== 'light';
+              return isDark ? 'dark' : 'default';
+            }
+
+            function extractMermaidCode(pre, expressiveContainer) {
+              const ecLines = pre.querySelectorAll('.ec-line');
+              if (ecLines && ecLines.length > 0) {
+                const lines = [];
+                ecLines.forEach(line => {
+                  lines.push(line.textContent || '');
+                });
+                return lines.join('\\n').trim();
+              }
+
+              if (pre.innerText && pre.innerText.includes('\\n')) {
+                return pre.innerText.trim();
+              }
+
+              const clone = pre.cloneNode(true);
+              clone.querySelectorAll('br').forEach(br => br.replaceWith('\\n'));
+              clone.querySelectorAll('div').forEach(div => div.after('\\n'));
+              return (clone.textContent || '').trim();
+            }
+
+            async function renderDiagram(container, rawCode) {
+              const theme = getMermaidTheme();
               mermaid.initialize({
                 startOnLoad: false,
-                theme: isDark ? 'dark' : 'default',
+                theme: theme,
                 securityLevel: 'loose',
                 fontFamily: 'inherit',
-              });
-
-              document.querySelectorAll('pre:has(code.language-mermaid), pre.mermaid, div.mermaid, pre > code.language-mermaid').forEach(async (el) => {
-                const targetPre = el.tagName.toLowerCase() === 'code' ? el.parentElement : el;
-                if (targetPre.dataset.mermaidRendered) return;
-                targetPre.dataset.mermaidRendered = 'true';
-                
-                const rawCode = el.textContent || '';
-                const id = 'mermaid-svg-' + Math.random().toString(36).substring(2, 9);
-                
-                try {
-                  const { svg } = await mermaid.render(id, rawCode.trim());
-                  const wrapper = document.createElement('div');
-                  wrapper.className = 'mermaid-container';
-                  wrapper.style.display = 'flex';
-                  wrapper.style.justifyContent = 'center';
-                  wrapper.style.margin = '1.5rem 0';
-                  wrapper.style.overflowX = 'auto';
-                  wrapper.innerHTML = svg;
-                  targetPre.replaceWith(wrapper);
-                } catch (err) {
-                  console.error('Erro ao renderizar Mermaid:', err);
+                themeVariables: {
+                  darkMode: theme === 'dark',
+                  background: theme === 'dark' ? '#14141E' : '#FFFFFF',
+                  primaryColor: theme === 'dark' ? '#3B82F6' : '#2563EB',
+                  primaryTextColor: theme === 'dark' ? '#F8FAFC' : '#0F172A',
+                  primaryBorderColor: theme === 'dark' ? '#60A5FA' : '#3B82F6',
+                  lineColor: theme === 'dark' ? '#94A3B8' : '#64748B',
+                  secondaryColor: theme === 'dark' ? '#1E293B' : '#F1F5F9',
+                  tertiaryColor: theme === 'dark' ? '#0F172A' : '#E2E8F0',
                 }
               });
+
+              const id = 'mermaid-svg-' + Math.random().toString(36).substring(2, 9);
+              try {
+                const { svg } = await mermaid.render(id, rawCode.trim());
+                container.innerHTML = svg;
+                container.dataset.renderedTheme = theme;
+              } catch (err) {
+                console.error('Erro ao renderizar Mermaid:', err, 'Código:', rawCode);
+                container.innerHTML = '<div style="color: #ef4444; padding: 1rem; border: 1px dashed #ef4444; border-radius: 8px;">⚠️ Erro ao renderizar diagrama Mermaid.</div>';
+              }
             }
+
+            async function initMermaid() {
+              const theme = getMermaidTheme();
+              currentTheme = theme;
+
+              // 1. Converte novos blocos de código em containers Mermaid
+              const codeBlocks = document.querySelectorAll('pre[data-language="mermaid"], pre:has(code.language-mermaid), pre.mermaid, div.mermaid');
+              
+              for (const pre of codeBlocks) {
+                const expressiveContainer = pre.closest('.expressive-code') || pre.closest('figure.frame') || pre;
+                if (expressiveContainer.dataset.mermaidProcessed) continue;
+                expressiveContainer.dataset.mermaidProcessed = 'true';
+
+                let rawCode = extractMermaidCode(pre, expressiveContainer);
+                if (!rawCode) continue;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mermaid-container';
+                wrapper.dataset.mermaidCode = rawCode;
+                
+                expressiveContainer.replaceWith(wrapper);
+                await renderDiagram(wrapper, rawCode);
+              }
+
+              // 2. Re-renderiza containers existentes se o tema mudou
+              const existingWrappers = document.querySelectorAll('.mermaid-container[data-mermaid-code]');
+              for (const wrapper of existingWrappers) {
+                if (wrapper.dataset.renderedTheme !== theme) {
+                  await renderDiagram(wrapper, wrapper.dataset.mermaidCode);
+                }
+              }
+            }
+
+            // Observador de mudança de tema Claro/Escuro no Starlight
+            const themeObserver = new MutationObserver(() => {
+              const theme = getMermaidTheme();
+              if (theme !== currentTheme) {
+                initMermaid();
+              }
+            });
+
+            themeObserver.observe(document.documentElement, {
+              attributes: true,
+              attributeFilter: ['data-theme']
+            });
 
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', initMermaid);
             } else {
               initMermaid();
             }
+
             document.addEventListener('astro:page-load', initMermaid);
           `,
         },
@@ -94,9 +164,10 @@ export default defineConfig({
           items: [
             { label: 'Visão Geral e Boas-Vindas', link: '/' },
             { label: '1. O que é C#, .NET e WPF?', link: '/iniciantes/o-que-e-dotnet-csharp/' },
-            { label: '2. Instalando o Visual Studio', link: '/iniciantes/instalacao-visual-studio/' },
-            { label: '3. Executando pelo Terminal (CLI)', link: '/iniciantes/guia-linha-de-comando/' },
-            { label: '4. Depuração e Truques (Debug)', link: '/iniciantes/depuracao-e-truques/' },
+            { label: '2. Modo Interativo & Playground Guiado', link: '/iniciantes/modo-interativo-e-playground/' },
+            { label: '3. Instalando o Visual Studio', link: '/iniciantes/instalacao-visual-studio/' },
+            { label: '4. Executando pelo Terminal (CLI)', link: '/iniciantes/guia-linha-de-comando/' },
+            { label: '5. Depuração e Truques (Debug)', link: '/iniciantes/depuracao-e-truques/' },
           ],
         },
         {
