@@ -1,0 +1,887 @@
+<Window x:Class="CGPDI.StudyLab.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="CGPDI StudyLab — Laboratório Universitário de Computação Gráfica &amp; Processamento Digital de Imagens (2D/3D)"
+        Height="850" Width="1350"
+        MinHeight="650" MinWidth="950"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Background="#101014"
+        Foreground="#E2E2EA"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Estilo Dark Moderno para Botões -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#22222D"/>
+            <Setter Property="Foreground" Value="#F2F2F8"/>
+            <Setter Property="BorderBrush" Value="#353545"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#323244"/>
+                                <Setter Property="BorderBrush" Value="#4F72E8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1A1A24"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para Botões Primários -->
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#2B4BB5"/>
+            <Setter Property="BorderBrush" Value="#456DEB"/>
+        </Style>
+
+        <!-- Estilo para Sliders -->
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="0,2,0,6"/>
+        </Style>
+
+        <!-- Estilo Completo e de Alto Contraste para ComboBox e ComboBoxItem Dark -->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Border x:Name="Border"
+                    Background="#22222E"
+                    BorderBrush="#38384C"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="24"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Ícone Seta para Baixo -->
+                    <Path x:Name="Arrow"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M 0 0 L 4 4 L 8 0 Z"
+                          Fill="#D0D0E0"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="#2E2E3E"/>
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#4F72E8"/>
+                    <Setter TargetName="Arrow" Property="Fill" Value="#FFFFFF"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="#1A1A26"/>
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#4F72E8"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#181822"/>
+            <Setter Property="Foreground" Value="#F5F5FA"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="1,1"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#323854"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#2B4BB5"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#22222E"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#38384C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Margin" Value="0,2,0,6"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          Template="{StaticResource ComboBoxToggleButton}"
+                                          Focusable="False"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"/>
+                            <ContentPresenter x:Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="10,6,26,6"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                            <!-- Popup da Lista de Itens com Fundo Escuro Nítido -->
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#161620"
+                                        BorderBrush="#3E3E52"
+                                        BorderThickness="1"
+                                        CornerRadius="5"
+                                        Margin="0,2,0,0"
+                                        Padding="3"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer x:Name="DropDownScrollViewer" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="60"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#707080"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para GroupBox -->
+        <Style TargetType="GroupBox">
+            <Setter Property="Foreground" Value="#8EA6F5"/>
+            <Setter Property="BorderBrush" Value="#262634"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- Estilo para GridSplitter Invisível/Elegante -->
+        <Style TargetType="GridSplitter">
+            <Setter Property="Background" Value="#1A1A24"/>
+            <Setter Property="ShowsPreview" Value="False"/>
+            <Setter Property="Width" Value="5"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridSplitter">
+                        <Border Background="Transparent" Width="5">
+                            <Rectangle Width="2" Fill="#282838" HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4F72E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para TabItem -->
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#16161E"/>
+            <Setter Property="Foreground" Value="#9A9AA8"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#20202C"
+                                BorderThickness="0,0,0,2"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="2,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" ContentSource="Header"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#1E1E2A"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#4F72E8"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#D0D6FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header / Top Bar -->
+            <RowDefinition Height="*"/>    <!-- Main Workspace -->
+            <RowDefinition Height="Auto"/> <!-- Status Bar / Performance HUD -->
+        </Grid.RowDefinitions>
+
+        <!-- Top Bar Header Responsivo (WrapPanel) -->
+        <Border Grid.Row="0" Background="#14141C" BorderBrush="#242432" BorderThickness="0,0,0,1" Padding="12,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Título e Logo -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <TextBlock Text="🎓" FontSize="18" Margin="0,0,6,0" Foreground="#4F72E8" VerticalAlignment="Center"/>
+                    <TextBlock Text="CGPDI STUDYLAB" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Text=" [Laboratório Universitário de CG &amp; PDI • 2D/3D/Shaders]" FontSize="12" Foreground="#8CA0E8" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                </StackPanel>
+
+                <!-- Botões de Ação com Quebra Automática de Linha (WrapPanel) -->
+                <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Content="📂 Abrir Imagem..." Click="BtnOpenImage_Click"/>
+                    <Button Content="🎨 Calibração PDI" Click="BtnPresetCalibration_Click"/>
+                    <Button Content="🌀 Roda HSV" Click="BtnPresetColorWheel_Click"/>
+                    <Button Content="🌐 Frequência MTF" Click="BtnPresetFrequency_Click"/>
+                    <Button Content="🧂 Adicionar Ruído" Click="BtnPresetNoise_Click"/>
+                    <Button Content="💾 Salvar Imagem..." Click="BtnSaveImage_Click" Style="{StaticResource PrimaryButton}"/>
+                    <Button Content="🔄 Restaurar Original" Click="BtnResetOriginal_Click"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Tab Control -->
+        <TabControl Grid.Row="1" Background="#101014" BorderThickness="0">
+
+            <!-- ================================================================================== -->
+            <!-- ABA 1: PROCESSAMENTO DIGITAL DE IMAGENS (PDI)                                     -->
+            <!-- ================================================================================== -->
+            <TabItem Header="🖼️ Processamento Digital de Imagens (PDI)">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="310" MinWidth="250" MaxWidth="450"/> <!-- Painel Esquerdo -->
+                        <ColumnDefinition Width="5"/>                                 <!-- Divisor Redimensionável -->
+                        <ColumnDefinition Width="*" MinWidth="300"/>                  <!-- Viewport Central Imagem -->
+                        <ColumnDefinition Width="5"/>                                 <!-- Divisor Redimensionável -->
+                        <ColumnDefinition Width="330" MinWidth="260" MaxWidth="500"/> <!-- Teoria & Histograma -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Controls Panel (Scrollable) -->
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                        <StackPanel>
+                            <!-- Espaços de Cores & Canais -->
+                            <GroupBox Header="1. Modelos de Cor &amp; Canais">
+                                <StackPanel>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Cinza (BT.709 sRGB)" Click="BtnGrayscaleBt709_Click"/>
+                                        <Button Content="Cinza (BT.601 NTSC)" Click="BtnGrayscaleBt601_Click"/>
+                                        <Button Content="Cinza (Média)" Click="BtnGrayscaleAverage_Click"/>
+                                        <Button Content="Cinza (Desaturação)" Click="BtnGrayscaleLightness_Click"/>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="3" Margin="0,3,0,0">
+                                        <Button Content="Canal R" Click="BtnChannelRed_Click"/>
+                                        <Button Content="Canal G" Click="BtnChannelGreen_Click"/>
+                                        <Button Content="Canal B" Click="BtnChannelBlue_Click"/>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Sépia Fotográfico" Click="BtnSepia_Click"/>
+                                        <Button Content="Inversão Negativa" Click="BtnInvert_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Operações Pontuais -->
+                            <GroupBox Header="2. Operações Pontuais">
+                                <StackPanel>
+                                    <TextBlock Text="Brilho (Delta):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderBrightness" Minimum="-100" Maximum="100" Value="0" SmallChange="1" LargeChange="10" ValueChanged="SliderPointOp_ValueChanged"/>
+
+                                    <TextBlock Text="Contraste Linear (Alpha):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderContrast" Minimum="0.1" Maximum="3.0" Value="1.0" SmallChange="0.1" ValueChanged="SliderPointOp_ValueChanged"/>
+
+                                    <TextBlock Text="Correção Gamma (Power-Law):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderGamma" Minimum="0.2" Maximum="3.0" Value="1.0" SmallChange="0.05" ValueChanged="SliderPointOp_ValueChanged"/>
+
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Posterizar (4 Níveis)" Click="BtnPosterize_Click"/>
+                                        <Button Content="Solarizar (Sabattier)" Click="BtnSolarize_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Histograma & Contraste -->
+                            <GroupBox Header="3. Processamento de Histograma">
+                                <StackPanel>
+                                    <Button Content="Equalização Global (Luminância HSV)" Click="BtnEqualizeHsv_Click" Style="{StaticResource PrimaryButton}"/>
+                                    <Button Content="Equalização RGB Independente" Click="BtnEqualizeRgb_Click"/>
+                                    <Button Content="Expansão de Contraste (Min-Max)" Click="BtnContrastStretch_Click"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Filtros Espaciais (Convoluções) -->
+                            <GroupBox Header="4. Filtros Espaciais (Convoluções)">
+                                <StackPanel>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Box Blur 3x3 (Média)" Click="BtnBoxBlur3_Click"/>
+                                        <Button Content="Box Blur 5x5" Click="BtnBoxBlur5_Click"/>
+                                        <Button Content="Gaussiano 3x3" Click="BtnGaussian3_Click"/>
+                                        <Button Content="Gaussiano 5x5 (σ=1.4)" Click="BtnGaussian5_Click"/>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Nitidez (Sharpen)" Click="BtnSharpen_Click"/>
+                                        <Button Content="Unsharp Masking" Click="BtnUnsharpMask_Click"/>
+                                        <Button Content="Mediana 3x3 (Anti-Ruído)" Click="BtnMedian_Click"/>
+                                        <Button Content="Relevo 3D (Emboss 45°)" Click="BtnEmboss_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Detecção de Bordas -->
+                            <GroupBox Header="5. Detecção de Bordas &amp; Gradientes">
+                                <StackPanel>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Sobel (Magnitude)" Click="BtnSobelMagnitude_Click"/>
+                                        <Button Content="Sobel (Gx Horizontal)" Click="BtnSobelGx_Click"/>
+                                        <Button Content="Sobel (Gy Vertical)" Click="BtnSobelGy_Click"/>
+                                        <Button Content="Scharr (Otimizado)" Click="BtnScharr_Click"/>
+                                        <Button Content="Laplaciano 3x3" Click="BtnLaplacian_Click"/>
+                                        <Button Content="Laplaciano Gauss (LoG)" Click="BtnLoG_Click"/>
+                                    </UniformGrid>
+                                    <Button Content="⭐ Canny Edge Detector Completo" Click="BtnCanny_Click" Style="{StaticResource PrimaryButton}" Margin="2,4,2,2"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Morfologia Matemática & Segmentação -->
+                            <GroupBox Header="6. Morfologia &amp; Segmentação">
+                                <StackPanel>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Limiarização Otsu Auto" Click="BtnOtsu_Click" Style="{StaticResource PrimaryButton}"/>
+                                        <Button Content="Limiarização Adaptativa" Click="BtnAdaptiveThreshold_Click"/>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Erosão 3x3" Click="BtnErosion_Click"/>
+                                        <Button Content="Dilatação 3x3" Click="BtnDilation_Click"/>
+                                        <Button Content="Abertura (Opening)" Click="BtnOpening_Click"/>
+                                        <Button Content="Fechamento (Closing)" Click="BtnClosing_Click"/>
+                                    </UniformGrid>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Gradiente Morfológico" Click="BtnMorphGradient_Click"/>
+                                        <Button Content="Top-Hat (Cartola Branca)" Click="BtnTopHat_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Transformações Geométricas 2D -->
+                            <GroupBox Header="7. Transformações Geométricas 2D">
+                                <StackPanel>
+                                    <TextBlock Text="Método de Interpolação:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <ComboBox x:Name="CmbInterpolation" SelectedIndex="1">
+                                        <ComboBoxItem Content="Vizinho Mais Próximo (Nearest)"/>
+                                        <ComboBoxItem Content="Interpolação Bilinear (Bilinear)"/>
+                                        <ComboBoxItem Content="Interpolação Bicúbica (Bicubic Spline)"/>
+                                    </ComboBox>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Rotacionar +45°" Click="BtnRotate45_Click"/>
+                                        <Button Content="Rotacionar +90°" Click="BtnRotate90_Click"/>
+                                        <Button Content="Zoom In (1.5x)" Click="BtnScaleUp_Click"/>
+                                        <Button Content="Zoom Out (0.7x)" Click="BtnScaleDown_Click"/>
+                                        <Button Content="Cisalhamento (Shear)" Click="BtnShear_Click"/>
+                                        <Button Content="Espelhar Horizontal" Click="BtnFlipH_Click"/>
+                                    </UniformGrid>
+                                    <TextBlock Text="Distorções Não-Lineares:" Foreground="#A8A8B8" FontSize="11" Margin="0,4,0,2"/>
+                                    <UniformGrid Columns="3">
+                                        <Button Content="Redemoinho" Click="BtnSwirl_Click"/>
+                                        <Button Content="Ondas" Click="BtnWave_Click"/>
+                                        <Button Content="Olho Peixe" Click="BtnFisheye_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Frequência & Procedurais -->
+                            <GroupBox Header="8. Frequência, Ruído &amp; Fractais">
+                                <StackPanel>
+                                    <Button Content="Transformada de Fourier (2D DFT Spectrum)" Click="BtnFourierSpectrum_Click" Style="{StaticResource PrimaryButton}"/>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Terreno fBm (Perlin)" Click="BtnPerlinFbm_Click"/>
+                                        <Button Content="Ruído Voronoi Celular" Click="BtnVoronoi_Click"/>
+                                        <Button Content="Fractal Mandelbrot" Click="BtnMandelbrot_Click"/>
+                                        <Button Content="Fractal Julia Set" Click="BtnJulia_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- GridSplitter Esquerdo -->
+                    <GridSplitter Grid.Column="1"/>
+
+                    <!-- Center Viewport (Image Display com ajuste fluido à tela cheia) -->
+                    <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
+                        <Grid>
+                            <Image x:Name="ImgDisplay" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- GridSplitter Direito -->
+                    <GridSplitter Grid.Column="3"/>
+
+                    <!-- Right Panel: Mathematical Theory & Histogram Inspector -->
+                    <Grid Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="180" MinHeight="140"/> <!-- Gráfico de Histograma -->
+                            <RowDefinition Height="*"/>                   <!-- Explicação Teórica -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Histogram Chart Canvas -->
+                        <GroupBox Grid.Row="0" Header="📊 Histograma de Cores em Tempo Real">
+                            <Grid Background="#0A0A10">
+                                <Canvas x:Name="CanvasHistogram" Margin="4" SizeChanged="CanvasHistogram_SizeChanged"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4">
+                                    <TextBlock Text="● R " Foreground="#FF5555" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="● G " Foreground="#55FF55" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="● B " Foreground="#5599FF" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock Text="● Lum" Foreground="#DDDDDD" FontSize="10" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Smart Theoretical Card -->
+                        <GroupBox Grid.Row="1" Header="💡 Explicação Teórica &amp; Algoritmo" Margin="0,6,0,0">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel Margin="2">
+                                    <TextBlock x:Name="TxtTheoryTitle" Text="Selecione um Algoritmo de PDI" FontSize="13.5" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                    <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                    <TextBlock x:Name="TxtTheoryMath" Text="A teoria matemática, formulação e complexidade computacional serão exibidas aqui em tempo real conforme você interage com os controles."
+                                               TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ================================================================================== -->
+            <!-- ABA 2: COMPUTAÇÃO GRÁFICA 2D (RASTERIZAÇÃO & MATRIZES)                            -->
+            <!-- ================================================================================== -->
+            <TabItem Header="✏️ Computação Gráfica 2D (Rasterização)">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" MinWidth="240" MaxWidth="450"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*" MinWidth="300"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="330" MinWidth="260" MaxWidth="500"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: 2D Tools -->
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                        <StackPanel>
+                            <GroupBox Header="1. Ferramentas de Rasterização 2D">
+                                <StackPanel>
+                                    <Button Content="Linha Bresenham (Inteira Pura)" Click="Btn2D_DrawBresenham_Click"/>
+                                    <Button Content="Linha DDA (Incremental)" Click="Btn2D_DrawDDA_Click"/>
+                                    <Button Content="Linha Suavizada Xiaolin Wu (Anti-Aliasing)" Click="Btn2D_DrawWu_Click"/>
+                                    <Button Content="Círculo Ponto Médio (8 Octantes)" Click="Btn2D_DrawCircle_Click"/>
+                                    <Button Content="Elipse Ponto Médio (2 Regiões)" Click="Btn2D_DrawEllipse_Click"/>
+                                    <Button Content="Curva Bézier Quadrática (3 Pontos)" Click="Btn2D_DrawBezierQuad_Click"/>
+                                    <Button Content="Curva Bézier Cúbica (4 Pontos)" Click="Btn2D_DrawBezierCubic_Click"/>
+                                    <Button Content="Preenchimento Polígono (Scanline AET)" Click="Btn2D_DrawScanlinePoly_Click"/>
+                                    <Button Content="Recorte Cohen-Sutherland (Outcodes)" Click="Btn2D_DrawClipping_Click"/>
+                                    <Button Content="Preenchimento por Inundação (Flood Fill)" Click="Btn2D_FloodFill_Click"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="2. Transformações Homogêneas 3x3">
+                                <StackPanel>
+                                    <UniformGrid Columns="2">
+                                        <Button Content="Transladar (+30, +20)" Click="Btn2D_TransformTranslate_Click"/>
+                                        <Button Content="Rotacionar (+30°)" Click="Btn2D_TransformRotate_Click"/>
+                                        <Button Content="Escalar (1.2x)" Click="Btn2D_TransformScale_Click"/>
+                                        <Button Content="Cisalhar (Shear X)" Click="Btn2D_TransformShear_Click"/>
+                                    </UniformGrid>
+                                    <Button Content="🔄 Limpar / Resetar Quadro 2D" Click="Btn2D_Clear_Click" Margin="2,6,2,2"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="3. Dica Interativa">
+                                <TextBlock Text="💡 Clique em qualquer ponto do quadro 2D com o mouse para disparar o algoritmo de Flood Fill (Inundação) interativo!"
+                                           Foreground="#8CA0E8" FontSize="11" TextWrapping="Wrap" LineHeight="16"/>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <GridSplitter Grid.Column="1"/>
+
+                    <!-- Center: 2D Rasterizer Canvas Display (Fluido à tela cheia) -->
+                    <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
+                        <Grid>
+                            <Image x:Name="ImgDisplay2D" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseDown="ImgDisplay2D_MouseDown"/>
+                        </Grid>
+                    </Border>
+
+                    <GridSplitter Grid.Column="3"/>
+
+                    <!-- Right: 2D Theory Details -->
+                    <GroupBox Grid.Column="4" Header="💡 Detalhes Teóricos de Rasterização 2D">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="2">
+                                <TextBlock x:Name="TxtTheory2DTitle" Text="Algoritmos de Rasterização 2D" FontSize="13.5" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                <TextBlock x:Name="TxtTheory2DMath" Text="Selecione um botão à esquerda para traçar primitivas 2D calculadas a partir dos primeiros princípios matemáticos da computação gráfica."
+                                           TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- ================================================================================== -->
+            <!-- ABA 3: COMPUTAÇÃO GRÁFICA 3D (WPF VIEWPORT 3D ACELERADO)                          -->
+            <!-- ================================================================================== -->
+            <TabItem Header="🧊 Computação Gráfica 3D (WPF Viewport 3D)">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="310" MinWidth="250" MaxWidth="450"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*" MinWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: 3D Scene Controls -->
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                        <StackPanel>
+                            <!-- Projeções da Câmera (Ementa: Projeções 3D) -->
+                            <GroupBox Header="1. Câmera &amp; Tipo de Projeção">
+                                <StackPanel>
+                                    <RadioButton x:Name="RbCameraPerspective" Content="Projeção Perspectiva (com ponto de fuga)" Foreground="#E2E2EA" IsChecked="True" Checked="RbCameraProj_Checked" Margin="0,2,0,3"/>
+                                    <RadioButton x:Name="RbCameraOrthographic" Content="Projeção Ortográfica (Paralela sem fuga)" Foreground="#E2E2EA" Checked="RbCameraProj_Checked" Margin="0,2,0,4"/>
+                                    <Button Content="🎯 Resetar Câmera Orbital (Arcball)" Click="Btn3D_ResetCamera_Click" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Geometrias Paramétricas Primitivas -->
+                            <GroupBox Header="2. Geometria Paramétrica 3D">
+                                <StackPanel>
+                                    <ComboBox x:Name="Cmb3DShapes" SelectedIndex="0" SelectionChanged="Cmb3DShapes_SelectionChanged">
+                                        <ComboBoxItem Content="Toro (Donut) Paramétrico"/>
+                                        <ComboBoxItem Content="Esfera UV (UV Sphere)"/>
+                                        <ComboBoxItem Content="Cubo 3D (Box)"/>
+                                        <ComboBoxItem Content="Cilindro"/>
+                                        <ComboBoxItem Content="Cone"/>
+                                        <ComboBoxItem Content="Faixa de Möbius (Topologia)"/>
+                                    </ComboBox>
+                                    <UniformGrid Columns="2" Margin="0,3,0,0">
+                                        <Button Content="Azul Celeste" Click="Btn3D_ColorBlue_Click"/>
+                                        <Button Content="Ouro Metálico" Click="Btn3D_ColorGold_Click"/>
+                                        <Button Content="Esmeralda" Click="Btn3D_ColorGreen_Click"/>
+                                        <Button Content="Carmesim" Click="Btn3D_ColorRed_Click"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Modelagem Hierárquica (Unidade 3 do Plano de Ensino) -->
+                            <GroupBox Header="3. Modelagem Hierárquica (Unidade 3)">
+                                <StackPanel>
+                                    <Button Content="🤖 Carregar Robô Articulado (Scene Graph)" Click="Btn3D_LoadRobot_Click" Style="{StaticResource PrimaryButton}" Margin="0,2,0,4"/>
+                                    
+                                    <TextBlock Text="Rotação da Base (Eixo Y):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRobotBase" Minimum="-180" Maximum="180" Value="0" ValueChanged="SliderRobot_ValueChanged"/>
+
+                                    <TextBlock Text="Articulação do Ombro (Eixo Z):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRobotShoulder" Minimum="-60" Maximum="90" Value="25" ValueChanged="SliderRobot_ValueChanged"/>
+
+                                    <TextBlock Text="Articulação do Cotovelo (Eixo Z):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRobotElbow" Minimum="-90" Maximum="90" Value="-45" ValueChanged="SliderRobot_ValueChanged"/>
+
+                                    <TextBlock Text="Rotação do Pulso/Garra (Eixo X):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRobotWrist" Minimum="-90" Maximum="90" Value="30" ValueChanged="SliderRobot_ValueChanged"/>
+
+                                    <CheckBox x:Name="ChkRobotAnim" Content="Animação Cinemática Contínua" Foreground="#E2E2EA" Margin="0,4,0,2" Checked="ChkRobotAnim_CheckedChanged" Unchecked="ChkRobotAnim_CheckedChanged"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Iluminação e Materiais de Phong -->
+                            <GroupBox Header="4. Iluminação de Phong &amp; Materiais">
+                                <StackPanel>
+                                    <TextBlock Text="Brilho Especular (Shininess):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="Slider3DSpecular" Minimum="5" Maximum="120" Value="40" ValueChanged="Slider3DMaterial_ValueChanged"/>
+
+                                    <TextBlock Text="Luz Ambiente:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="Slider3DAmbient" Minimum="0.05" Maximum="0.6" Value="0.2" ValueChanged="Slider3DLights_ValueChanged"/>
+
+                                    <CheckBox x:Name="Chk3DAutoRotate" Content="Rotação Automática da Cena" Foreground="#E2E2EA" Margin="0,4,0,2" Checked="Chk3DAutoRotate_CheckedChanged" Unchecked="Chk3DAutoRotate_CheckedChanged"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="5. Instruções de Câmera 3D">
+                                <TextBlock Text="🖱️ Arraste com o Botão Esquerdo para orbitar a câmera 360°&#x0a;⚙️ Role a Roda do Mouse para dar Zoom In / Zoom Out&#x0a;🌟 Renderização com Aceleração DirectX nativa do WPF"
+                                           Foreground="#8CA0E8" FontSize="11" TextWrapping="Wrap" LineHeight="16"/>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <GridSplitter Grid.Column="1"/>
+
+                    <!-- Center: WPF Viewport 3D (Ocupa 100% da tela cheia) -->
+                    <Border Grid.Column="2" Background="#08080E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6">
+                        <Viewport3D x:Name="ViewportMain"/>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ================================================================================== -->
+            <!-- ABA 4: SOFTWARE 3D & RAY TRACING (RENDERIZADORES DO ZERO)                         -->
+            <!-- ================================================================================== -->
+            <TabItem Header="⚡ Software 3D &amp; Ray Tracing">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" MinWidth="240" MaxWidth="450"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*" MinWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                        <StackPanel>
+                            <!-- Pipeline 3D CPU -->
+                            <GroupBox Header="1. Pipeline 3D em Software (100% CPU)">
+                                <StackPanel>
+                                    <ComboBox x:Name="CmbSoftMesh" SelectedIndex="0" SelectionChanged="CmbSoftMesh_SelectionChanged">
+                                        <ComboBoxItem Content="Cubo 3D"/>
+                                        <ComboBoxItem Content="Pirâmide"/>
+                                        <ComboBoxItem Content="Toro (Donut)"/>
+                                        <ComboBoxItem Content="Esfera UV"/>
+                                    </ComboBox>
+                                    <CheckBox x:Name="ChkSoftWireframe" Content="Modo Wireframe (Arestas)" Foreground="#E2E2EA" Margin="0,4,0,4" Checked="ChkSoft_Changed" Unchecked="ChkSoft_Changed"/>
+                                    
+                                    <TextBlock Text="Rotação X:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderSoftRotX" Minimum="0" Maximum="6.28" Value="0.4" ValueChanged="SliderSoft_ValueChanged"/>
+
+                                    <TextBlock Text="Rotação Y:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderSoftRotY" Minimum="0" Maximum="6.28" Value="0.6" ValueChanged="SliderSoft_ValueChanged"/>
+
+                                    <TextBlock Text="Distância da Câmera:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderSoftCamDist" Minimum="1.5" Maximum="8.0" Value="3.5" ValueChanged="SliderSoft_ValueChanged"/>
+
+                                    <Button Content="Renderizar Software 3D" Click="BtnSoftRender_Click" Style="{StaticResource PrimaryButton}"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <!-- Ray Tracer Whitted -->
+                            <GroupBox Header="2. Ray Tracer Matemático">
+                                <StackPanel>
+                                    <TextBlock Text="Ângulo da Câmera:" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRayCam" Minimum="-1.5" Maximum="1.5" Value="0.0" ValueChanged="SliderRay_ValueChanged"/>
+
+                                    <TextBlock Text="Profundidade de Reflexão (Bounces):" Foreground="#A8A8B8" FontSize="11"/>
+                                    <Slider x:Name="SliderRayBounces" Minimum="1" Maximum="4" Value="2" ValueChanged="SliderRay_ValueChanged"/>
+
+                                    <Button Content="⭐ Renderizar Ray Tracer" Click="BtnRayTrace_Click" Style="{StaticResource PrimaryButton}" Margin="2,4,2,2"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <GridSplitter Grid.Column="1"/>
+
+                    <!-- Center: Software 3D & Raytracer Display fluido -->
+                    <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
+                        <Grid>
+                            <Image x:Name="ImgDisplay3DSoft" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ================================================================================== -->
+            <!-- ABA 5: CENTRAL DE ESTUDOS & DOCUMENTAÇÃO PASSO A PASSO                            -->
+            <!-- ================================================================================== -->
+            <TabItem Header="📖 Central de Estudos &amp; Código Passo a Passo">
+                <Grid Margin="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="340" MinWidth="260" MaxWidth="500"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Topic Selector & Search -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Search Box -->
+                            <RowDefinition Height="*"/>    <!-- Topics List -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Search Filter Box -->
+                        <Border Grid.Row="0" Background="#161622" BorderBrush="#2E2E40" BorderThickness="1" CornerRadius="4" Margin="0,0,0,6" Padding="6,4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="🔍 " Foreground="#8EA6F5" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtSearchStudy" Grid.Column="1" Background="Transparent" Foreground="#FFFFFF" BorderThickness="0"
+                                         FontSize="12" VerticalAlignment="Center" TextChanged="TxtSearchStudy_TextChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- List of Study Topics -->
+                        <ListBox x:Name="LstStudyTopics" Grid.Row="1" Background="#12121A" BorderBrush="#242432" BorderThickness="1"
+                                 SelectionChanged="LstStudyTopics_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="6,5" Margin="0,1" CornerRadius="4">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Category}" Foreground="#8EA6F5" FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Title}" Foreground="#F0F0F8" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Margin" Value="1"/>
+                                    <Setter Property="Padding" Value="2"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="4">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#242436"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#2B4BB5"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
+
+                    <GridSplitter Grid.Column="1"/>
+
+                    <!-- Right: Detailed Theory & Step-by-Step Code Reader -->
+                    <Border Grid.Column="2" Background="#0C0C12" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <!-- Header do Tópico -->
+                                <Border Background="#161622" BorderBrush="#2D2D42" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock x:Name="TxtDocCategory" Text="1. FUNDAMENTOS &amp; MEMÓRIA" Foreground="#4F72E8" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock x:Name="TxtDocTitle" Text="Título do Tópico de Estudo" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold" Margin="0,2,0,4" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="TxtDocSummary" Text="Resumo pedagógico e conceitos fundamentais do algoritmo." Foreground="#C4C4D4" FontSize="12" TextWrapping="Wrap" LineHeight="17"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 1. Fundamentação Matemática -->
+                                <GroupBox Header="📐 1. Formulação Matemática &amp; Teoria">
+                                    <TextBlock x:Name="TxtDocMath" Text="Fórmulas e equações matemáticas..." Foreground="#D8D8E8" FontSize="11.5" TextWrapping="Wrap" LineHeight="18" FontFamily="Consolas"/>
+                                </GroupBox>
+
+                                <!-- 2. Explicação Passo a Passo do Algoritmo -->
+                                <GroupBox Header="💡 2. Como Funciona Passo a Passo">
+                                    <TextBlock x:Name="TxtDocExplanation" Text="Explicação detalhada do algoritmo..." Foreground="#C8C8D8" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                                </GroupBox>
+
+                                <!-- 3. Trecho Real do Código C# -->
+                                <GroupBox Header="💻 3. Implementação em Código C# (Comentado)">
+                                    <Border Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="8">
+                                        <TextBox x:Name="TxtDocSnippet" Text="// Código C#..." IsReadOnly="True" Background="Transparent" Foreground="#98E088"
+                                                 BorderThickness="0" FontFamily="Consolas" FontSize="11.5" TextWrapping="Wrap"/>
+                                    </Border>
+                                </GroupBox>
+
+                                <!-- 4. Complexidade & Dicas -->
+                                <GroupBox Header="⚡ 4. Complexidade Computacional &amp; Dicas de Otimização">
+                                    <TextBlock x:Name="TxtDocComplexity" Text="Complexidade O(N)..." Foreground="#FFD700" FontSize="11.5" TextWrapping="Wrap" LineHeight="17"/>
+                                </GroupBox>
+
+                                <!-- 5. Onde Testar no Software -->
+                                <GroupBox Header="🧪 5. Onde Testar e Visualizar no Programa">
+                                    <TextBlock x:Name="TxtDocWhereToTest" Text="Localização nas abas..." Foreground="#40E0D0" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </GroupBox>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- Bottom Performance HUD & Status Bar -->
+        <Border Grid.Row="2" Background="#14141C" BorderBrush="#242432" BorderThickness="0,1,0,0" Padding="12,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Status: " Foreground="#7E7E8E" FontSize="11.5"/>
+                    <TextBlock x:Name="TxtStatus" Text="Pronto. Imagem de calibração carregada." Foreground="#40E0D0" FontSize="11.5" FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="⏱️ Tempo: " Foreground="#7E7E8E" FontSize="11.5"/>
+                    <TextBlock x:Name="TxtExecutionTime" Text="0.0 ms" Foreground="#FFD700" FontSize="11.5" FontWeight="Bold" Margin="0,0,14,0"/>
+
+                    <TextBlock Text="📐 Resolução: " Foreground="#7E7E8E" FontSize="11.5"/>
+                    <TextBlock x:Name="TxtResolution" Text="512x512 (262.144 px)" Foreground="#FFFFFF" FontSize="11.5" FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
