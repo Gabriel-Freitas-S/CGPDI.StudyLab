@@ -1,0 +1,145 @@
+/* Custom CSS for CGPDI.StudyLab Documentation */
+
+:root {
+  --sl-color-accent-low: #0f172a;
+  --sl-color-accent: #38bdf8;
+  --sl-color-accent-high: #bae6fd;
+  --sl-color-white: #f8fafc;
+  --sl-color-gray-1: #e2e8f0;
+  --sl-color-gray-2: #cbd5e1;
+  --sl-color-gray-3: #94a3b8;
+  --sl-color-gray-4: #64748b;
+  --sl-color-gray-5: #334155;
+  --sl-color-gray-6: #1e293b;
+  --sl-color-black: #090d16;
+  
+  --sl-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Light theme overrides */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #e0f2fe;
+  --sl-color-accent: #0284c7;
+  --sl-color-accent-high: #0369a1;
+  --sl-color-black: #ffffff;
+  --sl-color-gray-6: #f1f5f9;
+  --sl-color-gray-5: #e2e8f0;
+  --sl-color-gray-4: #94a3b8;
+  --sl-color-gray-3: #64748b;
+  --sl-color-gray-2: #334155;
+  --sl-color-gray-1: #1e293b;
+  --sl-color-white: #0f172a;
+}
+
+/* KaTeX equations styling */
+.katex-display {
+  padding: 1rem 0;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex {
+  font-size: 1.1em;
+}
+
+/* Code block adjustments */
+.expressive-code pre {
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+/* Badges and tags */
+.custom-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
+.badge-blue {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-green {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-purple {
+  background-color: rgba(192, 132, 252, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+.badge-amber {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Tables styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sl-color-gray-5);
+  text-align: left;
+}
+
+th {
+  background-color: var(--sl-color-gray-6);
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+:root[data-theme='light'] tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Feature grid cards */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--sl-color-gray-6);
+  border: 1px solid var(--sl-color-gray-5);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sl-color-accent);
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--sl-color-accent);
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--sl-color-gray-2);
+}

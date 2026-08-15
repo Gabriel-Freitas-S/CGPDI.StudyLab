@@ -8,6 +8,16 @@ obj/
 *.userosscache
 *.sln.docstates
 
+# Node.js & Astro Docs Build Artifacts
+node_modules/
+docs/node_modules/
+.astro/
+docs/.astro/
+dist/
+docs/dist/
+.env
+.env.*
+
 # System & OS
 Thumbs.db
 ehthumbs.db
