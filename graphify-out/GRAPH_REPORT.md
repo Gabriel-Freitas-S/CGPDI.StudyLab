@@ -1,16 +1,16 @@
 # Graph Report - CGPDI.StudyLab  (2026-08-16)
 
 ## Corpus Check
-- 115 files · ~117,427 words
+- 116 files · ~114,695 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1486 nodes · 3255 edges · 110 communities (71 shown, 39 thin omitted)
+- 1508 nodes · 3296 edges · 113 communities (75 shown, 38 thin omitted)
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 256 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `690573bf`
+- Built from commit: `8873d3e2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,7 +20,7 @@
 - BorderlessWindow
 - Vec3
 - WpfViewport3DManager
-- .UpdateStatus
+- AppIconHelperTests
 - LiveCodeCompiler
 - .Parse
 - BorderlessWindow
@@ -40,7 +40,7 @@
 - Mandatory test rule
 - Rasterizer2D
 - ColorSpaces
-- .Btn3D_LoadRobot_Click
+- .ChkRobotAnim_CheckedChanged
 - Window
 - Specular Reflection and Snell Refraction Documentation
 - CGPDI.StudyLab.Core
@@ -48,13 +48,13 @@
 - UpdateManager
 - HierarchicalRobotArm
 - FrequencyAndProcedural
-- GeometricTransforms
+- BorderlessWindow
 - CGPDI.StudyLab.Tests
 - cenario-universitario-sem-admin.md
 - MainWindow
 - TextBox
 - .BtnStudioQuizOption_Click
-- Graphics3DTests
+- CGPDI.StudyLab.Graphics3D
 - BtnPopoutStudio
 - Morphology
 - CGPDI.StudyLab.Views
@@ -63,7 +63,7 @@
 - Regras do Projeto CGPDI.StudyLab
 - MathRendererAndSyntaxTests
 - Changelog — CGPDI StudyLab
-- .GeometricTransforms_Scale_CenterPixelPreservesColor
+- .Apply2DTransform
 - MainWindowUiTests
 - Segurança com Snyk (obrigatória)
 - CSharpSyntaxHighlighter
@@ -90,9 +90,9 @@
 - graphify.js
 - Graphify Knowledge Graph Rule
 - .Clear
-- RtbFreeCode
+- PointAndHistograms
 - ToggleButton
-- TabItemFreeLiveXaml
+- QuizAndCurriculumTests.cs
 - content.config.ts
 - Auto-Update System (UpdateManager.cs)
 - CodeQL Security Analysis Workflow
@@ -103,6 +103,8 @@
 - .SetCode
 - TabStudioEditor
 - .MainTabControl_SelectionChanged
+- Border
+- ImgFreeSimulation
 - Project Folder Structure Documentation
 - Linear Algebra and Matrices for CG2D
 - Synthetic Sample Image Generator
@@ -118,6 +120,7 @@
 - Fourier Transform Frequency Domain Analysis
 - Spatial Filters and Convolution Documentation
 - Point Operations and Histograms Documentation
+- .RtbFreeCode_TextChanged
 - CbResolution
 - TxtFreeConsole
 - LstProjectTemplates
@@ -128,7 +131,7 @@
 3. `DirectBitmap` - 99 edges
 4. `BorderlessWindow` - 71 edges
 5. `CodeStudioWindow` - 43 edges
-6. `CGPDI.StudyLab.Core` - 40 edges
+6. `CGPDI.StudyLab.Core` - 41 edges
 7. `UserControl` - 37 edges
 8. `WpfViewport3DManager` - 34 edges
 9. `TextBlock` - 34 edges
@@ -157,10 +160,10 @@
 - **Ray Tracing Full Optical Simulation Model** — docs_src_content_docs_raytracing_fundamentos_e_fisica_da_luz_phong_model, docs_src_content_docs_raytracing_fundamentos_e_fisica_da_luz_shadow_rays, docs_src_content_docs_raytracing_reflexao_refracao_snell_snell_law, docs_src_content_docs_raytracing_reflexao_refracao_snell_fresnel [INFERRED 0.85]
 - **High-Performance CPU Rendering Core** — docs_src_content_docs_core_directbitmap_setpixel, docs_src_content_docs_core_directbitmap_parallel_for, docs_src_content_docs_core_fundamentos_de_memoria_unsafe_pointers, docs_src_content_docs_core_fundamentos_de_memoria_stride [INFERRED 0.95]
 
-## Communities (110 total, 39 thin omitted)
+## Communities (113 total, 38 thin omitted)
 
 ### Community 0 - "DirectBitmap"
-Cohesion: 0.19
+Cohesion: 0.18
 Nodes (7): BitmapSource, byte, DirectBitmap, bool, SpatialFilters, IDisposable, WriteableBitmap
 
 ### Community 1 - "MainWindow"
@@ -169,19 +172,19 @@ Nodes (11): MainWindow, bool, DispatcherTimer, double, int, List, Point, RoutedE
 
 ### Community 2 - "BorderlessWindow"
 Cohesion: 0.03
-Nodes (102): Description, Arrow, Border, BorderlessWindow, BrdQuizFeedback, BrdStudyTopicQuizFeedback, ColLabCode, ColLabPlayground (+94 more)
+Nodes (101): Description, Arrow, Border, BorderlessWindow, BrdQuizFeedback, BrdStudyTopicQuizFeedback, ColLabCode, ColLabPlayground (+93 more)
 
 ### Community 3 - "Vec3"
-Cohesion: 0.09
-Nodes (16): Mat4x4, Ray3D, Vec3, Vec4, double, MaterialRay, PlaneObject, PointLight (+8 more)
+Cohesion: 0.08
+Nodes (19): Mat4x4, Ray3D, Vec3, Vec4, double, MaterialRay, PlaneObject, PointLight (+11 more)
 
 ### Community 4 - "WpfViewport3DManager"
-Cohesion: 0.07
+Cohesion: 0.08
 Nodes (20): AmbientLight, WpfViewport3DManager, bool, Color, double, GeometryModel3D, Model3DGroup, MouseButtonEventArgs (+12 more)
 
-### Community 5 - ".UpdateStatus"
-Cohesion: 0.12
-Nodes (5): BtnFocusCode, BtnResetColumns, RbCameraOrthographic, RbCameraPerspective, RadioButton
+### Community 5 - "AppIconHelperTests"
+Cohesion: 0.24
+Nodes (5): AppIconHelper, AppIconHelperTests, Fact, ImageSource, RenderTargetBitmap
 
 ### Community 6 - "LiveCodeCompiler"
 Cohesion: 0.11
@@ -192,12 +195,12 @@ Cohesion: 0.11
 Nodes (17): Brush, ChangelogDocumentBuilder, SolidColorBrush, ChangelogBlock, ChangelogEntry, ChangelogInlineSegment, ChangelogParser, ChangelogSectionKind (+9 more)
 
 ### Community 8 - "BorderlessWindow"
-Cohesion: 0.09
-Nodes (15): BorderlessWindow, bool, Button, EventArgs, MouseButtonEventArgs, RoutedEventArgs, BorderlessWindow, BtnMaximize (+7 more)
+Cohesion: 0.19
+Nodes (7): BorderlessWindow, bool, Button, EventArgs, MouseButtonEventArgs, RoutedEventArgs, DependencyObject
 
 ### Community 9 - "StudyTopic"
-Cohesion: 0.11
-Nodes (15): DocReference, StudyGuideData, StudyQuiz, StudyTopic, List, Cmb3DShapes, CmbInterpolation, CmbSoftMesh (+7 more)
+Cohesion: 0.52
+Nodes (5): DocReference, StudyGuideData, StudyQuiz, StudyTopic, List
 
 ### Community 10 - "Slider"
 Cohesion: 0.13
@@ -207,21 +210,25 @@ Nodes (19): Slider3DAmbient, Slider3DSpecular, SliderBrightness, SliderContrast,
 Cohesion: 0.11
 Nodes (10): CodeStudioWindow, bool, DispatcherTimer, int, KeyEventArgs, List, RoutedEventArgs, SolidColorBrush (+2 more)
 
+### Community 12 - ".UpdateContextualTopBar"
+Cohesion: 0.07
+Nodes (6): BtnFocusCode, BtnResetColumns, RbCameraOrthographic, RbCameraPerspective, RadioButton, RoutedEventHandler
+
 ### Community 13 - "ProjectStudioControl"
-Cohesion: 0.14
-Nodes (10): ProjectStudioControl, bool, DispatcherTimer, EventArgs, List, RoutedEventArgs, SelectionChangedEventArgs, SolidColorBrush (+2 more)
+Cohesion: 0.16
+Nodes (9): ProjectStudioControl, bool, DispatcherTimer, EventArgs, List, RoutedEventArgs, SelectionChangedEventArgs, SolidColorBrush (+1 more)
 
 ### Community 14 - "UserControl"
 Cohesion: 0.14
-Nodes (22): BtnBorder, ImgFreeSimulation, PnlFreeLiveXamlContainer, TabBorder, TxtFreeParam1, TxtFreeParam2, TxtFreeParam3, TxtFreeParam4 (+14 more)
+Nodes (21): RtbFreeCode, RtbFreeXamlCode, TabItemFreeLiveXaml, TxtFreeParam1, TxtFreeParam2, TxtFreeParam3, TxtFreeParam4, TxtFreeStats (+13 more)
 
 ### Community 15 - "dependencies"
 Cohesion: 0.09
 Nodes (22): astro, @astrojs/starlight, dependencies, astro, @astrojs/starlight, katex, mermaid, rehype-katex (+14 more)
 
 ### Community 16 - "Button"
-Cohesion: 0.09
-Nodes (16): BtnGoToLaboratorioLesson, BtnGoToStudyTheory, BtnMaximize, BtnNextLesson, BtnPrevLesson, BtnQuizOpt0, BtnQuizOpt1, BtnQuizOpt2 (+8 more)
+Cohesion: 0.08
+Nodes (17): BtnGoToLaboratorioLesson, BtnGoToStudyTheory, BtnMaximize, BtnNextLesson, BtnPrevLesson, BtnQuizOpt0, BtnQuizOpt1, BtnQuizOpt2 (+9 more)
 
 ### Community 17 - "Application"
 Cohesion: 0.12
@@ -248,15 +255,15 @@ Cohesion: 0.14
 Nodes (17): graphify knowledge graph rules, Mandatory test rule, WindowStyle=None window pattern, Mandatory test rule, WindowStyle=None window pattern, Google Antigravity agent, Dark palette colors, dotnet build command (+9 more)
 
 ### Community 23 - "Rasterizer2D"
-Cohesion: 0.18
-Nodes (9): Edge, OutCodes, Rasterizer2D, Color, double, int, Point, OutCodes (+1 more)
+Cohesion: 0.15
+Nodes (11): Edge, OutCodes, Rasterizer2D, Color, double, int, Point, ImgDisplay2D (+3 more)
 
 ### Community 24 - "ColorSpaces"
 Cohesion: 0.20
 Nodes (3): ColorSpaces, GrayscaleMethod, Color
 
-### Community 25 - ".Btn3D_LoadRobot_Click"
-Cohesion: 0.22
+### Community 25 - ".ChkRobotAnim_CheckedChanged"
+Cohesion: 0.29
 Nodes (4): Chk3DAutoRotate, ChkRobotAnim, ChkSoftWireframe, CheckBox
 
 ### Community 26 - "Window"
@@ -269,19 +276,23 @@ Nodes (13): 4-DOF Articulated Robot Arm Demo, Hierarchical Solar System Simulati
 
 ### Community 28 - "CGPDI.StudyLab.Core"
 Cohesion: 0.13
-Nodes (5): CGPDI.StudyLab.Graphics3D, CGPDI.StudyLab.Core, CGPDI.StudyLab.Graphics2D, CGPDI.StudyLab.ImageProcessing, CGPDI.StudyLab.Tests.UnitTests
+Nodes (5): CGPDI.StudyLab.Core, CGPDI.StudyLab.Graphics2D, CGPDI.StudyLab.ImageProcessing, CGPDI.StudyLab.Tests.UnitTests, CGPDI.StudyLab
 
 ### Community 29 - ".Lock"
-Cohesion: 0.14
-Nodes (5): ImageSampleGenerator, PointAndHistograms, MouseButtonEventArgs, ImageProcessingTests, Fact
+Cohesion: 0.16
+Nodes (3): ImageSampleGenerator, GeometricTransforms, InterpolationMode
 
 ### Community 30 - "UpdateManager"
 Cohesion: 0.07
-Nodes (21): CancellationToken, App, Task, AppIconHelper, ReleaseInfo, UpdateManager, string, Task (+13 more)
+Nodes (21): CancellationToken, App, Task, ReleaseInfo, UpdateManager, string, Task, Version (+13 more)
 
 ### Community 31 - "HierarchicalRobotArm"
 Cohesion: 0.17
 Nodes (9): HierarchicalRobotArm, SceneNode3D, Color, GeometryModel3D, List, Model3DGroup, Point3D, RotateTransform3D (+1 more)
+
+### Community 33 - "BorderlessWindow"
+Cohesion: 0.17
+Nodes (8): BorderlessWindow, BtnMaximize, StudioControl, ProjectStudioWindow, KeyEventArgs, RoutedEventArgs, Button, ProjectStudioControl
 
 ### Community 34 - "CGPDI.StudyLab.Tests"
 Cohesion: 0.13
@@ -303,13 +314,17 @@ Nodes (6): TxtCompilerReport, TxtLabConsole, TxtLabExplanation, TxtSearchStudy, 
 Cohesion: 0.24
 Nodes (7): BtnMaximize, BtnStudioQuizOpt0, BtnStudioQuizOpt1, BtnStudioQuizOpt2, BtnStudioToggleCanvas, BtnStudioToggleTrack, Button
 
+### Community 39 - "CGPDI.StudyLab.Graphics3D"
+Cohesion: 0.24
+Nodes (3): Graphics3DTests, Fact, CGPDI.StudyLab.Graphics3D
+
 ### Community 42 - "CGPDI.StudyLab.Views"
 Cohesion: 0.16
 Nodes (6): LaboratorioUiTests, UIFact, ProjectStudioUiTests, UIFact, CGPDI.StudyLab.Views, CGPDI.StudyLab.Tests.UiTests
 
 ### Community 43 - "InteractiveLesson"
-Cohesion: 0.24
-Nodes (5): InteractiveLesson, LessonType, QuizOption, List, Button
+Cohesion: 0.31
+Nodes (4): InteractiveLesson, LessonType, QuizOption, List
 
 ### Community 44 - ".SliderFree_ValueChanged"
 Cohesion: 0.43
@@ -320,12 +335,16 @@ Cohesion: 0.29
 Nodes (6): Comandos obrigatórios, Consistência de estilo (NÃO quebrar o que funciona), Convenções de código, Fluxo de janelas / Estúdio / Laboratório, Regra de testes (obrigatória), Regras do Projeto CGPDI.StudyLab
 
 ### Community 46 - "MathRendererAndSyntaxTests"
-Cohesion: 0.36
+Cohesion: 0.31
 Nodes (3): MathRendererAndSyntaxTests, Fact, WpfFact
 
 ### Community 47 - "Changelog — CGPDI StudyLab"
-Cohesion: 0.14
-Nodes (13): Adicionado, Adicionado, Adicionado, Adicionado, Changelog — CGPDI StudyLab, Corrigido, Removido, Segurança (+5 more)
+Cohesion: 0.12
+Nodes (15): Adicionado, Adicionado, Adicionado, Adicionado, Alterado, Changelog — CGPDI StudyLab, Corrigido, Corrigido (+7 more)
+
+### Community 48 - ".Apply2DTransform"
+Cohesion: 0.27
+Nodes (3): Matrix3x3, double, Point
 
 ### Community 50 - "Segurança com Snyk (obrigatória)"
 Cohesion: 0.40
@@ -340,8 +359,8 @@ Cohesion: 0.40
 Nodes (4): Comandos, Métricas monitoradas, Qualidade com SonarQube (obrigatória), Regras
 
 ### Community 53 - "MathFormulaRenderer"
-Cohesion: 0.18
-Nodes (9): MathFormulaRenderer, GeneratedRegex, Match, Regex, Run, SearchValues, SolidColorBrush, Dictionary (+1 more)
+Cohesion: 0.09
+Nodes (17): MathFormulaRenderer, GeneratedRegex, Match, Regex, Run, SearchValues, SolidColorBrush, Cmb3DShapes (+9 more)
 
 ### Community 54 - "DirectBitmap Class Documentation"
 Cohesion: 0.40
@@ -400,12 +419,8 @@ Cohesion: 0.67
 Nodes (3): Bilinear Spatial Interpolation, Geometric Transformations Documentation, Geometric Transformations Inverse Mapping
 
 ### Community 74 - ".Clear"
-Cohesion: 0.16
-Nodes (6): Color, Matrix3x3, double, Point, Rasterization2DTests, Fact
-
-### Community 75 - "RtbFreeCode"
-Cohesion: 0.67
-Nodes (3): RtbFreeCode, RtbFreeXamlCode, RichTextBox
+Cohesion: 0.19
+Nodes (5): Color, ImageProcessingTests, Fact, Rasterization2DTests, Fact
 
 ### Community 76 - "ToggleButton"
 Cohesion: 0.67
@@ -427,25 +442,29 @@ Nodes (3): TabStudioEditor, TabStudioVisualizer, TabControl
 Cohesion: 0.40
 Nodes (4): MainTabControl, TabLabEditor, TabLabVisualizer, TabControl
 
+### Community 91 - "Border"
+Cohesion: 0.50
+Nodes (4): BtnBorder, PnlFreeLiveXamlContainer, TabBorder, Border
+
 ## Knowledge Gaps
-- **182 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `type`, `C:\\tools\\snyk\\snyk.exe`, `mcp` (+177 more)
+- **183 isolated node(s):** `$schema`, `.opencode/plugins/graphify.js`, `type`, `C:\\tools\\snyk\\snyk.exe`, `mcp` (+178 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **39 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **38 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `MainWindow` connect `MainWindow` to `DirectBitmap`, `BorderlessWindow`, `Vec3`, `WpfViewport3DManager`, `.UpdateStatus`, `BorderlessWindow`, `StudyTopic`, `Slider`, `.UpdateContextualTopBar`, `Button`, `.GetPlainText`, `.Btn3D_LoadRobot_Click`, `CGPDI.StudyLab.Core`, `.Lock`, `HierarchicalRobotArm`, `TextBox`, `InteractiveLesson`, `.UpdateHistogram`, `.MainTabControl_SelectionChanged`?**
-  _High betweenness centrality (0.247) - this node is a cross-community bridge._
-- **Why does `CGPDI.StudyLab.Core` connect `CGPDI.StudyLab.Core` to `Window`, `Vec3`, `AlgorithmCodeSnippets.cs`, `LiveCodeCompiler`, `.Parse`, `StudyTopic`, `Morphology`, `InteractiveLesson`, `CGPDI.StudyLab.Views`, `MathFormulaRenderer`, `ColorSpaces`, `.GetTemplates`, `UpdateManager`?**
-  _High betweenness centrality (0.142) - this node is a cross-community bridge._
-- **Why does `BorderlessWindow` connect `BorderlessWindow` to `.MainTabControl_SelectionChanged`, `MainWindow`, `.UpdateStatus`, `TextBox`, `StudyTopic`, `Slider`, `ToggleButton`, `.UpdateContextualTopBar`, `Button`, `.UpdateHistogram`, `.Btn3D_LoadRobot_Click`?**
-  _High betweenness centrality (0.141) - this node is a cross-community bridge._
+- **Why does `MainWindow` connect `MainWindow` to `DirectBitmap`, `BorderlessWindow`, `Vec3`, `WpfViewport3DManager`, `BorderlessWindow`, `Slider`, `.UpdateContextualTopBar`, `Button`, `.GetPlainText`, `Rasterizer2D`, `.ChkRobotAnim_CheckedChanged`, `CGPDI.StudyLab.Core`, `.Lock`, `HierarchicalRobotArm`, `TextBox`, `InteractiveLesson`, `.Apply2DTransform`, `MathFormulaRenderer`, `.UpdateHistogram`, `.MainTabControl_SelectionChanged`?**
+  _High betweenness centrality (0.228) - this node is a cross-community bridge._
+- **Why does `CGPDI.StudyLab.Core` connect `CGPDI.StudyLab.Core` to `Window`, `Vec3`, `AppIconHelperTests`, `AlgorithmCodeSnippets.cs`, `.Parse`, `LiveCodeCompiler`, `StudyTopic`, `CGPDI.StudyLab.Graphics3D`, `InteractiveLesson`, `Morphology`, `CGPDI.StudyLab.Views`, `MathRendererAndSyntaxTests`, `QuizAndCurriculumTests.cs`, `MathFormulaRenderer`, `ColorSpaces`, `.GetTemplates`, `UpdateManager`?**
+  _High betweenness centrality (0.154) - this node is a cross-community bridge._
+- **Why does `BorderlessWindow` connect `BorderlessWindow` to `.MainTabControl_SelectionChanged`, `MainWindow`, `Vec3`, `TextBox`, `Slider`, `.UpdateContextualTopBar`, `ToggleButton`, `Button`, `.Apply2DTransform`, `MathFormulaRenderer`, `.UpdateHistogram`, `Rasterizer2D`, `.ChkRobotAnim_CheckedChanged`, `.Lock`?**
+  _High betweenness centrality (0.145) - this node is a cross-community bridge._
 - **What connects `$schema`, `.opencode/plugins/graphify.js`, `type` to the rest of the system?**
-  _182 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _183 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `MainWindow` be split into smaller, more focused modules?**
-  _Cohesion score 0.04968589377498572 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05153576582148011 - nodes in this community are weakly interconnected._
 - **Should `BorderlessWindow` be split into smaller, more focused modules?**
-  _Cohesion score 0.031220255092328193 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0314502038439138 - nodes in this community are weakly interconnected._
 - **Should `Vec3` be split into smaller, more focused modules?**
-  _Cohesion score 0.09098639455782313 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07811447811447811 - nodes in this community are weakly interconnected._

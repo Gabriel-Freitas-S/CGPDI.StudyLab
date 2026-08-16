@@ -88,6 +88,16 @@ namespace CGPDI.StudyLab.Core
         public static void GenerateAndSaveIcons(string icoFilePath, string pngFilePath)
         {
             int[] sizes = { 16, 32, 48, 64, 128, 256 };
+            var pngBuffers = GeneratePngBuffers(sizes, pngFilePath);
+
+            if (!string.IsNullOrEmpty(icoFilePath))
+            {
+                SaveIcoFile(icoFilePath, sizes, pngBuffers);
+            }
+        }
+
+        private static List<byte[]> GeneratePngBuffers(int[] sizes, string pngFilePath)
+        {
             var pngBuffers = new List<byte[]>();
 
             foreach (int size in sizes)
@@ -97,54 +107,62 @@ namespace CGPDI.StudyLab.Core
                 encoder.Frames.Add(BitmapFrame.Create(rtb));
                 using var ms = new MemoryStream();
                 encoder.Save(ms);
-                pngBuffers.Add(ms.ToArray());
+                byte[] bytes = ms.ToArray();
+                pngBuffers.Add(bytes);
 
                 if (size == 256 && !string.IsNullOrEmpty(pngFilePath))
                 {
-                    string? dir = Path.GetDirectoryName(pngFilePath);
-                    if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                    File.WriteAllBytes(pngFilePath, ms.ToArray());
+                    SavePngFile(pngFilePath, bytes);
                 }
             }
 
-            if (!string.IsNullOrEmpty(icoFilePath))
+            return pngBuffers;
+        }
+
+        private static void SavePngFile(string pngFilePath, byte[] bytes)
+        {
+            string? dir = Path.GetDirectoryName(pngFilePath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllBytes(pngFilePath, bytes);
+        }
+
+        private static void SaveIcoFile(string icoFilePath, int[] sizes, List<byte[]> pngBuffers)
+        {
+            string? dir = Path.GetDirectoryName(icoFilePath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            using var fs = new FileStream(icoFilePath, FileMode.Create, FileAccess.Write);
+            using var bw = new BinaryWriter(fs);
+
+            // ICO Header (6 bytes)
+            bw.Write((short)0); // Reserved
+            bw.Write((short)1); // Type: 1 = Icon
+            bw.Write((short)sizes.Length); // Image Count
+
+            int offset = 6 + (16 * sizes.Length);
+
+            // Directory Entries (16 bytes per image)
+            for (int i = 0; i < sizes.Length; i++)
             {
-                string? dir = Path.GetDirectoryName(icoFilePath);
-                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                int size = sizes[i];
+                byte[] pngData = pngBuffers[i];
 
-                using var fs = new FileStream(icoFilePath, FileMode.Create, FileAccess.Write);
-                using var bw = new BinaryWriter(fs);
+                bw.Write((byte)(size == 256 ? 0 : size)); // Width
+                bw.Write((byte)(size == 256 ? 0 : size)); // Height
+                bw.Write((byte)0); // Color count
+                bw.Write((byte)0); // Reserved
+                bw.Write((short)1); // Color planes
+                bw.Write((short)32); // Bits per pixel
+                bw.Write(pngData.Length); // Size of image data
+                bw.Write(offset); // Offset of image data
 
-                // ICO Header (6 bytes)
-                bw.Write((short)0); // Reserved
-                bw.Write((short)1); // Type: 1 = Icon
-                bw.Write((short)sizes.Length); // Image Count
+                offset += pngData.Length;
+            }
 
-                int offset = 6 + (16 * sizes.Length);
-
-                // Directory Entries (16 bytes per image)
-                for (int i = 0; i < sizes.Length; i++)
-                {
-                    int size = sizes[i];
-                    byte[] pngData = pngBuffers[i];
-
-                    bw.Write((byte)(size == 256 ? 0 : size)); // Width
-                    bw.Write((byte)(size == 256 ? 0 : size)); // Height
-                    bw.Write((byte)0); // Color count
-                    bw.Write((byte)0); // Reserved
-                    bw.Write((short)1); // Color planes
-                    bw.Write((short)32); // Bits per pixel
-                    bw.Write(pngData.Length); // Size of image data
-                    bw.Write(offset); // Offset of image data
-
-                    offset += pngData.Length;
-                }
-
-                // Image Data (PNG streams)
-                for (int i = 0; i < sizes.Length; i++)
-                {
-                    bw.Write(pngBuffers[i]);
-                }
+            // Image Data (PNG streams)
+            for (int i = 0; i < sizes.Length; i++)
+            {
+                bw.Write(pngBuffers[i]);
             }
         }
 
@@ -158,13 +176,19 @@ namespace CGPDI.StudyLab.Core
             {
                 double s = size / 64.0;
 
-                // Fundo arredondado escuro
-                var bgBrush = new LinearGradientBrush(
-                    Color.FromRgb(13, 14, 24),
-                    Color.FromRgb(5, 5, 10),
-                    new Point(0, 0),
-                    new Point(1, 1));
-                dc.DrawRoundedRectangle(bgBrush, new Pen(new SolidColorBrush(Color.FromRgb(34, 34, 56)), 1.5 * s), new Rect(2 * s, 2 * s, 60 * s, 60 * s), 14 * s, 14 * s);
+                // Fundo 100% transparente (Alpha = 0) para compatibilidade limpa com qualquer tema/área de trabalho
+
+                // Raios Luminosos dos Vértices
+                var cyanPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 56, 189, 248)), 1.5 * s);
+                var magentaPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 236, 72, 153)), 1.5 * s);
+                var amberPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 251, 191, 36)), 1.5 * s);
+
+                dc.DrawLine(cyanPen, new Point(32 * s, 10 * s), new Point(32 * s, 4 * s));
+                dc.DrawLine(cyanPen, new Point(12 * s, 21 * s), new Point(6 * s, 17 * s));
+                dc.DrawLine(amberPen, new Point(52 * s, 21 * s), new Point(58 * s, 17 * s));
+                dc.DrawLine(magentaPen, new Point(12 * s, 43 * s), new Point(6 * s, 47 * s));
+                dc.DrawLine(amberPen, new Point(52 * s, 43 * s), new Point(58 * s, 47 * s));
+                dc.DrawLine(magentaPen, new Point(32 * s, 54 * s), new Point(32 * s, 60 * s));
 
                 // Face Superior (Ciano)
                 var topGeo = new PathGeometry(new[] {
@@ -174,7 +198,7 @@ namespace CGPDI.StudyLab.Core
                         new LineSegment(new Point(12 * s, 21 * s), true)
                     }, true)
                 });
-                var topBrush = new LinearGradientBrush(Color.FromArgb(220, 56, 189, 248), Color.FromArgb(120, 2, 132, 199), new Point(0, 0), new Point(1, 1));
+                var topBrush = new LinearGradientBrush(Color.FromArgb(240, 56, 189, 248), Color.FromArgb(160, 2, 132, 199), new Point(0, 0), new Point(1, 1));
                 dc.DrawGeometry(topBrush, new Pen(new SolidColorBrush(Color.FromRgb(103, 232, 249)), 1.5 * s), topGeo);
 
                 // Face Esquerda (Magenta)
@@ -185,7 +209,7 @@ namespace CGPDI.StudyLab.Core
                         new LineSegment(new Point(12 * s, 43 * s), true)
                     }, true)
                 });
-                var leftBrush = new LinearGradientBrush(Color.FromArgb(220, 236, 72, 153), Color.FromArgb(120, 147, 51, 234), new Point(0, 0), new Point(1, 1));
+                var leftBrush = new LinearGradientBrush(Color.FromArgb(240, 236, 72, 153), Color.FromArgb(160, 147, 51, 234), new Point(0, 0), new Point(1, 1));
                 dc.DrawGeometry(leftBrush, new Pen(new SolidColorBrush(Color.FromRgb(244, 114, 182)), 1.5 * s), leftGeo);
 
                 // Face Direita (Ouro / Âmbar)
@@ -196,7 +220,7 @@ namespace CGPDI.StudyLab.Core
                         new LineSegment(new Point(32 * s, 54 * s), true)
                     }, true)
                 });
-                var rightBrush = new LinearGradientBrush(Color.FromArgb(220, 251, 191, 36), Color.FromArgb(120, 234, 88, 12), new Point(0, 0), new Point(1, 1));
+                var rightBrush = new LinearGradientBrush(Color.FromArgb(240, 251, 191, 36), Color.FromArgb(160, 234, 88, 12), new Point(0, 0), new Point(1, 1));
                 dc.DrawGeometry(rightBrush, new Pen(new SolidColorBrush(Color.FromRgb(252, 211, 77)), 1.5 * s), rightGeo);
 
                 // Detalhes da Matriz de Pixels

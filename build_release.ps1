@@ -50,7 +50,25 @@ Copy-Item "$publishDir\CGPDI.StudyLab.exe" "$distDir\CGPDI-StudyLab-v$Version-Po
 Write-Host "✔ Executavel Portatil Direto gerado: $distDir\CGPDI-StudyLab-v$Version-Portable.exe" -ForegroundColor Green
 
 # Arquivo de instruções
-"CGPDI StudyLab v$Version - Executavel Unico Portatil`r`n`r`nBasta dar dois cliques em CGPDI.StudyLab.exe para iniciar!`r`nNao requer instalacao nem direitos de administrador." | Out-File -FilePath "$publishDir\COMO-USAR.txt" -Encoding utf8
+@"
+============================================================
+  CGPDI StudyLab v$Version - Guia de Execução e Instalação
+============================================================
+
+1. Executável Portátil Direto:
+   Basta dar dois cliques em CGPDI.StudyLab.exe para iniciar!
+   Não requer instalação nem direitos de administrador.
+
+2. Instalador Velopack (Setup.exe):
+   Instala na pasta do usuário (%LocalAppData%) e cria atalhos na
+   Área de Trabalho e Menu Iniciar, com atualizações automáticas delta.
+
+3. Instalador Machine-Wide (.msi):
+   Ideal para laboratórios e uso institucional em computadores compartilhados.
+
+Em caso de qualquer falha na inicialização, consulte o log de diagnóstico em:
+%LocalAppData%\CGPDI.StudyLab\logs\crash.log
+"@ | Out-File -FilePath "$publishDir\COMO-USAR.txt" -Encoding utf8
 
 $zipPath = "$distDir\CGPDI-StudyLab-v$Version-Portable-win-x64.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
@@ -65,7 +83,7 @@ if ($vpk) {
     & vpk pack -u CGPDIStudyLab -v $Version -p "$publishDir" -e CGPDI.StudyLab.exe `
         --packTitle "CGPDI StudyLab" `
         --icon "$PSScriptRoot\CGPDI.StudyLab\Assets\app_icon.ico" `
-        --shortcuts Desktop,StartMenu `
+        --shortcuts Desktop,StartMenuRoot `
         --instLocation Either `
         -o "$PSScriptRoot\Releases"
     if (Test-Path "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe") {

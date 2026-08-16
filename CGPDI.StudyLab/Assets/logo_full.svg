@@ -37,8 +37,7 @@
     </filter>
   </defs>
 
-  <!-- Container -->
-  <rect width="800" height="200" rx="20" fill="url(#bgGradFull)" stroke="#222238" stroke-width="1.5" />
+  <!-- Transparent Container -->
 
   <!-- ================= LOGO ICON (LEFT) ================= -->
   <g transform="translate(25, 10) scale(0.35)">

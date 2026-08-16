@@ -42,9 +42,7 @@
     </filter>
   </defs>
 
-  <!-- Dark Rounded Container Backdrop -->
-  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" stroke="#222238" stroke-width="3" />
-
+  <!-- Transparent Vector Container Backdrop -->
   <!-- Ambient Light Halos -->
   <circle cx="256" cy="180" r="140" fill="#38BDF8" opacity="0.12" filter="url(#intenseGlow)" />
   <circle cx="170" cy="310" r="130" fill="#EC4899" opacity="0.12" filter="url(#intenseGlow)" />

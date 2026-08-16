@@ -16,6 +16,9 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
 
 ### Corrigido
+- Ícones da aplicação com fundo preto: removido o retângulo escuro opaco do gerador vetorial `AppIconHelper` e arquivos SVG/PNG/ICO, passando a usar canal alfa transparente (`Alpha = 0`) para exibição limpa em qualquer tema ou papel de parede do Windows.
+- Resiliência na inicialização pós-instalação (EXE e MSI): implementado tratamento global de exceções (`DispatcherUnhandledException`, `AppDomain.UnhandledException`, `TaskScheduler.UnobservedTaskException`) com gravação de diagnóstico em `%LocalAppData%\CGPDI.StudyLab\logs\crash.log` e diálogo informativo em caso de falhas de hardware ou permissões.
+- Inclusão dos arquivos de `Assets` diretamente na distribuição do executável (`CopyToOutputDirectory="PreserveNewest"`), evitando tentativas desnecessárias de escrita em diretórios protegidos como `Program Files`.
 - Tratamento explícito de cancelamento e descarte seguro de `CancellationTokenSource` no diálogo de atualizações.
 - Correção de operações binárias em métodos de teste dinâmico do compilador em tempo de execução.
 

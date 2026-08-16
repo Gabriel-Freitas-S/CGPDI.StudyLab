@@ -160,7 +160,25 @@ jobs:
       - name: Create Portable ZIP (manual download)
         shell: pwsh
         run: |
-          "CGPDI StudyLab v${{ steps.get_version.outputs.VERSION }} - Executavel Unico Portatil`r`n`r`nBasta dar dois cliques em CGPDI.StudyLab.exe para iniciar!`r`nNao requer instalacao nem direitos de administrador." | Out-File -FilePath "publish/win-x64/COMO-USAR.txt" -Encoding utf8
+          @"
+          ============================================================
+            CGPDI StudyLab v${{ steps.get_version.outputs.VERSION }} - Guia de Execucao e Instalacao
+          ============================================================
+
+          1. Executavel Portatil Direto:
+             Basta dar dois cliques em CGPDI.StudyLab.exe para iniciar!
+             Nao requer instalacao nem direitos de administrador.
+
+          2. Instalador Velopack (Setup.exe):
+             Instala na pasta do usuario (%LocalAppData%) e cria atalhos na
+             Area de Trabalho e Menu Iniciar, com atualizacoes automaticas delta.
+
+          3. Instalador Machine-Wide (.msi):
+             Ideal para laboratorios e uso institucional em computadores compartilhados.
+
+          Em caso de qualquer falha na inicializacao, consulte o log de diagnostico em:
+          %LocalAppData%\CGPDI.StudyLab\logs\crash.log
+          "@ | Out-File -FilePath "publish/win-x64/COMO-USAR.txt" -Encoding utf8
           Compress-Archive -Path "publish/win-x64/*" -DestinationPath "CGPDI-StudyLab-Portable-win-x64.zip" -CompressionLevel Optimal
           Write-Host "Portable ZIP created successfully."
 
@@ -186,7 +204,7 @@ jobs:
             -e CGPDI.StudyLab.exe `
             --packTitle "CGPDI StudyLab" `
             --icon "CGPDI.StudyLab/Assets/app_icon.ico" `
-            --shortcuts Desktop,StartMenu `
+            --shortcuts Desktop,StartMenuRoot `
             --instLocation Either `
             --releaseNotes release-notes.md
 

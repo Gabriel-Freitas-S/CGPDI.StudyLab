@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\**" />
+    <None Update="Assets\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\app_icon.ico" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
