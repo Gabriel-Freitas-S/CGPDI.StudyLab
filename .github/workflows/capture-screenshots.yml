@@ -1,13 +1,20 @@
 name: Capture App Screenshots & GIF
 
-# Dispara automaticamente após o release-app terminar com sucesso.
-# Também pode ser acionado manualmente via workflow_dispatch.
+# Dispara:
+# 1. Automaticamente apos o release-app terminar com sucesso no branch main
+# 2. Em push direto se houver alteracoes no script de captura ou neste workflow
+# 3. Manualmente via workflow_dispatch
 on:
   workflow_run:
     workflows:
       - "Build & Release Executable and Installer"
     types: [completed]
     branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/capture-screenshots.ps1'
+      - '.github/workflows/capture-screenshots.yml'
   workflow_dispatch:
 
 permissions:
@@ -22,11 +29,14 @@ jobs:
     name: Capture Screenshots & Generate GIF
     runs-on: windows-latest
 
-    # Só executa se o workflow pai terminou com sucesso,
-    # ou se foi disparado manualmente (workflow_dispatch).
+    # Executa se:
+    # - Foi push direto em scripts/capture ou neste workflow
+    # - Foi disparo manual
+    # - Ou se foi via workflow_run e o release-app concluiu com sucesso
     if: >
+      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
     steps:
       - name: Log do workflow que disparou esta execução
@@ -100,6 +110,6 @@ jobs:
             git push
             Write-Host "Screenshots commitados com sucesso."
           } else {
-            Write-Host "Nenhuma mudanca nos screenshots — commit pulado."
+            Write-Host "Nenhuma mudanca nos screenshots - commit pulado."
           }
 

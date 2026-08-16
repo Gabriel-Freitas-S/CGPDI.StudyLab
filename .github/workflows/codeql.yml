@@ -3,8 +3,20 @@ name: "CodeQL Advanced Analysis"
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'CGPDI.StudyLab/**'
+      - 'CGPDI.StudyLab.Tests/**'
+      - 'Directory.Build.props'
+      - 'CGPDI.StudyLab.slnx'
+      - '.github/workflows/codeql.yml'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'CGPDI.StudyLab/**'
+      - 'CGPDI.StudyLab.Tests/**'
+      - 'Directory.Build.props'
+      - 'CGPDI.StudyLab.slnx'
+      - '.github/workflows/codeql.yml'
   schedule:
     - cron: '33 11 * * 0'
   workflow_dispatch:
