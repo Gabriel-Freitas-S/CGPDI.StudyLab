@@ -79,8 +79,45 @@ jobs:
             }
             if ($inSection) { $notes += $line }
           }
-          if ($notes.Count -eq 0) {
-            throw "Nenhuma seção '## [$ver]' encontrada em CHANGELOG.md. Atualize o changelog antes de liberar a release."
+
+          # Fallback 1: Se não encontrou a seção da versão exata, tenta '## [Unreleased]'
+          if ($notes.Count -eq 0 -or ($notes -join "").Trim().Length -eq 0) {
+            $inUnreleased = $false
+            $unreleasedNotes = @()
+            foreach ($line in $lines) {
+              if ($line -match "^##\s*\[") {
+                if ($inUnreleased) { break }
+                if ($line -match "^##\s*\[\s*Unreleased\s*\]") { $inUnreleased = $true }
+                continue
+              }
+              if ($inUnreleased) { $unreleasedNotes += $line }
+            }
+            if (($unreleasedNotes -join "").Trim().Length -gt 0) {
+              $notes = $unreleasedNotes
+              Write-Host "Usando notas da seção [Unreleased] para a release $ver."
+            }
+          }
+
+          # Fallback 2: Se [Unreleased] estiver vazio, extrai a primeira versão documentada mais recente
+          if ($notes.Count -eq 0 -or ($notes -join "").Trim().Length -eq 0) {
+            $inFirstVer = $false
+            $firstVerNotes = @()
+            foreach ($line in $lines) {
+              if ($line -match "^##\s*\[") {
+                if ($inFirstVer) { break }
+                if ($line -match "^##\s*\[\s*v?\d+\.\d+") { $inFirstVer = $true }
+                continue
+              }
+              if ($inFirstVer) { $firstVerNotes += $line }
+            }
+            if (($firstVerNotes -join "").Trim().Length -gt 0) {
+              $notes = $firstVerNotes
+              Write-Host "Usando notas da seção de versão mais recente para a release $ver."
+            }
+          }
+
+          if ($notes.Count -eq 0 -or ($notes -join "").Trim().Length -eq 0) {
+            throw "Nenhuma seção com notas de release encontrada em CHANGELOG.md."
           }
           $notes | Set-Content -Path "release-notes.md" -Encoding utf8
           Write-Host "Notas de release extraídas do CHANGELOG.md ($($notes.Count) linhas)."
@@ -99,6 +136,24 @@ jobs:
             --nologo --verbosity minimal
           if ($LASTEXITCODE -ne 0) {
             throw "Testes falharam. A release não pode ser publicada com regressões."
+          }
+
+      - name: Setup Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Snyk Security Gate (Block Release on Medium+ Vulnerabilities)
+        shell: pwsh
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          Write-Host "Executando Snyk Security Gate (limiar: moderado / medium ou superior)..."
+          snyk test --file="CGPDI.StudyLab/CGPDI.StudyLab.csproj" --severity-threshold=medium
+          if ($LASTEXITCODE -ne 0) {
+            throw "Vulnerabilidades moderadas ou superiores encontradas nas dependencias pelo Snyk. Release cancelada."
+          }
+          snyk code test --severity-threshold=medium
+          if ($LASTEXITCODE -ne 0) {
+            throw "Vulnerabilidades moderadas ou superiores encontradas no codigo-fonte pelo Snyk. Release cancelada."
           }
 
       - name: Publish Single-File Self-Contained App (win-x64)

@@ -10,6 +10,8 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 
 ## [Unreleased]
 
+## [v1.0.5] - 2026-08-16
+
 ### Adicionado
 - Migração do auto-update para o **Velopack**: instalador moderno em `%LocalAppData%` (sem UAC), **atualizações delta** (baixa apenas as alterações, frequentemente < 5 MB) e notas da release embutidas no pacote.
 - Fallback inteligente de atualização para laboratórios universitários: caso a máquina esteja em modo *machine-wide* (`Program Files`) e o aluno/professor não possua permissão de administrador nem tarefa SYSTEM disponível, o app faz fallback automático e aplica a versão mais recente no diretório local do usuário (`%LocalAppData%`) ou pacote portátil, garantindo atualização instantânea sem depender de chamados de TI.

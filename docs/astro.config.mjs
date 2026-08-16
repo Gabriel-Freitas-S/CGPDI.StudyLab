@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -8,8 +9,10 @@ export default defineConfig({
   site: 'https://cgpdi.gabrielfs.dev',
   base: '/',
   markdown: {
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
   },
   integrations: [
     starlight({
@@ -19,9 +22,13 @@ export default defineConfig({
         alt: 'CGPDI StudyLab Logo',
         src: './src/assets/logo.svg',
       },
-      social: {
-        github: 'https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab',
-      },
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab',
+        },
+      ],
       defaultLocale: 'root',
       locales: {
         root: {

@@ -1,0 +1,104 @@
+name: Snyk Security Analysis & Gate
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-scan:
+    name: Snyk Security Scan (.NET & Docs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Setup Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Restore .NET dependencies
+        run: dotnet restore CGPDI.StudyLab/CGPDI.StudyLab.csproj
+
+      - name: Install Docs dependencies
+        working-directory: ./docs
+        run: npm ci || npm install
+
+      # Snyk Tests gerando SARIF para GitHub Code Scanning
+      - name: Snyk Open Source (.NET Dependencies)
+        run: snyk test --file=CGPDI.StudyLab/CGPDI.StudyLab.csproj --severity-threshold=medium --sarif-file-output=snyk-dotnet.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      - name: Snyk Code (C# SAST)
+        run: snyk code test --severity-threshold=medium --sarif-file-output=snyk-code.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      - name: Snyk Open Source (Docs Dependencies)
+        working-directory: ./docs
+        run: snyk test --severity-threshold=medium --sarif-file-output=../snyk-docs.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+      # Upload dos relatórios SARIF para o GitHub Security tab
+      - name: Upload .NET SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: snyk-dotnet.sarif
+          category: snyk-dotnet
+
+      - name: Upload Snyk Code SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: snyk-code.sarif
+          category: snyk-code
+
+      - name: Upload Docs SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: snyk-docs.sarif
+          category: snyk-docs
+
+      # Hard Gate: Falha a pipeline se houver qualquer vulnerabilidade moderada ou superior
+      - name: Snyk Security Gate (Fail on Medium / High / Critical)
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          echo "Verificando dependencias .NET (limiar: moderado+)..."
+          snyk test --file=CGPDI.StudyLab/CGPDI.StudyLab.csproj --severity-threshold=medium
+
+          echo "Verificando codigo-fonte C# (limiar: moderado+)..."
+          snyk code test --severity-threshold=medium
+
+          echo "Verificando dependencias da documentacao (limiar: moderado+)..."
+          cd docs && snyk test --severity-threshold=medium
