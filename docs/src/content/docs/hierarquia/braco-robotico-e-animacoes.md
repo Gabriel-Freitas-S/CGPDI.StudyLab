@@ -1,4 +1,4 @@
----
+﻿---
 title: Robô Articulado & Sistema Solar (HierarchicalModeling.cs)
 description: Demonstração prática e controle por sliders do Braço Robótico com Cinemática Direta e do Sistema Planetário Hierárquico.
 ---
@@ -36,4 +36,4 @@ graph TD
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Ray Tracing & Renderização Realística](/raytracing/fundamentos-e-fisica-da-luz/).
+**Próximo Passo:** Entre no módulo de [Ray Tracing & Renderização Realística](/raytracing/fundamentos-e-fisica-da-luz/).

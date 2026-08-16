@@ -1,4 +1,4 @@
----
+﻿---
 title: Visão Geral da Arquitetura do Software
 description: Como os módulos de memória, PDI, 2D, 3D e interface gráfica se conectam para atingir 60+ FPS em tempo real.
 ---
@@ -71,7 +71,7 @@ Três decisões de engenharia garantem taxas elevadas de quadros por segundo:
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Conceitos fundamentais da arquitetura de aplicações de alto desempenho no ecossistema .NET:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/introduction-to-wpf#wpf-architecture" target="_blank" rel="noopener">Visão Geral da Arquitetura do WPF</a> — Entenda como o PresentationCore, MediaContext e o subsistema milcore/DirectX interagem.</li>
@@ -82,4 +82,4 @@ Três decisões de engenharia garantem taxas elevadas de quadros por segundo:
 
 ---
 
-👉 **Próximo Passo:** Explore a [Estrutura Detalhada de Pastas e Arquivos](/arquitetura/estrutura-de-pastas/).
+**Próximo Passo:** Explore a [Estrutura Detalhada de Pastas e Arquivos](/arquitetura/estrutura-de-pastas/).

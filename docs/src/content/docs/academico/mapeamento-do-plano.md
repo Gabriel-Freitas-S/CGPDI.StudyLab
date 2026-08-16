@@ -1,4 +1,4 @@
----
+﻿---
 title: Mapeamento do Plano de Ensino Universitário
 description: Relação completa 1:1 entre a Ementa Oficial da disciplina de Computação Gráfica / PDI e as classes do projeto.
 ---
@@ -30,7 +30,7 @@ O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn para Estudantes</h4>
+  <h4>Referências Oficiais Microsoft Learn para Estudantes</h4>
   <p>Portais e materiais de referência recomendados para o aprendizado acadêmico:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/training/dotnet/" target="_blank" rel="noopener">Roteiros de Aprendizagem do .NET no Microsoft Learn</a> — Cursos e trilhas gratuitas do iniciante ao avançado.</li>
@@ -41,4 +41,4 @@ O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da
 
 ---
 
-👉 **Próximo Passo:** Veja o [Roteiro de Estudos para os Trabalhos T1, T2 e T3](/academico/roteiro-de-estudos-e-avaliacoes/).
+**Próximo Passo:** Veja o [Roteiro de Estudos para os Trabalhos T1, T2 e T3](/academico/roteiro-de-estudos-e-avaliacoes/).

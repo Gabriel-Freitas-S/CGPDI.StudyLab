@@ -1,4 +1,4 @@
----
+﻿---
 title: Morfologia Matemática & Limiarização de Otsu (Morphology.cs)
 description: A teoria dos conjuntos aplicada a imagens digitais, elementos estruturantes, erosão, dilatação, abertura, fechamento e o algoritmo de Otsu.
 ---
@@ -55,4 +55,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Explore as [Transformações Geométricas & Mapeamento Inverso](/pdi/transformacoes-geometricas/).
+**Próximo Passo:** Explore as [Transformações Geométricas & Mapeamento Inverso](/pdi/transformacoes-geometricas/).

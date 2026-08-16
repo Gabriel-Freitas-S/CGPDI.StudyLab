@@ -1,4 +1,4 @@
----
+﻿---
 title: WPF, XAML e Renderização em Tempo Real (60+ FPS)
 description: Entenda como o WPF se comunica com a GPU através do DirectX e como o XAML desenha a interface do usuário.
 ---
@@ -92,7 +92,7 @@ Para a exibição 3D acelerada por hardware, o WPF fornece o elemento **`<Viewpo
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Recursos fundamentais para desenvolvimento com WPF e XAML no .NET:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/fundamentals/xaml" target="_blank" rel="noopener">Visão Geral da Linguagem XAML no WPF</a> — Sintaxe declarativa, propriedades de dependência e ciclo de vida de elementos visuais.</li>
@@ -103,4 +103,4 @@ Para a exibição 3D acelerada por hardware, o WPF fornece o elemento **`<Viewpo
 
 ---
 
-👉 **Próximo Passo:** Entre no [Módulo de Núcleo de Memória & Ponteiros](/core/fundamentos-de-memoria/).
+**Próximo Passo:** Entre no [Módulo de Núcleo de Memória & Ponteiros](/core/fundamentos-de-memoria/).

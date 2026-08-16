@@ -1,4 +1,4 @@
----
+﻿---
 title: Depuração e Técnicas no Visual Studio (Breakpoints e Inspeção)
 description: Como pausar a execução, inspecionar valores de pixels em tempo real e compreender o fluxo dos algoritmos.
 ---
@@ -66,7 +66,7 @@ O .NET 10 permite ajustar valores numéricos ou fórmulas e visualizar o resulta
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Recursos para depuração e diagnóstico de performance no Visual Studio:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/visualstudio/debugger/debugger-feature-tour" target="_blank" rel="noopener">Tour de Recursos do Depurador do Visual Studio</a> — Como utilizar Breakpoints, DataTips, Watch e Janela de Memória.</li>
@@ -77,4 +77,4 @@ O .NET 10 permite ajustar valores numéricos ou fórmulas e visualizar o resulta
 
 ---
 
-👉 **Próximo Passo:** Conheça a [Visão Geral da Arquitetura do Software](/arquitetura/visao-geral/).
+**Próximo Passo:** Conheça a [Visão Geral da Arquitetura do Software](/arquitetura/visao-geral/).

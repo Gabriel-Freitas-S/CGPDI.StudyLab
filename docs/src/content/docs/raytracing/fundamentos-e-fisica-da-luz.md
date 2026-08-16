@@ -1,4 +1,4 @@
----
+﻿---
 title: Fundamentos do Ray Tracing & Modelo Phong (Raytracer3D.cs)
 description: A física da luz, por que traçamos raios ao contrário (da câmera para as luzes), raios de sombra e o modelo de iluminação local de Phong.
 ---
@@ -53,4 +53,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja como calcular analiticamente a [Interseção Raio-Esfera e Raio-Plano](/raytracing/intersecao-e-geometria/).
+**Próximo Passo:** Veja como calcular analiticamente a [Interseção Raio-Esfera e Raio-Plano](/raytracing/intersecao-e-geometria/).

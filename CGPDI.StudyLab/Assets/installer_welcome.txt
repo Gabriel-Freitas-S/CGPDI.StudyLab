@@ -1,0 +1,16 @@
+============================================================
+  Bem-vindo ao Instalador Oficial do CGPDI StudyLab
+============================================================
+
+CGPDI StudyLab é uma plataforma interativa e laboratório de
+aprendizado para Computação Gráfica 2D/3D e Processamento
+Digital de Imagens desenvolvido em .NET 10, C# e WPF.
+
+Recursos em destaque:
+• Laboratório interativo com compilador C#/XAML embutido
+• Pipeline 3D com renderização em Software (CPU) e Hardware (DirectX)
+• Processamento de imagens em tempo real (Filtros, Canny, Fourier)
+• Modelagem hierárquica e Ray Tracing fotorrealista
+• Atualizações delta ultrarrápidas (< 5 MB)
+
+Clique em Avançar para instalar no seu computador.

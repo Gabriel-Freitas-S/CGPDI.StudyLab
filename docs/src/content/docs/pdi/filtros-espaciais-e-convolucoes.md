@@ -1,4 +1,4 @@
----
+﻿---
 title: Filtros Espaciais & Convoluções 2D (SpatialFilters.cs)
 description: A teoria matemática da convolução discreta 2D, matrizes de kernel, filtro Gaussiano com desvio padrão, Unsharp Masking e filtro da Mediana.
 ---
@@ -86,4 +86,4 @@ Valores Ordenados:                  [12, 12, 13, 13,  14, 14, 15, 15, 255]
 
 ---
 
-👉 **Próximo Passo:** Explore os [Operadores de Gradiente e o Algoritmo Canny de 5 Etapas](/pdi/deteccao-de-bordas-e-canny/).
+**Próximo Passo:** Explore os [Operadores de Gradiente e o Algoritmo Canny de 5 Etapas](/pdi/deteccao-de-bordas-e-canny/).

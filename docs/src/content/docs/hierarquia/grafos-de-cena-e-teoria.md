@@ -1,4 +1,4 @@
----
+﻿---
 title: Grafos de Cena & Cinemática Direta (HierarchicalModeling.cs)
 description: A teoria da Modelagem Hierárquica (Unidade 3 do Plano de Ensino), estrutura em árvore e propagação de transformações geométricas pai-filho.
 ---
@@ -41,4 +41,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja o [Braço Robótico e o Sistema Solar em Execução](/hierarquia/braco-robotico-e-animacoes/).
+**Próximo Passo:** Veja o [Braço Robótico e o Sistema Solar em Execução](/hierarquia/braco-robotico-e-animacoes/).

@@ -1,4 +1,4 @@
----
+﻿---
 title: Matemática Vetorial 3D & Matrizes MVP (Math3D.cs)
 description: Vetores 3D/4D, Quaternions vs Euler, e a jornada completa das transformações Model-View-Projection (MVP) até o espaço de tela.
 ---
@@ -38,7 +38,7 @@ graph LR
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Conceitos matemáticos e classes do .NET para transformações geométricas e gráficos 3D:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.numerics" target="_blank" rel="noopener">System.Numerics Namespace</a> — Tipos acelerados por hardware via SIMD: <code>Vector3</code>, <code>Vector4</code>, <code>Matrix4x4</code> e <code>Quaternion</code>.</li>
@@ -49,4 +49,4 @@ graph LR
 
 ---
 
-👉 **Próximo Passo:** Veja como o [Renderizador em Software CPU](/cg3d/renderizador-em-software/) rasteriza esses triângulos com Z-Buffer.
+**Próximo Passo:** Veja como o [Renderizador em Software CPU](/cg3d/renderizador-em-software/) rasteriza esses triângulos com Z-Buffer.

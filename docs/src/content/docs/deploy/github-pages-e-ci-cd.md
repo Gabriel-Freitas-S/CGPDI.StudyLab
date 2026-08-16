@@ -12,7 +12,7 @@ O projeto [`CGPDI.StudyLab`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab
 
 ---
 
-## 🚀 1. Pipeline de Release do Aplicativo (`release-app.yml`)
+## 1. Pipeline de Release do Aplicativo (`release-app.yml`)
 
 O workflow [`.github/workflows/release-app.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/release-app.yml) é disparado automaticamente a cada push na branch `main`, na criação de tags (ex: `v1.0.5`) ou manualmente via `workflow_dispatch`:
 
@@ -40,7 +40,7 @@ graph TD
 
 ---
 
-## 🛡️ 2. Esteira DevSecOps: Snyk & CodeQL
+## 2. Esteira DevSecOps: Snyk & CodeQL
 
 A segurança do CGPDI StudyLab é aplicada em múltiplas camadas no CI/CD para assegurar que nenhum executável ou documentação seja distribuído com falhas de segurança conhecidas.
 
@@ -58,7 +58,7 @@ O workflow utiliza a action oficial `snyk/actions/setup@master` e o token `SNYK_
 
 ---
 
-## 🔄 3. Sistema de Auto-Update Integrado
+## 3. Sistema de Auto-Update Integrado
 
 O aplicativo possui um sistema inteligente de verificação e atualização automática ([`UpdateManager.cs`](file:///d:/source/repos/CGPDI.StudyLab/CGPDI.StudyLab/Core/UpdateManager.cs)) baseado no [Velopack](https://velopack.io):
 
@@ -69,17 +69,17 @@ O aplicativo possui um sistema inteligente de verificação e atualização auto
    - **Instalado (Velopack, todos os usuários):** Sem privilégios de administrador, o app delega a atualização a um processo em segundo plano — pela **tarefa agendada SYSTEM** criada na instalação ou reiniciando-se elevado (UAC) — e aplica tudo sozinho, sem depender da TI.
    - **Portátil:** Baixa o `.zip`, descompacta em segundo plano e reinicia a aplicação atualizada.
 4. **Preferências do usuário:** "Lembrar mais tarde" suspende a notificação por 7 dias e "Ignorar esta versão" oculta a versão em checagens automáticas.
-5. **Verificação Manual:** O botão **`🔔 Atualizações`** na barra superior permite checar novidades a qualquer momento.
+5. **Verificação Manual:** O botão **`Atualizações`** na barra superior permite checar novidades a qualquer momento.
 
 ---
 
-## 🌐 4. Deploy da Documentação no GitHub Pages (`deploy-docs.yml`)
+## 4. Deploy da Documentação no GitHub Pages (`deploy-docs.yml`)
 
 O workflow [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml) sincroniza a documentação a cada commit na branch `main`:
 1. Executa o **Snyk Security Gate** em `docs/` (`snyk test --severity-threshold=medium`).
 2. Compila a documentação com Astro Starlight (`npm run build`).
 3. Injeta o arquivo `CNAME` com o domínio customizado:
-   👉 **`https://cgpdi.gabrielfs.dev`**
+   **`https://cgpdi.gabrielfs.dev`**
 4. Publica as páginas estáticas geradas via `actions/deploy-pages@v4`.
 
 | Tipo de Registro DNS | Nome | Valor |
@@ -88,7 +88,7 @@ O workflow [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Frei
 
 ---
 
-## 💻 5. Geração Local de Release
+## 5. Geração Local de Release
 
 Para compilar o pacote de release localmente sem enviar para o GitHub, basta executar o script PowerShell:
 

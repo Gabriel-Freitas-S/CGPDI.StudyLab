@@ -1,4 +1,4 @@
----
+﻿---
 title: Gerador de Amostras Sintéticas & Testes Óticos
 description: Como a classe ImageSampleGenerator.cs cria padrões geométricos procedurais para validação de algoritmos de PDI.
 ---
@@ -49,4 +49,4 @@ Na interface do aplicativo:
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Operações Pontuais e Histogramas de PDI](/pdi/operacoes-pontuais-e-histogramas/).
+**Próximo Passo:** Entre no módulo de [Operações Pontuais e Histogramas de PDI](/pdi/operacoes-pontuais-e-histogramas/).

@@ -1,4 +1,4 @@
----
+﻿---
 title: Renderizador em Software 3D (CPU Pipeline) (SoftwareRenderer3D.cs)
 description: Como construir uma placa de vídeo virtual em C# na CPU com Back-face Culling, Coordenadas Baricêntricas, Z-Buffering e Gouraud Shading.
 ---
@@ -46,4 +46,4 @@ if (zInterpolado < zBuffer[idx])
 
 ---
 
-👉 **Próximo Passo:** Veja como o WPF acelera isso por hardware em [Viewport3D & Câmera Arcball](/cg3d/viewport3d-hardware-wpf/).
+**Próximo Passo:** Veja como o WPF acelera isso por hardware em [Viewport3D & Câmera Arcball](/cg3d/viewport3d-hardware-wpf/).

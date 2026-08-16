@@ -1,4 +1,4 @@
----
+﻿---
 title: Execução pela Linha de Comando (PowerShell / Terminal)
 description: Como compilar e executar o CGPDI.StudyLab sem abrir o Visual Studio utilizando os comandos do .NET CLI.
 ---
@@ -80,4 +80,4 @@ dotnet clean
 
 ---
 
-👉 **Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Pontos de Interrupção](/iniciantes/depuracao-e-truques/).
+**Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Pontos de Interrupção](/iniciantes/depuracao-e-truques/).

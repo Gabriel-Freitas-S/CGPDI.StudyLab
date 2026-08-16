@@ -10,6 +10,28 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 
 ## [Unreleased]
 
+### Adicionado
+- **Personalização Visual dos Instaladores**:
+  - Tela Splash temática Dark Slate (`#0D0E18`) com barra de progresso em Ciano Elétrico (`#38BDF8`) e logotipo 3D cristalino para o instalador Velopack (`Setup.exe`).
+  - Banner superior personalizado (`493x58 px`) e tela de diálogo com logotipo (`493x312 px`) no padrão WiX para o instalador corporativo MSI (`.msi`).
+  - Textos de boas-vindas (`installer_welcome.txt`), introdução (`installer_readme.md`) e conclusão (`installer_conclusion.txt`) customizados com informações sobre o .NET 10 e a plataforma.
+- **Página de Documentação — Fluxo de Desenvolvimento & Ferramentas**:
+  - Novo capítulo detalhando todas as 11 tecnologias e ferramentas do projeto (.NET 10, WPF, Roslyn Scripting, Velopack, WiX, SonarQube, Snyk, Graphify, MinVer, xUnit, Astro Starlight), explicando seu papel no ecossistema com diagrama interativo Mermaid.
+- **Identidade Visual e Favicon na Documentação**:
+  - Configuração do favicon vetorial oficial transparente (`/favicon.svg`) e padronização do portal Astro sem uso de emojis nos títulos e diagramas, priorizando ícones nativos e tipografia limpa.
+
+### Segurança
+- **Blindagem contra Ataques na Cadeia de Suprimentos (Supply Chain Hardening)**:
+  - **Ecossistema .NET / NuGet**:
+    - Criação de `nuget.config` com `<clear />` e `Package Source Mapping` para prevenção contra *Dependency Confusion* e *Typosquatting*.
+    - Ativação de `RestorePackagesWithLockFile` e geração de lockfiles `packages.lock.json` com hashes criptográficos SHA-512 de todas as dependências diretas e transitivas.
+    - Ativação de `NuGetAudit` com auditoria em tempo de restore para todas as dependências (`NuGetAuditMode=all`).
+  - **Ecossistema Node.js / npm**:
+    - Criação de arquivos `.npmrc` (raiz e `docs/`) com `ignore-scripts=true` (bloqueio de execução arbitrária de código em `preinstall`/`postinstall`), `save-exact=true`, `package-lock=true` e `audit=true`.
+    - Fixação determinística de versões exatas no `docs/package.json`.
+  - **Testes Automatizados de Conformidade**:
+    - Criação de `SupplyChainSecurityTests.cs` (4 testes automatizados) e integração à suíte de testes xUnit (118 testes totais).
+
 ### Alterado
 - Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]`, eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
 - Refatoração de comparadores de ponto flutuante em conversões de espaços de cores para tolerâncias seguras com epsilon (`1e-9`).
@@ -21,6 +43,8 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - Inclusão dos arquivos de `Assets` diretamente na distribuição do executável (`CopyToOutputDirectory="PreserveNewest"`), evitando tentativas desnecessárias de escrita em diretórios protegidos como `Program Files`.
 - Tratamento explícito de cancelamento e descarte seguro de `CancellationTokenSource` no diálogo de atualizações.
 - Correção de operações binárias em métodos de teste dinâmico do compilador em tempo de execução.
+- **Responsividade e Contenção de Layout no Astro Docs**: adicionado sistema global de contenção de grid (`min-width: 0`, `overflow-wrap: anywhere`), scroll horizontal seguro para tabelas e quebra responsiva de cards e código inline, evitando colisões com o sumário lateral.
+- **Renderização de Componentes Starlight**: migração de arquivos com imports JSX para extensão `.mdx` e ajuste da configuração do Astro para execução adequada de `<CardGrid>`, `<Steps>` e `<Tabs>`.
 
 ## [v1.0.5] - 2026-08-16
 

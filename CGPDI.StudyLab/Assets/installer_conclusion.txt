@@ -1,0 +1,12 @@
+============================================================
+  Instalação do CGPDI StudyLab Concluída com Sucesso!
+============================================================
+
+O CGPDI StudyLab foi instalado e está pronto para uso.
+Atalhos foram criados na sua Área de Trabalho e no Menu Iniciar.
+
+Você pode iniciar o aplicativo agora pelo atalho "CGPDI StudyLab".
+Aproveite seus estudos práticos de Computação Gráfica e PDI!
+
+Documentação online e tutoriais completos:
+https://cgpdi.gabrielfs.dev

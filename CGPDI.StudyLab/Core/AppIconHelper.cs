@@ -246,5 +246,189 @@ namespace CGPDI.StudyLab.Core
             rtb.Freeze();
             return rtb;
         }
+
+        public static RenderTargetBitmap RenderInstallerSplash(int width = 500, int height = 320)
+        {
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                // Fundo Escuro com Gradiente
+                var bgBrush = new LinearGradientBrush(
+                    Color.FromRgb(13, 14, 24),
+                    Color.FromRgb(5, 5, 10),
+                    new Point(0, 0),
+                    new Point(1, 1));
+                dc.DrawRoundedRectangle(bgBrush, new Pen(new SolidColorBrush(Color.FromRgb(34, 34, 56)), 1.5), new Rect(1, 1, width - 2, height - 2), 12, 12);
+
+                // Halos de Luz Neon
+                dc.DrawEllipse(new SolidColorBrush(Color.FromArgb(30, 56, 189, 248)), null, new Point(width / 2.0, 100), 100, 70);
+                dc.DrawEllipse(new SolidColorBrush(Color.FromArgb(25, 236, 72, 153)), null, new Point((width / 2.0) - 70, 120), 80, 60);
+                dc.DrawEllipse(new SolidColorBrush(Color.FromArgb(25, 251, 191, 36)), null, new Point((width / 2.0) + 70, 120), 80, 60);
+
+                // Cubo 3D Isométrico Central
+                var iconBitmap = RenderVectorIcon(110);
+                dc.DrawImage(iconBitmap, new Rect((width - 110) / 2.0, 30, 110, 110));
+
+                // Tipografia Oficial
+                var titleTypeface = new Typeface(new FontFamily("Segoe UI, Inter, Arial"), FontStyles.Normal, FontWeights.Black, FontStretches.Normal);
+                var titleText = new FormattedText(
+                    "CGPDI STUDYLAB",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    titleTypeface,
+                    22,
+                    new SolidColorBrush(Color.FromRgb(56, 189, 248)),
+                    96.0);
+                dc.DrawText(titleText, new Point((width - titleText.Width) / 2.0, 160));
+
+                var subTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
+                var subText = new FormattedText(
+                    "Laboratório de Computação Gráfica & PDI (2D / 3D)",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    subTypeface,
+                    12,
+                    new SolidColorBrush(Color.FromRgb(226, 232, 240)),
+                    96.0);
+                dc.DrawText(subText, new Point((width - subText.Width) / 2.0, 195));
+
+                var footerTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                var footerText = new FormattedText(
+                    "Instalador Velopack Oficial • .NET 10 • Zero-Admin",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    footerTypeface,
+                    10.5,
+                    new SolidColorBrush(Color.FromRgb(148, 163, 184)),
+                    96.0);
+                dc.DrawText(footerText, new Point((width - footerText.Width) / 2.0, 235));
+            }
+
+            var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(visual);
+            rtb.Freeze();
+            return rtb;
+        }
+
+        public static RenderTargetBitmap RenderMsiBanner(int width = 493, int height = 58)
+        {
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                // Fundo Escuro do Banner
+                var bgBrush = new LinearGradientBrush(
+                    Color.FromRgb(16, 20, 34),
+                    Color.FromRgb(10, 13, 24),
+                    new Point(0, 0),
+                    new Point(1, 0));
+                dc.DrawRectangle(bgBrush, null, new Rect(0, 0, width, height));
+                dc.DrawLine(new Pen(new SolidColorBrush(Color.FromRgb(37, 47, 70)), 1), new Point(0, height - 1), new Point(width, height - 1));
+
+                // Texto do Banner à esquerda
+                var titleTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                var titleText = new FormattedText(
+                    "CGPDI StudyLab",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    titleTypeface,
+                    15,
+                    new SolidColorBrush(Color.FromRgb(248, 250, 252)),
+                    96.0);
+                dc.DrawText(titleText, new Point(18, 10));
+
+                var subTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                var subText = new FormattedText(
+                    "Instalação Corporativa / Laboratórios Universitários",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    subTypeface,
+                    11,
+                    new SolidColorBrush(Color.FromRgb(56, 189, 248)),
+                    96.0);
+                dc.DrawText(subText, new Point(18, 30));
+
+                // Mini Ícone 3D à direita
+                var iconBitmap = RenderVectorIcon(42);
+                dc.DrawImage(iconBitmap, new Rect(width - 55, 8, 42, 42));
+            }
+
+            var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(visual);
+            rtb.Freeze();
+            return rtb;
+        }
+
+        public static RenderTargetBitmap RenderMsiLogo(int width = 493, int height = 312)
+        {
+            var visual = new DrawingVisual();
+            using (var dc = visual.RenderOpen())
+            {
+                // Fundo Escuro com Gradiente
+                var bgBrush = new LinearGradientBrush(
+                    Color.FromRgb(13, 14, 24),
+                    Color.FromRgb(5, 5, 10),
+                    new Point(0, 0),
+                    new Point(1, 1));
+                dc.DrawRectangle(bgBrush, null, new Rect(0, 0, width, height));
+
+                // Halos de Luz Neon
+                dc.DrawEllipse(new SolidColorBrush(Color.FromArgb(30, 56, 189, 248)), null, new Point(width / 2.0, 95), 120, 80);
+
+                // Ícone 3D Central
+                var iconBitmap = RenderVectorIcon(110);
+                dc.DrawImage(iconBitmap, new Rect((width - 110) / 2.0, 35, 110, 110));
+
+                // Textos
+                var titleTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                var titleText = new FormattedText(
+                    "CGPDI StudyLab",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    titleTypeface,
+                    20,
+                    new SolidColorBrush(Color.FromRgb(248, 250, 252)),
+                    96.0);
+                dc.DrawText(titleText, new Point((width - titleText.Width) / 2.0, 165));
+
+                var subTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                var subText = new FormattedText(
+                    "Plataforma de Computação Gráfica & PDI em .NET 10",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    FlowDirection.LeftToRight,
+                    subTypeface,
+                    12,
+                    new SolidColorBrush(Color.FromRgb(148, 163, 184)),
+                    96.0);
+                dc.DrawText(subText, new Point((width - subText.Width) / 2.0, 198));
+            }
+
+            var rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(visual);
+            rtb.Freeze();
+            return rtb;
+        }
+
+        public static void GenerateInstallerVisualAssets(string assetsDir)
+        {
+            if (!Directory.Exists(assetsDir)) Directory.CreateDirectory(assetsDir);
+
+            // 1. Splash Screen do Velopack Setup
+            SaveBitmapAsPng(RenderInstallerSplash(500, 320), Path.Combine(assetsDir, "installer_splash.png"));
+
+            // 2. Banner do Instalador MSI (493x58)
+            SaveBitmapAsPng(RenderMsiBanner(493, 58), Path.Combine(assetsDir, "msi_banner.png"));
+
+            // 3. Logo Dialog do Instalador MSI (493x312)
+            SaveBitmapAsPng(RenderMsiLogo(493, 312), Path.Combine(assetsDir, "msi_dialog_logo.png"));
+        }
+
+        private static void SaveBitmapAsPng(RenderTargetBitmap rtb, string filePath)
+        {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+            using var ms = new MemoryStream();
+            encoder.Save(ms);
+            File.WriteAllBytes(filePath, ms.ToArray());
+        }
     }
 }

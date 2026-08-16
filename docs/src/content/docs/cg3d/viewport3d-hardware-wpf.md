@@ -1,4 +1,4 @@
----
+﻿---
 title: Viewport3D por Hardware & Câmera Arcball (WpfViewport3DManager.cs)
 description: Renderização DirectX acelerada por GPU no WPF, câmera orbital esférica com controle por mouse, fontes de luz e materiais Phong.
 ---
@@ -28,7 +28,7 @@ $$
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Documentação da API de Gráficos 3D do WPF:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.controls.viewport3d" target="_blank" rel="noopener">Classe Viewport3D (System.Windows.Controls)</a> — Container visual para renderização de cenas 3D no espaço de interface 2D.</li>
@@ -39,4 +39,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/hierarquia/grafos-de-cena-e-teoria/).
+**Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/hierarquia/grafos-de-cena-e-teoria/).

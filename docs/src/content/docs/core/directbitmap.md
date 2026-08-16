@@ -1,4 +1,4 @@
----
+﻿---
 title: DirectBitmap & Buffer Bgra32 (Análise do Código)
 description: Uma explicação linha a linha da classe mais importante do projeto, que gerencia memória e paralelismo.
 ---
@@ -124,7 +124,7 @@ Parallel.For(0, Height, y =>
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Consulte a documentação técnica da API da Microsoft utilizada nesta implementação:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap" target="_blank" rel="noopener">Classe WriteableBitmap (System.Windows.Media.Imaging)</a> — Métodos <code>Lock()</code>, <code>Unlock()</code>, <code>AddDirtyRect()</code> e propriedade <code>BackBuffer</code>.</li>
@@ -135,4 +135,4 @@ Parallel.For(0, Height, y =>
 
 ---
 
-👉 **Próximo Passo:** Explore os [Modelos de Cores & Percepção Humana](/core/modelos-de-cor/).
+**Próximo Passo:** Explore os [Modelos de Cores & Percepção Humana](/core/modelos-de-cor/).

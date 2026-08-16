@@ -7,21 +7,21 @@ hero:
   image:
     file: ../../assets/logo.svg
   actions:
-    - text: Baixar Instalador (.exe)
-      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Setup.exe
+    - text: Baixar Instalador Velopack (.exe)
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDIStudyLab-win-Setup.exe
       icon: download
       variant: primary
-    - text: Executável Portátil (.exe)
-      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable.exe
+    - text: Instalador Machine-Wide (.msi)
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-MachineWide.msi
       icon: rocket
       variant: secondary
+    - text: Pacote Portátil (.zip)
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable-win-x64.zip
+      icon: external
+      variant: minimal
     - text: Começar Guia Online
       link: /iniciantes/o-que-e-dotnet-csharp/
       icon: right-arrow
-      variant: minimal
-    - text: Ver Releases no GitHub
-      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases
-      icon: external
       variant: minimal
 ---
 
@@ -33,24 +33,24 @@ Baixe a versão mais recente do **CGPDI StudyLab** para Windows 10/11:
 
 <CardGrid>
   <LinkCard
-    title="Instalador Oficial do Windows (.exe)"
-    description="Instalação recomendada com assistente passo a passo, atalhos na Área de Trabalho e no Menu Iniciar, e suporte ao Auto-Updater."
-    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Setup.exe"
+    title="Instalador Oficial Velopack (.exe)"
+    description="Instalação recomendada com tela splash Dark Slate, atalhos na Área de Trabalho e Menu Iniciar e atualizações delta ultrarrápidas."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDIStudyLab-win-Setup.exe"
   />
   <LinkCard
-    title="Executável Único Portátil (.exe Direto)"
-    description="Arquivo único autônomo sem necessidade de descompactar. Basta baixar e dar dois cliques para rodar imediatamente!"
-    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable.exe"
+    title="Instalador Corporativo Machine-Wide (.msi)"
+    description="Pacote Windows Installer (.msi) personalizado para implantação em massa por administradores e laboratórios universitários."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-MachineWide.msi"
   />
   <LinkCard
-    title="Pacote Portátil Limpo (.zip)"
-    description="Arquivo compactado contendo apenas o executável e instruções. Ideal para pendrives ou computadores de laboratório sem admin."
+    title="Pacote Portátil Zero-Admin (.zip)"
+    description="Arquivo compactado contendo o executável autônomo e instruções. Roda direto de pendrives sem exigir direitos de administrador."
     href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable-win-x64.zip"
   />
   <LinkCard
     title="Histórico de Releases e Changelogs"
-    description="Consulte todas as versões lançadas, notas de atualização e código-fonte no GitHub Releases oficial."
-    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases"
+    description="Consulte todas as versões lançadas, notas de atualização delta e código-fonte no GitHub Releases oficial."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest"
   />
 </CardGrid>
 
@@ -61,6 +61,11 @@ Baixe a versão mais recente do **CGPDI StudyLab** para Windows 10/11:
 Esta documentação foi elaborada com foco na clareza pedagógica: conceitos matemáticos complexos são apresentados por meio de analogias intuitivas do dia a dia, acompanhados da fundamentação teórica rigorosa e do código-fonte comentado em C#.
 
 <CardGrid>
+  <LinkCard
+    title="Fluxo de Desenvolvimento & Ferramentas"
+    description="Entenda o ecossistema completo (.NET 10, WPF, Roslyn, Velopack, WiX, SonarQube, Snyk, Graphify) e o ciclo de vida da aplicação."
+    href="/arquitetura/fluxo-de-desenvolvimento-e-ferramentas/"
+  />
   <LinkCard
     title="Estúdio de Código e Compilador Roslyn"
     description="Escreva código C# e veja a compilação ao vivo atualizar o Canvas e a memória RAM em tempo real. Janela dedicada com Modo Foco e testes unitários."
@@ -135,7 +140,7 @@ graph TD
 Esta documentação substitui a antiga Wiki do projeto, reunindo todo o conteúdo pedagógico e técnico em um único lugar. Aprofunde-se nos temas com a documentação oficial da Microsoft:
 
 <div class="ms-ref-card">
-  <h4>📚 Portais e Referências Recomendadas</h4>
+  <h4>Portais e Referências Recomendadas</h4>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/" target="_blank" rel="noopener">Documentação Oficial do .NET</a> — Guia geral da plataforma, bibliotecas e APIs.</li>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code" target="_blank" rel="noopener">Tipos de Ponteiro e Código Não Seguro (unsafe) no C#</a> — Sintaxe de <code>fixed</code>, <code>stackalloc</code> e aritmética de ponteiros.</li>

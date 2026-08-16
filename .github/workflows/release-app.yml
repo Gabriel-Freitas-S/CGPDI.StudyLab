@@ -197,30 +197,61 @@ jobs:
       - name: Pack with Velopack (installer + deltas + release notes)
         shell: pwsh
         run: |
-          vpk pack `
-            -u CGPDIStudyLab `
-            -v ${{ steps.get_version.outputs.VERSION }} `
-            -p publish/win-x64 `
-            -e CGPDI.StudyLab.exe `
-            --packTitle "CGPDI StudyLab" `
-            --icon "CGPDI.StudyLab/Assets/app_icon.ico" `
-            --shortcuts Desktop,StartMenuRoot `
-            --instLocation Either `
-            --releaseNotes release-notes.md
+          $assetsPath = "CGPDI.StudyLab/Assets"
+          $packArgs = @(
+            "pack",
+            "-u", "CGPDIStudyLab",
+            "-v", "${{ steps.get_version.outputs.VERSION }}",
+            "-p", "publish/win-x64",
+            "-e", "CGPDI.StudyLab.exe",
+            "--packTitle", "CGPDI StudyLab",
+            "--icon", "$assetsPath/app_icon.ico",
+            "--shortcuts", "Desktop,StartMenuRoot",
+            "--instLocation", "Either",
+            "--releaseNotes", "release-notes.md"
+          )
+          if (Test-Path "$assetsPath/installer_splash.png") {
+            $packArgs += @("--splashImage", "$assetsPath/installer_splash.png", "--splashProgressColor", "#38BDF8")
+          }
+          if (Test-Path "$assetsPath/installer_welcome.txt") {
+            $packArgs += @("--instWelcome", "$assetsPath/installer_welcome.txt")
+          }
+          if (Test-Path "$assetsPath/installer_readme.md") {
+            $packArgs += @("--instReadme", "$assetsPath/installer_readme.md")
+          }
+          if (Test-Path "$assetsPath/installer_conclusion.txt") {
+            $packArgs += @("--instConclusion", "$assetsPath/installer_conclusion.txt")
+          }
+          & vpk @packArgs
+
+          if (Test-Path "Releases/CGPDIStudyLab-win-Setup.exe") {
+            Copy-Item "Releases/CGPDIStudyLab-win-Setup.exe" "CGPDI-StudyLab-Setup.exe" -Force
+          }
 
       - name: Pack Machine-Wide MSI (IT / labs deployment)
         shell: pwsh
         run: |
-          vpk pack `
-            -u CGPDIStudyLab `
-            -v ${{ steps.get_version.outputs.VERSION }} `
-            -p publish/win-x64 `
-            -e CGPDI.StudyLab.exe `
-            --packTitle "CGPDI StudyLab" `
-            --icon "CGPDI.StudyLab/Assets/app_icon.ico" `
-            --msi true `
-            --releaseNotes release-notes.md `
-            -o Releases-msi
+          $assetsPath = "CGPDI.StudyLab/Assets"
+          $msiArgs = @(
+            "pack",
+            "-u", "CGPDIStudyLab",
+            "-v", "${{ steps.get_version.outputs.VERSION }}",
+            "-p", "publish/win-x64",
+            "-e", "CGPDI.StudyLab.exe",
+            "--packTitle", "CGPDI StudyLab",
+            "--icon", "$assetsPath/app_icon.ico",
+            "--msi", "true",
+            "--releaseNotes", "release-notes.md",
+            "-o", "Releases-msi"
+          )
+          if (Test-Path "$assetsPath/msi_banner.png") {
+            $msiArgs += @("--msiBanner", "$assetsPath/msi_banner.png")
+          }
+          if (Test-Path "$assetsPath/msi_dialog_logo.png") {
+            $msiArgs += @("--msiLogo", "$assetsPath/msi_dialog_logo.png")
+          }
+          & vpk @msiArgs
+
           Copy-Item "Releases-msi/CGPDIStudyLab-win.msi" "CGPDI-StudyLab-MachineWide.msi" -Force
           Write-Host "Machine-wide MSI created: CGPDI-StudyLab-MachineWide.msi"
 
@@ -243,12 +274,13 @@ jobs:
         run: |
           gh release edit "v${{ steps.get_version.outputs.VERSION }}" --notes-file release-notes.md
 
-      - name: Upload Extra Assets (Portable ZIP + Machine-Wide MSI)
+      - name: Upload Extra Assets (Portable ZIP + Machine-Wide MSI + Setup Alias)
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "v${{ steps.get_version.outputs.VERSION }}" `
-            "CGPDI-StudyLab-Portable-win-x64.zip" `
-            "CGPDI-StudyLab-MachineWide.msi" `
-            --clobber
+          $extraFiles = @("CGPDI-StudyLab-Portable-win-x64.zip", "CGPDI-StudyLab-MachineWide.msi")
+          if (Test-Path "CGPDI-StudyLab-Setup.exe") {
+            $extraFiles += "CGPDI-StudyLab-Setup.exe"
+          }
+          gh release upload "v${{ steps.get_version.outputs.VERSION }}" $extraFiles --clobber

@@ -1,4 +1,4 @@
----
+﻿---
 title: Domínio da Frequência (DFT 2D) & Texturas Procedurais (FrequencyAndProcedural.cs)
 description: Transformada Discreta de Fourier 2D, FFTShift, filtragem em frequência, Ruído de Perlin, terrenos fractais fBm, Voronoi e conjuntos de Mandelbrot e Julia.
 ---
@@ -54,4 +54,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Computação Gráfica 2D & Álgebra Linear](/cg2d/algebra-linear-e-matrizes/).
+**Próximo Passo:** Entre no módulo de [Computação Gráfica 2D & Álgebra Linear](/cg2d/algebra-linear-e-matrizes/).

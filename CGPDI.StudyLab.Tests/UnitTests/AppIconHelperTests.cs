@@ -132,9 +132,13 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                 string icoPath = Path.Combine(sourceAssets, "app_icon.ico");
                 string pngPath = Path.Combine(sourceAssets, "logo.png");
                 AppIconHelper.GenerateAndSaveIcons(icoPath, pngPath);
+                AppIconHelper.GenerateInstallerVisualAssets(sourceAssets);
 
                 File.Exists(icoPath).Should().BeTrue();
                 File.Exists(pngPath).Should().BeTrue();
+                File.Exists(Path.Combine(sourceAssets, "installer_splash.png")).Should().BeTrue();
+                File.Exists(Path.Combine(sourceAssets, "msi_banner.png")).Should().BeTrue();
+                File.Exists(Path.Combine(sourceAssets, "msi_dialog_logo.png")).Should().BeTrue();
             }
         }
 
@@ -182,6 +186,62 @@ namespace CGPDI.StudyLab.Tests.UnitTests
             string path = App.GetCrashLogPath();
             path.Should().NotBeNullOrWhiteSpace();
             path.Should().EndWith("crash.log");
+        }
+
+        [Fact]
+        public void RenderInstallerSplash_ReturnsValidDimensions()
+        {
+            var rtb = AppIconHelper.RenderInstallerSplash(500, 320);
+            rtb.Should().NotBeNull();
+            rtb.PixelWidth.Should().Be(500);
+            rtb.PixelHeight.Should().Be(320);
+        }
+
+        [Fact]
+        public void RenderMsiBanner_ReturnsExactWixDimensions_493x58()
+        {
+            var rtb = AppIconHelper.RenderMsiBanner(493, 58);
+            rtb.Should().NotBeNull();
+            rtb.PixelWidth.Should().Be(493);
+            rtb.PixelHeight.Should().Be(58);
+        }
+
+        [Fact]
+        public void RenderMsiLogo_ReturnsExactWixDimensions_493x312()
+        {
+            var rtb = AppIconHelper.RenderMsiLogo(493, 312);
+            rtb.Should().NotBeNull();
+            rtb.PixelWidth.Should().Be(493);
+            rtb.PixelHeight.Should().Be(312);
+        }
+
+        [Fact]
+        public void GenerateInstallerVisualAssets_GeneratesAllRequiredInstallerPngFiles()
+        {
+            string tempDir = Path.Combine(Path.GetTempPath(), "CGPDI_InstallerTests_" + Guid.NewGuid());
+            try
+            {
+                AppIconHelper.GenerateInstallerVisualAssets(tempDir);
+
+                string splashPath = Path.Combine(tempDir, "installer_splash.png");
+                string bannerPath = Path.Combine(tempDir, "msi_banner.png");
+                string logoPath = Path.Combine(tempDir, "msi_dialog_logo.png");
+
+                File.Exists(splashPath).Should().BeTrue();
+                File.Exists(bannerPath).Should().BeTrue();
+                File.Exists(logoPath).Should().BeTrue();
+
+                new FileInfo(splashPath).Length.Should().BeGreaterThan(1000);
+                new FileInfo(bannerPath).Length.Should().BeGreaterThan(500);
+                new FileInfo(logoPath).Length.Should().BeGreaterThan(1000);
+            }
+            finally
+            {
+                if (Directory.Exists(tempDir))
+                {
+                    Directory.Delete(tempDir, true);
+                }
+            }
         }
     }
 }

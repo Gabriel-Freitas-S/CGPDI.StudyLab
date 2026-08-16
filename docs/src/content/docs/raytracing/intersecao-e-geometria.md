@@ -1,4 +1,4 @@
----
+﻿---
 title: Interseção Analítica de Raios (Esfera & Plano) (Raytracer3D.cs)
 description: A dedução matemática passo a passo da equação quadrática para teste de colisão analítico raio-esfera e plano infinito xadrez.
 ---
@@ -67,4 +67,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Reflexões Especulares & Refração de Snell](/raytracing/reflexao-refracao-snell/).
+**Próximo Passo:** Aprenda sobre [Reflexões Especulares & Refração de Snell](/raytracing/reflexao-refracao-snell/).

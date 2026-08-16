@@ -80,24 +80,64 @@ Write-Host ""
 Write-Host "[4/4] Verificando Velopack CLI (vpk) para empacotar instalador..." -ForegroundColor Yellow
 $vpk = Get-Command vpk -ErrorAction SilentlyContinue
 if ($vpk) {
-    & vpk pack -u CGPDIStudyLab -v $Version -p "$publishDir" -e CGPDI.StudyLab.exe `
-        --packTitle "CGPDI StudyLab" `
-        --icon "$PSScriptRoot\CGPDI.StudyLab\Assets\app_icon.ico" `
-        --shortcuts Desktop,StartMenuRoot `
-        --instLocation Either `
-        -o "$PSScriptRoot\Releases"
+    $assetsPath = "$PSScriptRoot\CGPDI.StudyLab\Assets"
+
+    $packArgs = @(
+        "pack",
+        "-u", "CGPDIStudyLab",
+        "-v", $Version,
+        "-p", "$publishDir",
+        "-e", "CGPDI.StudyLab.exe",
+        "--packTitle", "CGPDI StudyLab",
+        "--icon", "$assetsPath\app_icon.ico",
+        "--shortcuts", "Desktop,StartMenuRoot",
+        "--instLocation", "Either"
+    )
+    if (Test-Path "$assetsPath\installer_splash.png") {
+        $packArgs += @("--splashImage", "$assetsPath\installer_splash.png", "--splashProgressColor", "#38BDF8")
+    }
+    if (Test-Path "$assetsPath\installer_welcome.txt") {
+        $packArgs += @("--instWelcome", "$assetsPath\installer_welcome.txt")
+    }
+    if (Test-Path "$assetsPath\installer_readme.md") {
+        $packArgs += @("--instReadme", "$assetsPath\installer_readme.md")
+    }
+    if (Test-Path "$assetsPath\installer_conclusion.txt") {
+        $packArgs += @("--instConclusion", "$assetsPath\installer_conclusion.txt")
+    }
+    $packArgs += @("-o", "$PSScriptRoot\Releases")
+
+    & vpk @packArgs
+
     if (Test-Path "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe") {
         Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDI-StudyLab-v$Version-Setup.exe" -Force
-        Write-Host "✔ Instalador Velopack gerado: $distDir\CGPDI-StudyLab-v$Version-Setup.exe" -ForegroundColor Green
+        Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDIStudyLab-win-Setup.exe" -Force
+        Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDI-StudyLab-Setup.exe" -Force
+        Write-Host "✔ Instalador Velopack gerado: $distDir\CGPDIStudyLab-win-Setup.exe (e aliases)" -ForegroundColor Green
     } else {
         Write-Host "ℹ O vpk não gerou o Setup.exe em 'Releases'." -ForegroundColor DarkGray
     }
 
-    & vpk pack -u CGPDIStudyLab -v $Version -p "$publishDir" -e CGPDI.StudyLab.exe `
-        --packTitle "CGPDI StudyLab" `
-        --icon "$PSScriptRoot\CGPDI.StudyLab\Assets\app_icon.ico" `
-        --msi true `
-        -o "$PSScriptRoot\Releases-msi"
+    $msiArgs = @(
+        "pack",
+        "-u", "CGPDIStudyLab",
+        "-v", $Version,
+        "-p", "$publishDir",
+        "-e", "CGPDI.StudyLab.exe",
+        "--packTitle", "CGPDI StudyLab",
+        "--icon", "$assetsPath\app_icon.ico",
+        "--msi", "true"
+    )
+    if (Test-Path "$assetsPath\msi_banner.png") {
+        $msiArgs += @("--msiBanner", "$assetsPath\msi_banner.png")
+    }
+    if (Test-Path "$assetsPath\msi_dialog_logo.png") {
+        $msiArgs += @("--msiLogo", "$assetsPath\msi_dialog_logo.png")
+    }
+    $msiArgs += @("-o", "$PSScriptRoot\Releases-msi")
+
+    & vpk @msiArgs
+
     if (Test-Path "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi") {
         Copy-Item "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi" "$distDir\CGPDI-StudyLab-MachineWide.msi" -Force
         Write-Host "✔ Instalador Machine-Wide (MSI) gerado: $distDir\CGPDI-StudyLab-MachineWide.msi" -ForegroundColor Green

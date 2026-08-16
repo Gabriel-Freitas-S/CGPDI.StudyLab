@@ -1,0 +1,19 @@
+<Project>
+  <!-- ============================================================================== -->
+  <!-- CGPDI.StudyLab — Diretivas Globais de Segurança da Cadeia de Suprimentos .NET  -->
+  <!-- ============================================================================== -->
+
+  <PropertyGroup>
+    <!-- 1. LOCKFILES DETERMINÍSTICOS (Gera e valida packages.lock.json com hashes SHA-512) -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    
+    <!-- 2. AUDITORIA NATIVA DE VULNERABILIDADES (NuGetAudit para diretas e transitivas) -->
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>high</NuGetAuditLevel>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsAsErrors>
+
+    <!-- 3. DETERMINISMO E REPRODUTIBILIDADE -->
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>

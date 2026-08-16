@@ -1,4 +1,4 @@
----
+﻿---
 title: Fundamentos de Memória & Ponteiros (Unsafe Pointers)
 description: Como a memória RAM armazena imagens digitais e por que o uso de ponteiros brutos elimina 99% do tempo de processamento.
 ---
@@ -110,7 +110,7 @@ Com essa técnica combinada com `Parallel.For`, o mesmo cálculo é concluído e
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Aprofunde seus conhecimentos na documentação oficial da Microsoft sobre memória e ponteiros no .NET:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code" target="_blank" rel="noopener">Tipos de ponteiro e código não seguro (unsafe) no C#</a> — Sintaxe de <code>fixed</code>, <code>stackalloc</code> e aritmética de ponteiros.</li>
@@ -121,4 +121,4 @@ Com essa técnica combinada com `Parallel.For`, o mesmo cálculo é concluído e
 
 ---
 
-👉 **Próximo Passo:** Analise o código completo da classe [DirectBitmap.cs](/core/directbitmap/).
+**Próximo Passo:** Analise o código completo da classe [DirectBitmap.cs](/core/directbitmap/).

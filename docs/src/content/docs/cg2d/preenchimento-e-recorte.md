@@ -1,4 +1,4 @@
----
+﻿---
 title: Preenchimento de Polígonos & Recorte (Rasterizer2D.cs)
 description: Algoritmo de Preenchimento por Varredura (Scanline com AET), Flood Fill por fila e Recorte de Linhas de Cohen-Sutherland com Outcodes.
 ---
@@ -36,4 +36,4 @@ O algoritmo divide o espaço em 9 regiões usando códigos binários de 4 bits `
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Computação Gráfica 3D & Matrizes MVP](/cg3d/matematica-vetorial-e-mvp/).
+**Próximo Passo:** Entre no módulo de [Computação Gráfica 3D & Matrizes MVP](/cg3d/matematica-vetorial-e-mvp/).

@@ -322,3 +322,144 @@ tbody tr:nth-child(even) {
   margin-bottom: 0.35rem;
   font-size: 0.9rem;
 }
+
+/* ==========================================================================
+   Global Responsive Layout & Overflow Protection System
+   ========================================================================== */
+
+/* Prevent horizontal overflow across the entire documentation layout */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Markdown content container boundary enforcement */
+.sl-markdown-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.sl-markdown-content * {
+  box-sizing: border-box;
+}
+
+/* CardGrid & Card Responsive Bounds (Fixes CSS Grid min-width: auto blowout) */
+.card-grid,
+.sl-card-grid,
+[class*='card-grid'] {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)) !important;
+  gap: 1.25rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.card-grid > *,
+.sl-card-grid > *,
+article.card,
+.card,
+[class*='card'] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  box-sizing: border-box !important;
+}
+
+/* Card Title & Icon alignment in Starlight */
+article.card .title,
+.card .title {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  font-size: 1.1rem !important;
+  line-height: 1.4 !important;
+}
+
+article.card .body,
+.card .body {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+/* Card bullet lists formatting */
+article.card ul,
+.card ul {
+  padding-left: 1.25rem !important;
+  margin: 0.6rem 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.45rem !important;
+}
+
+article.card li,
+.card li {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+/* Inline Code and Badges responsive wrapping */
+.sl-markdown-content code,
+article.card code,
+.card code {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: pre-wrap !important;
+  font-size: 0.85em !important;
+}
+
+/* Responsive Tables - ensure tables scroll smoothly instead of breaking layout */
+.sl-markdown-content table {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.sl-markdown-content th,
+.sl-markdown-content td {
+  min-width: 120px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Code Blocks & Pre Blocks */
+.expressive-code,
+pre,
+.sl-markdown-content pre {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Mermaid and KaTeX containers */
+.mermaid-container,
+.katex-display {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Steps component responsive bounds */
+.sl-steps,
+ol.sl-steps {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Mobile & Tablet Fine-tuning */
+@media (max-width: 1024px) {
+  .card-grid,
+  .sl-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .hero {
+    padding-bottom: 1.5rem;
+  }
+}

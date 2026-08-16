@@ -1,4 +1,4 @@
----
+﻿---
 title: Círculos, Elipses & Curvas de Bézier (Rasterizer2D.cs)
 description: Algoritmo do Ponto Médio para Círculos (simetria em 8 octantes), Elipses e Curvas Paramétricas de Bézier com De Casteljau.
 ---
@@ -40,4 +40,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Preenchimento Scanline & Recorte Cohen-Sutherland](/cg2d/preenchimento-e-recorte/).
+**Próximo Passo:** Aprenda sobre [Preenchimento Scanline & Recorte Cohen-Sutherland](/cg2d/preenchimento-e-recorte/).

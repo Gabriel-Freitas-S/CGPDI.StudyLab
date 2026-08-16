@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -9,15 +8,14 @@ export default defineConfig({
   site: 'https://cgpdi.gabrielfs.dev',
   base: '/',
   markdown: {
-    processor: unified({
-      remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
-    }),
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
   integrations: [
     starlight({
       title: 'CGPDI.StudyLab',
       description: 'Documentação técnica e laboratório universitário de Computação Gráfica e Processamento Digital de Imagens (.NET 10 / C# / WPF)',
+      favicon: '/favicon.svg',
       logo: {
         alt: 'CGPDI StudyLab Logo',
         src: './src/assets/logo.svg',
@@ -182,6 +180,7 @@ export default defineConfig({
           label: 'Arquitetura do Software',
           items: [
             { label: 'Visão Geral da Arquitetura', link: '/arquitetura/visao-geral/' },
+            { label: 'Fluxo de Desenvolvimento e Ferramentas', link: '/arquitetura/fluxo-de-desenvolvimento-e-ferramentas/' },
             { label: 'Estrutura de Pastas e Arquivos', link: '/arquitetura/estrutura-de-pastas/' },
             { label: 'WPF, XAML e Renderização em Tempo Real', link: '/arquitetura/wpf-e-xaml-explicados/' },
           ],

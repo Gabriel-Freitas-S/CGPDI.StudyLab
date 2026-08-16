@@ -1,4 +1,4 @@
----
+﻿---
 title: Reflexões Especulares & Refração de Snell (Raytracer3D.cs)
 description: Ray Tracing recursivo, Lei da Reflexão, Lei de Snell para materiais dielétricos e transparentes, Reflexão Interna Total (TIR) e aproximação de Fresnel.
 ---
@@ -44,4 +44,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino da Disciplina](/academico/mapeamento-do-plano/).
+**Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino da Disciplina](/academico/mapeamento-do-plano/).

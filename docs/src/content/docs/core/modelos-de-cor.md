@@ -1,4 +1,4 @@
----
+﻿---
 title: Modelos de Cor & Percepção Humana (ColorSpaces.cs)
 description: A física da luz, fisiologia dos fotorreceptores da retina humana e as formulações matemáticas dos espaços RGB, HSV, HSL, YCbCr e CMYK.
 ---
@@ -102,4 +102,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja como o [Gerador de Amostras Sintéticas](/core/gerador-de-amostras/) cria imagens de calibração.
+**Próximo Passo:** Veja como o [Gerador de Amostras Sintéticas](/core/gerador-de-amostras/) cria imagens de calibração.

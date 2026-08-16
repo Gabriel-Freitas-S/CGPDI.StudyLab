@@ -1,4 +1,4 @@
----
+﻿---
 title: Operações Pontuais & Histogramas (PointAndHistograms.cs)
 description: Teoria e implementação de Brilho, Contraste, LUTs, Correção Gamma, Equalização de Histograma por CDF e Normalização Min-Max.
 ---
@@ -105,4 +105,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Filtros Espaciais e Convoluções 2D](/pdi/filtros-espaciais-e-convolucoes/).
+**Próximo Passo:** Aprenda sobre [Filtros Espaciais e Convoluções 2D](/pdi/filtros-espaciais-e-convolucoes/).

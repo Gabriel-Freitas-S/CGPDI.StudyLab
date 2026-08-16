@@ -1,4 +1,4 @@
----
+﻿---
 title: Estrutura de Pastas e Arquivos do Projeto
 description: Um mapa detalhado de cada diretório, arquivo de código-fonte e sua respectiva responsabilidade no sistema.
 ---
@@ -79,4 +79,4 @@ CGPDI.StudyLab/
 
 ---
 
-👉 **Próximo Passo:** Entenda como funcionam o [WPF, XAML e a Renderização em Tempo Real](/arquitetura/wpf-e-xaml-explicados/).
+**Próximo Passo:** Entenda como funcionam o [WPF, XAML e a Renderização em Tempo Real](/arquitetura/wpf-e-xaml-explicados/).

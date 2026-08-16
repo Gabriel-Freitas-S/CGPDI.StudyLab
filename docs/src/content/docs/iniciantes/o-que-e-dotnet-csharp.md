@@ -1,4 +1,4 @@
----
+﻿---
 title: O que é C#, .NET e WPF? (Guia do Iniciante)
 description: Uma introdução simples, didática e sem jargões para quem nunca programou em C# ou desenvolveu para a plataforma .NET.
 ---
@@ -88,7 +88,7 @@ Ao explorar a pasta do código, você verá extensões diferentes:
 ---
 
 <div class="ms-ref-card">
-  <h4>📚 Referências Oficiais Microsoft Learn</h4>
+  <h4>Referências Oficiais Microsoft Learn</h4>
   <p>Comece a explorar a documentação oficial da Microsoft para novos desenvolvedores:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/" target="_blank" rel="noopener">Documentação Oficial do .NET</a> — Guias de início rápido, arquitetura e conceitos fundamentais do ecossistema .NET.</li>
@@ -99,4 +99,4 @@ Ao explorar a pasta do código, você verá extensões diferentes:
 
 ---
 
-👉 **Próximo Passo:** Aprenda a [Instalar o Visual Studio Passo a Passo](/iniciantes/instalacao-visual-studio/) para rodar o projeto no seu computador.
+**Próximo Passo:** Aprenda a [Instalar o Visual Studio Passo a Passo](/iniciantes/instalacao-visual-studio/) para rodar o projeto no seu computador.

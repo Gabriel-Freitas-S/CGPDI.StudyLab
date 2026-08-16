@@ -1,4 +1,4 @@
----
+﻿---
 title: Roteiro de Estudos para Avaliações (T1, T2 e T3)
 description: Guia de preparação acadêmica para os trabalhos computacionais práticos das Unidades 1, 2 e 3 do curso universitário.
 ---
@@ -57,4 +57,4 @@ Este roteiro organiza os tópicos práticos e teóricos necessários para a prep
 
 ---
 
-👉 **Próximo Passo:** Aprenda a publicar esta documentação no [GitHub Pages & Configurar o CI/CD](/deploy/github-pages-e-ci-cd/).
+**Próximo Passo:** Aprenda a publicar esta documentação no [GitHub Pages & Configurar o CI/CD](/deploy/github-pages-e-ci-cd/).

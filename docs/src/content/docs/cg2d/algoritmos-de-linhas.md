@@ -1,4 +1,4 @@
----
+﻿---
 title: Algoritmos de Rasterização de Linhas (Rasterizer2D.cs)
 description: Comparativo aprofundado entre DDA, o Algoritmo de Linha de Bresenham (aritmética 100% inteira) e Anti-Aliasing de Xiaolin Wu.
 ---
@@ -78,4 +78,4 @@ O algoritmo de Xiaolin Wu elimina o aspecto serrilhado (*pixelado*) calculando a
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Círculos, Elipses e Curvas de Bézier](/cg2d/circulos-elipses-e-curvas/).
+**Próximo Passo:** Aprenda sobre [Círculos, Elipses e Curvas de Bézier](/cg2d/circulos-elipses-e-curvas/).

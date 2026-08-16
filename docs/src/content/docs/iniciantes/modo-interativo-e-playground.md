@@ -7,7 +7,7 @@ O **Laboratório Interativo (Aba 6)** do [`CGPDI.StudyLab`](https://github.com/G
 
 ---
 
-## 🗺️ Como Funciona a Trilha de Aprendizado
+## Como Funciona a Trilha de Aprendizado
 
 A esteira de estudos organiza-se em três pilares integrados:
 
@@ -15,17 +15,18 @@ A esteira de estudos organiza-se em três pilares integrados:
 graph LR
     A["1. Teoria & Referências Microsoft"] --> B["2. Playground Interativo com Sliders"]
     B --> C["3. Simulação Passo a Passo no Canvas"]
-    C --> D["4. Quiz de Fixação com Feedback Imediato"]
+    D["4. Quiz de Fixação com Feedback Imediato"]
+    C --> D
 ```
 
-1. **Navegação Progressiva:** Botões `⬅️ Anterior` e `Próximo ➡️` com barra de progresso em tempo real (`Passo X de 10`).
+1. **Navegação Progressiva:** Botões `Anterior` e `Próximo` com barra de progresso em tempo real (`Passo X de 10`).
 2. **Experimentação Manual:** Controles deslizantes dedicados para alterar parâmetros matemáticos e observar a reação imediata do algoritmo.
-3. **Execução Passo a Passo (`▶️`):** O usuário avança ciclo a ciclo para entender a movimentação de ponteiros, kernels e raios 3D.
+3. **Execução Passo a Passo:** O usuário avança ciclo a ciclo para entender a movimentação de ponteiros, kernels e raios 3D.
 4. **Quiz de Validação:** Questões de múltipla escolha com explicações pedagógicas sobre a mecânica interna do compilador JIT e da GPU.
 
 ---
 
-## 📚 Mapa Curricular das 12 Lições Interativas
+## Mapa Curricular das 12 Lições Interativas
 
 | # | Lição | Módulo | Conceito Central |
 | :--- | :--- | :--- | :--- |
@@ -44,29 +45,29 @@ graph LR
 
 ---
 
-## 🔬 Estúdio de Código C#, Compilação Roslyn & Renderização Dinâmica
+## Estúdio de Código C#, Compilação Roslyn & Renderização Dinâmica
 
 O **Estúdio de Código Dedicado** (`CodeStudioWindow`) foi projetado para máxima imersão:
 
 ### 1. Janela Dedicada em Tela Cheia & Modo Foco
-* Clique no botão **`🗖 Estúdio em Nova Janela (Tela Cheia)`** na barra superior para abrir uma janela autônoma maximizável, ideal para múltiplos monitores.
-* Use o botão **`🗖 Modo Foco`** para recolher as barras laterais e dedicar 100% da tela ao editor de código C# e aos testes unitários.
+* Clique no botão **`Estúdio em Nova Janela (Tela Cheia)`** na barra superior para abrir uma janela autônoma maximizável, ideal para múltiplos monitores.
+* Use o botão **`Modo Foco`** para recolher as barras laterais e dedicar 100% da tela ao editor de código C# e aos testes unitários.
 
 ### 2. Compilação ao Vivo com Microsoft Roslyn
 * O estudante pode digitar livremente código C# no editor.
-* Ao clicar em **`🚀 Compilar & Executar`** ou **`🧪 Rodar Testes`**, o motor `Microsoft.CodeAnalysis.CSharp.Scripting` avalia a função em milissegundos.
+* Ao clicar em **`Compilar & Executar`** ou **`Rodar Testes`**, o motor `Microsoft.CodeAnalysis.CSharp.Scripting` avalia a função em milissegundos.
 * **Renderização Dinâmica no Canvas:** Ao alterar qualquer valor numérico, cor, matriz ou fórmula geométrica no código, **o Canvas gráfico e o mapa de memória RAM são redesenhados imediatamente com base no seu código customizado!**
 
 ### 3. Bateria de Testes Automatizados & Gabaritos Oficiais
-* Cada lição conta com asserções unitárias que validam entradas, saídas esperadas e casos de borda matemáticos com feedback imediato (verde para passou ✅, vermelho para falhou ❌).
-* A aba **💡 Gabarito** oferece a solução oficial testada e explicada linha por linha, permitindo carregamento no editor com 1 clique.
+* Cada lição conta com asserções unitárias que validam entradas, saídas esperadas e casos de borda matemáticos com feedback imediato (indicando aprovação ou falha).
+* A aba **Gabarito** oferece a solução oficial testada e explicada linha por linha, permitindo carregamento no editor com 1 clique.
 
 ### 4. Quizzes de Fixação Responsivos
 * Perguntas conceituais com formatação automática de quebra de linha (`TextWrapping`), permitindo leitura limpa de respostas longas e diagnósticos teóricos completos.
 
 ---
 
-## 📖 Referências Oficiais da Microsoft Learn
+## Referências Oficiais da Microsoft Learn
 
 Cada lição no aplicativo e nesta documentação está conectada a recursos oficiais da Microsoft:
 
@@ -92,4 +93,4 @@ Cada lição no aplicativo e nesta documentação está conectada a recursos ofi
 
 ---
 
-👉 **Próximo Passo:** Explore o guia de [Instalação e Compilação no Visual Studio](/iniciantes/instalacao-visual-studio/).
+**Próximo Passo:** Explore o guia de [Instalação e Compilação no Visual Studio](/iniciantes/instalacao-visual-studio/).

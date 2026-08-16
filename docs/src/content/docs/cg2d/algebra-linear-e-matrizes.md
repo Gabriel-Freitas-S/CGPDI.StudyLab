@@ -1,4 +1,4 @@
----
+﻿---
 title: Álgebra Linear 2D & Coordenadas Homogêneas (Matrix2D.cs)
 description: Por que usamos matrizes 3x3 no plano 2D, coordenadas homogêneas, translação, rotação, escala, cisalhamento e composição afim.
 ---
@@ -63,4 +63,4 @@ A multiplicação de matrizes **não é comutativa** ($A \times B \neq B \times 
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre os [Algoritmos de Traçado de Retas (Bresenham e Wu)](/cg2d/algoritmos-de-linhas/).
+**Próximo Passo:** Aprenda sobre os [Algoritmos de Traçado de Retas (Bresenham e Wu)](/cg2d/algoritmos-de-linhas/).

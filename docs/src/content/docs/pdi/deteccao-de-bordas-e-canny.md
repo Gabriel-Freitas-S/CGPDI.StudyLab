@@ -1,4 +1,4 @@
----
+﻿---
 title: Detecção de Bordas & Algoritmo Canny Completo (SpatialFilters.cs)
 description: Derivadas espaciais, operadores Sobel, Prewitt, Scharr, Laplaciano e o pipeline completo do Detector de Bordas Canny em 5 etapas.
 ---
@@ -74,4 +74,4 @@ while (edgeQueue.Count > 0)
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Morfologia Matemática e Limiarização de Otsu](/pdi/morfologia-matematica-e-otsu/).
+**Próximo Passo:** Aprenda sobre [Morfologia Matemática e Limiarização de Otsu](/pdi/morfologia-matematica-e-otsu/).
