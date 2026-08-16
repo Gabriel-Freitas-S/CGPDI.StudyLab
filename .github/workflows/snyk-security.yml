@@ -18,6 +18,8 @@ jobs:
     name: Snyk Security Scan (.NET & Docs)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -37,9 +39,10 @@ jobs:
           cache: npm
           cache-dependency-path: docs/package-lock.json
 
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-
+      - name: Install & Configure Snyk CLI
+        run: |
+          npm install -g snyk
+          snyk config set api="$SNYK_TOKEN"
 
       - name: Restore .NET dependencies
         run: dotnet restore CGPDI.StudyLab/CGPDI.StudyLab.csproj
@@ -51,23 +54,17 @@ jobs:
       # Snyk Open Source (.NET) — gera SARIF
       - name: Snyk Open Source (.NET Dependencies)
         run: snyk test --file=CGPDI.StudyLab/CGPDI.StudyLab.csproj --severity-threshold=medium --sarif-file-output=snyk-dotnet.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true
 
       # Snyk Code (SAST) — gera SARIF (não suporta --severity-threshold)
       - name: Snyk Code (C# SAST)
         run: snyk code test --sarif-file-output=snyk-code.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true
 
       # Snyk Open Source (Docs / npm) — gera SARIF
       - name: Snyk Open Source (Docs Dependencies)
         working-directory: ./docs
         run: snyk test --severity-threshold=medium --sarif-file-output=../snyk-docs.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         continue-on-error: true
 
       # Garante que os arquivos SARIF existam (mesmo vazios) para o upload não falhar
@@ -103,12 +100,8 @@ jobs:
 
       # Hard Gate: Falha a pipeline se houver vulnerabilidade moderada ou superior
       - name: Snyk Security Gate (.NET Dependencies)
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --file=CGPDI.StudyLab/CGPDI.StudyLab.csproj --severity-threshold=medium
 
       - name: Snyk Security Gate (Docs Dependencies)
         working-directory: ./docs
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --severity-threshold=medium
