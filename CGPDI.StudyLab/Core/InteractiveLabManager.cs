@@ -43,6 +43,9 @@ namespace CGPDI.StudyLab.Core
         public string StarterTemplate { get; set; } = "";
         public string BlankTemplate { get; set; } = "";
         public string SolutionCode { get; set; } = "";
+        public string? XamlSnippet { get; set; }
+        public string? XamlExplanation { get; set; }
+        public bool HasXamlContent => !string.IsNullOrWhiteSpace(XamlSnippet);
         public string ControlsDescription { get; set; } = "";
         public string QuizQuestion { get; set; } = "";
         public List<QuizOption> QuizOptions { get; set; } = new List<QuizOption>();
@@ -388,6 +391,26 @@ public class ZoomableCanvas : Canvas
     double bounded = Math.Clamp(contentDesired, min, max);
     return Math.Min(available, bounded);
 }",
+                    XamlSnippet =
+@"<Grid Margin=""12"">
+    <!-- Exemplo Pedagógico: Árvore Visual e Controles Vetoriais WPF -->
+    <Border Background=""#1E293B"" CornerRadius=""10"" BorderBrush=""#3B82F6"" BorderThickness=""2"" Padding=""16"">
+        <StackPanel VerticalAlignment=""Center"" HorizontalAlignment=""Center"">
+            <TextBlock Text=""Árvore Visual e Dependency Properties no WPF"" Foreground=""#38BDF8"" FontSize=""15"" FontWeight=""Bold"" HorizontalAlignment=""Center""/>
+            <TextBlock Text=""Elementos declarativos compilados para BAML e renderizados via DirectX."" Foreground=""#94A3B8"" FontSize=""11.5"" Margin=""0,4,0,12"" HorizontalAlignment=""Center""/>
+            
+            <!-- Canvas com Formas Vetoriais Nativas -->
+            <Canvas Width=""220"" Height=""90"" Background=""#0F172A"" Margin=""0,0,0,12"">
+                <Rectangle Canvas.Left=""15"" Canvas.Top=""15"" Width=""60"" Height=""60"" Fill=""#3B82F6"" RadiusX=""6"" RadiusY=""6""/>
+                <Ellipse Canvas.Left=""95"" Canvas.Top=""15"" Width=""60"" Height=""60"" Fill=""#10B981""/>
+                <Line X1=""15"" Y1=""45"" X2=""190"" Y2=""45"" Stroke=""#F59E0B"" StrokeThickness=""2""/>
+            </Canvas>
+            
+            <Button Content=""Botão com Estilo e Disparo de Evento"" Background=""#2563EB"" Foreground=""#FFFFFF"" Padding=""12,6"" FontWeight=""Bold""/>
+        </StackPanel>
+    </Border>
+</Grid>",
+                    XamlExplanation = "Demonstração de composição de árvore visual (Border -> StackPanel -> Canvas -> Shapes), onde propriedades como Fill, Stroke e CornerRadius são Dependency Properties cacheadas na memória esparsa do WPF.",
                     ControlsDescription = "Ajuste o controle deslizante de escala de layout para observar a árvore visual e a restrição de tamanho calculada.",
                     QuizQuestion = "Qual é a principal vantagem das Dependency Properties em relação às propriedades C# normais com campos privados?",
                     QuizOptions = new List<QuizOption>
@@ -472,7 +495,22 @@ finally
 {
     return ""Lock -> Modificacao -> AddDirtyRect -> Unlock"";
 }",
-                    ControlsDescription = "Clique no botão '▶️ Simular Próximo Passo' para acompanhar o ciclo de vida do buffer e o envio à GPU.",
+                    XamlSnippet =
+@"<Grid Margin=""12"">
+    <!-- Exemplo Pedagógico: Hospedagem de WriteableBitmap em Image WPF -->
+    <Border Background=""#0F172A"" BorderBrush=""#1E293B"" BorderThickness=""1"" CornerRadius=""8"" Padding=""14"">
+        <StackPanel HorizontalAlignment=""Center"" VerticalAlignment=""Center"">
+            <TextBlock Text=""Renderização de Bitmap com NearestNeighbor Scaling"" Foreground=""#38BDF8"" FontSize=""14"" FontWeight=""Bold"" Margin=""0,0,0,6"" HorizontalAlignment=""Center""/>
+            <TextBlock Text=""RenderOptions.BitmapScalingMode garante pixels nítidos sem borrão bilinear."" Foreground=""#94A3B8"" FontSize=""11.5"" Margin=""0,0,0,10"" HorizontalAlignment=""Center""/>
+            <Border BorderBrush=""#3B82F6"" BorderThickness=""2"" CornerRadius=""4"" Background=""#000000"" Padding=""4"">
+                <!-- Controle Image conectado ao buffer de vídeo -->
+                <Image Width=""220"" Height=""120"" RenderOptions.BitmapScalingMode=""NearestNeighbor""/>
+            </Border>
+        </StackPanel>
+    </Border>
+</Grid>",
+                    XamlExplanation = "Mostra como o controle <Image> do WPF hospeda um WriteableBitmap com modo de interpolação NearestNeighbor, essencial para visualização nítida de pixels individuais em Computação Gráfica.",
+                    ControlsDescription = "Clique no botão 'Simular Próximo Passo' para acompanhar o ciclo de vida do buffer e o envio à GPU.",
                     QuizQuestion = "O que acontece se um algoritmo esquecer de chamar o método AddDirtyRect() antes do Unlock()?",
                     QuizOptions = new List<QuizOption>
                     {
@@ -1094,10 +1132,15 @@ if (delta >= 0) {
                     RenderXamlAndLayoutSimulation(bmp, p1, p2, logOut);
                     break;
                 case LessonType.WriteableBitmapLifecycle:
-                    RenderLifecycleSimulation(bmp, stepIndex, logOut);
+                    int lifeStep = (int)Math.Clamp(p1 - 1, 0, 3);
+                    if (stepIndex > 0) lifeStep = (stepIndex % 4);
+                    RenderLifecycleSimulation(bmp, lifeStep, logOut);
                     break;
                 case LessonType.ConvolutionStepByStep:
-                    RenderConvolutionSimulation(bmp, stepIndex, logOut);
+                    int convKx = (int)Math.Clamp(p1 - 1, 0, 3);
+                    int convKy = (int)Math.Clamp(p2 - 1, 0, 3);
+                    if (stepIndex > 0) { convKx = (stepIndex % 4); convKy = (stepIndex / 4) % 4; }
+                    RenderConvolutionSimulation(bmp, convKx, convKy, (int)p3, logOut);
                     break;
                 case LessonType.OtsuThresholdSearch:
                     RenderOtsuSimulation(bmp, p1, logOut);
@@ -1106,10 +1149,10 @@ if (delta >= 0) {
                     RenderBresenhamSimulation(bmp, stepIndex, (int)p1, (int)p2, logOut);
                     break;
                 case LessonType.MatrixTransform2D:
-                    RenderMatrix2DSimulation(bmp, p1, p2, p3, p4, logOut);
+                    RenderMatrix2DSimulation(bmp, p1, 0, p2, p3, logOut);
                     break;
                 case LessonType.PipelineMVP3D:
-                    RenderPipeline3DSimulation(bmp, p1, p2, logOut);
+                    RenderPipeline3DSimulation(bmp, p1, p2, p3, logOut);
                     break;
                 case LessonType.HierarchicalSceneGraph:
                     RenderHierarchySimulation(bmp, p1, p2, p3, logOut);
@@ -1331,12 +1374,13 @@ if (delta >= 0) {
             }
         }
 
-        private static void RenderConvolutionSimulation(DirectBitmap bmp, int step, StringBuilder log)
+        private static void RenderConvolutionSimulation(DirectBitmap bmp, int kx, int ky, int divisor, StringBuilder log)
         {
-            int kx = (step % 5);
-            int ky = (step / 5) % 5;
+            if (divisor <= 0) divisor = 9;
+            kx = Math.Clamp(kx, 0, 3);
+            ky = Math.Clamp(ky, 0, 3);
 
-            // Desenha grade de entrada
+            // Desenha grade de entrada (6x6)
             for (int y = 0; y < 6; y++)
             {
                 for (int x = 0; x < 6; x++)
@@ -1354,18 +1398,21 @@ if (delta >= 0) {
                 }
             }
 
-            // Desenha pixel resultante
+            // Desenha pixel resultante com intensidade calculada
+            int pixelIntensity = Math.Clamp(200 / divisor, 20, 255);
+            Color resColor = Color.FromRgb((byte)pixelIntensity, 180, 240);
+
             for (int dy = 0; dy < 60; dy++)
             {
                 for (int dx = 0; dx < 60; dx++)
                 {
-                    bmp.SetPixel(360 + dx, 160 + dy, Color.FromRgb(40, 180, 240));
+                    bmp.SetPixel(340 + dx, 150 + dy, resColor);
                 }
             }
 
-            log.AppendLine($"[Convolução Espacial 2D - Passo {step + 1}]:");
+            log.AppendLine($"[Convolução Espacial 2D - Posição ({kx + 1}, {ky + 1})]:");
             log.AppendLine($"• Posição Central do Kernel: X = {kx + 1}, Y = {ky + 1}");
-            log.AppendLine($"• Kernel Box Blur 3x3: Somatório dos 9 vizinhos / 9");
+            log.AppendLine($"• Divisor de Normalização: {divisor}");
             log.AppendLine($"• Pixel de Saída g({kx + 1}, {ky + 1}) gravado no buffer de destino.");
         }
 
@@ -1404,7 +1451,7 @@ if (delta >= 0) {
             log.AppendLine($"• Limiar de Teste Atual T: {threshold}");
             log.AppendLine($"• Limiar Ótimo Detectado T*: {bestT}");
             log.AppendLine($"• Variância Inter-Classes σ²_B: {Math.Sin((threshold - 10) * Math.PI / 235.0):F4}");
-            log.AppendLine(threshold == bestT ? "⭐ PICO MÁXIMO ENCONTRADO! Separação ótima entre objeto e fundo." : "-> Continue deslizando para encontrar o ponto de máximo.");
+            log.AppendLine(threshold == bestT ? "PICO MÁXIMO ENCONTRADO! Separação ótima entre objeto e fundo." : "-> Continue deslizando para encontrar o ponto de máximo.");
         }
 
         private static void RenderBresenhamSimulation(DirectBitmap bmp, int step, int x1, int y1, StringBuilder log)
@@ -1423,10 +1470,11 @@ if (delta >= 0) {
 
             int curX = x0, curY = y0;
             int currentStep = 0;
+            bool drawAll = (step >= 20 || step == 0);
 
             while (true)
             {
-                if (currentStep <= step)
+                if (drawAll || currentStep <= step)
                 {
                     // Plota pixel na grade
                     for (int gy = 0; gy < gridScale - 2; gy++)
@@ -1439,7 +1487,7 @@ if (delta >= 0) {
                 }
 
                 if (curX == x1 && curY == y1) break;
-                if (currentStep == step) break;
+                if (!drawAll && currentStep == step) break;
 
                 int e2 = err;
                 if (e2 > -dx) { err -= dy; curX += sx; }
@@ -1447,7 +1495,7 @@ if (delta >= 0) {
                 currentStep++;
             }
 
-            log.AppendLine($"[Reta de Bresenham - Passo {step + 1}]:");
+            log.AppendLine($"[Reta de Bresenham]:");
             log.AppendLine($"• Ponto Inicial: ({x0}, {y0}) -> Ponto Final: ({x1}, {y1})");
             log.AppendLine($"• ΔX = {dx}, ΔY = {dy}");
             log.AppendLine($"• Pixel Atual Plotado: ({curX}, {curY})");
@@ -1456,19 +1504,20 @@ if (delta >= 0) {
 
         private static void RenderMatrix2DSimulation(DirectBitmap bmp, double tx, double ty, double angleDeg, double scale, StringBuilder log)
         {
+            if (scale <= 0.05) scale = 1.0;
             double rad = angleDeg * Math.PI / 180.0;
             double cos = Math.Cos(rad);
             double sin = Math.Sin(rad);
 
             // Vértices do triângulo original
-            double[,] pts = { { 0, -40 }, { 35, 35 }, { -35, 35 } };
+            double[,] pts = { { 0, -60 }, { 50, 50 }, { -50, 50 } };
 
-            int centerX = 250;
-            int centerY = 250;
+            int centerX = 256;
+            int centerY = 256;
 
             // Desenha eixos cartesianos
-            for (int x = 20; x < 480; x++) bmp.SetPixel(x, centerY, Color.FromRgb(40, 45, 60));
-            for (int y = 20; y < 480; y++) bmp.SetPixel(centerX, y, Color.FromRgb(40, 45, 60));
+            for (int x = 20; x < 492; x++) bmp.SetPixel(x, centerY, Color.FromRgb(40, 45, 60));
+            for (int y = 20; y < 492; y++) bmp.SetPixel(centerX, y, Color.FromRgb(40, 45, 60));
 
             // Transforma vértices
             int[] transX = new int[3];
@@ -1498,13 +1547,19 @@ if (delta >= 0) {
             log.AppendLine($"• Translação: ({tx:F1}, {ty:F1}) | Rotação: {angleDeg:F1}° | Escala: {scale:F2}x");
         }
 
-        private static void RenderPipeline3DSimulation(DirectBitmap bmp, double zDist, double fovDeg, StringBuilder log)
+        private static void RenderPipeline3DSimulation(DirectBitmap bmp, double rotYDeg, double zDist, double fovDeg, StringBuilder log)
         {
+            if (zDist < 1.0) zDist = 3.5;
+            if (fovDeg < 30.0) fovDeg = 60.0;
             zDist = Math.Clamp(zDist, 1.0, 10.0);
             fovDeg = Math.Clamp(fovDeg, 30.0, 120.0);
 
-            int centerX = 250;
-            int centerY = 250;
+            double rotRad = rotYDeg * Math.PI / 180.0;
+            double cosR = Math.Cos(rotRad);
+            double sinR = Math.Sin(rotRad);
+
+            int centerX = 256;
+            int centerY = 256;
 
             // Cubo 3D (8 vértices)
             double[,] vertices = {
@@ -1519,16 +1574,23 @@ if (delta >= 0) {
 
             for (int i = 0; i < 8; i++)
             {
-                double x = vertices[i, 0];
-                double y = vertices[i, 1];
-                double z = vertices[i, 2] + zDist; // Câmera olhando em +Z
+                double vx = vertices[i, 0];
+                double vy = vertices[i, 1];
+                double vz = vertices[i, 2];
+
+                // Rotação Y
+                double rx = vx * cosR + vz * sinR;
+                double ry = vy;
+                double rz = -vx * sinR + vz * cosR + zDist;
+
+                if (rz < 0.1) rz = 0.1;
 
                 // Divisão Perspectiva por Z
-                double x_ndc = (x * fovFactor) / z;
-                double y_ndc = (y * fovFactor) / z;
+                double x_ndc = (rx * fovFactor) / rz;
+                double y_ndc = (ry * fovFactor) / rz;
 
-                px[i] = (int)(centerX + x_ndc * 150);
-                py[i] = (int)(centerY - y_ndc * 150);
+                px[i] = (int)(centerX + x_ndc * 180);
+                py[i] = (int)(centerY - y_ndc * 180);
             }
 
             // Conecta arestas do cubo
@@ -1546,10 +1608,10 @@ if (delta >= 0) {
             }
 
             log.AppendLine($"[Pipeline MVP 3D & Projeção Perspectiva]:");
+            log.AppendLine($"• Rotação Y: {rotYDeg:F0}°");
             log.AppendLine($"• Distância Z da Câmera: {zDist:F2}");
             log.AppendLine($"• Campo de Visão (FOV): {fovDeg:F1}°");
             log.AppendLine($"• Divisão Perspectiva: X_screen = (X * fovFactor) / Z");
-            log.AppendLine($"• Objeto com Z={zDist:F1} sofre escala projetiva de {1.0 / zDist:F3}x");
         }
 
         private static void RenderHierarchySimulation(DirectBitmap bmp, double baseAngle, double shoulderAngle, double elbowAngle, StringBuilder log)

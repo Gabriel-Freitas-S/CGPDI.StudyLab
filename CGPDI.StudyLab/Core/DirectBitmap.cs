@@ -86,6 +86,8 @@ namespace CGPDI.StudyLab.Core
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return Colors.Black;
 
+            if (!_isLocked) Lock();
+
             byte* pixelPtr = _backBuffer + (y * Stride) + (x * 4);
             byte b = pixelPtr[0];
             byte g = pixelPtr[1];
@@ -96,12 +98,14 @@ namespace CGPDI.StudyLab.Core
         }
 
         /// <summary>
-        /// Define a cor de um pixel específico (x, y).
+        /// Define a cor de um pixel específico (x, y) via Color.
         /// </summary>
         public void SetPixel(int x, int y, Color color)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 return;
+
+            if (!_isLocked) Lock();
 
             byte* pixelPtr = _backBuffer + (y * Stride) + (x * 4);
             pixelPtr[0] = color.B;
@@ -111,23 +115,48 @@ namespace CGPDI.StudyLab.Core
         }
 
         /// <summary>
+        /// Define a cor de um pixel específico (x, y) via uint BGRA compacto.
+        /// </summary>
+        public void SetPixel(int x, int y, uint bgra)
+        {
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+                return;
+
+            if (!_isLocked) Lock();
+
+            uint* row = (uint*)(_backBuffer + (y * Stride));
+            row[x] = bgra;
+        }
+
+        /// <summary>
         /// Define a cor de um pixel via uint (formato 0xAARRGGBB ou 0xFFRRGGBB).
         /// </summary>
         public void SetPixelFast(int x, int y, uint bgra)
         {
             if (x >= 0 && x < Width && y >= 0 && y < Height)
             {
+                if (!_isLocked) Lock();
                 uint* row = (uint*)(_backBuffer + (y * Stride));
                 row[x] = bgra;
             }
         }
 
         /// <summary>
-        /// Limpa toda a imagem com uma cor específica.
+        /// Limpa toda a imagem com uma cor específica via Color.
         /// </summary>
         public void Clear(Color color)
         {
             uint bgra = (uint)((color.A << 24) | (color.R << 16) | (color.G << 8) | color.B);
+            Clear(bgra);
+        }
+
+        /// <summary>
+        /// Limpa toda a imagem com um valor uint BGRA pré-compactado.
+        /// </summary>
+        public void Clear(uint bgra)
+        {
+            if (!_isLocked) Lock();
+
             Parallel.For(0, Height, y =>
             {
                 uint* row = (uint*)(_backBuffer + (y * Stride));

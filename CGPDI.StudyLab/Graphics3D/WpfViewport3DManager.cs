@@ -152,6 +152,12 @@ namespace CGPDI.StudyLab.Graphics3D
             _orthographicCamera.Width = _distance * 0.9;
         }
 
+        public void RotateCamera(double deltaYawDegrees)
+        {
+            _yaw = (_yaw + deltaYawDegrees) % 360.0;
+            UpdateCameraPosition();
+        }
+
         public void SetCameraProjection(bool isPerspective)
         {
             _isPerspective = isPerspective;

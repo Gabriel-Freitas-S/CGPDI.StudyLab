@@ -76,9 +76,9 @@
                 <!-- Textos e Badges -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
-                        <TextBlock Text="✨ Nova Versão Disponível!" FontSize="15" FontWeight="Bold" Foreground="#60A5FA"/>
+                        <TextBlock Text="Nova Versão Disponível" FontSize="15" FontWeight="Bold" Foreground="#60A5FA"/>
                         <Border Background="#1E293B" CornerRadius="4" Padding="6,2" Margin="10,0,0,0">
-                            <TextBlock x:Name="TxtVersionCompare" Text="v1.0.0 ➔ v1.0.1" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
+                            <TextBlock x:Name="TxtVersionCompare" Text="v1.0.0 -> v1.0.1" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
                         </Border>
                     </StackPanel>
                     <TextBlock x:Name="TxtReleaseDate" Text="Publicado no GitHub Releases" FontSize="11.5" Foreground="#94A3B8"/>
@@ -87,7 +87,7 @@
         </Border>
 
         <!-- Changelog / Notas de Atualização -->
-        <GroupBox Grid.Row="1" Header="📋 O que há de novo nesta versão:" Foreground="#94A3B8" BorderBrush="#25273A" Margin="0,0,0,12" Padding="8">
+        <GroupBox Grid.Row="1" Header="O que há de novo nesta versão:" Foreground="#94A3B8" BorderBrush="#25273A" Margin="0,0,0,12" Padding="8">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <TextBox x:Name="TxtChangelog" IsReadOnly="True" Background="#0A0B10" Foreground="#E2E8F0" BorderThickness="0"
                          FontSize="12" FontFamily="Consolas, Segoe UI" TextWrapping="Wrap" Padding="8"/>
@@ -112,9 +112,9 @@
 
         <!-- Botões de Ação -->
         <DockPanel Grid.Row="4" LastChildFill="False">
-            <Button x:Name="BtnWeb" DockPanel.Dock="Left" Content="🌐 Ver no GitHub" Click="BtnWeb_Click" Padding="10,6" FontSize="11.5"/>
+            <Button x:Name="BtnWeb" DockPanel.Dock="Left" Content="Ver no GitHub" Click="BtnWeb_Click" Padding="12,6" FontSize="11.5"/>
             <Button x:Name="BtnCancel" DockPanel.Dock="Right" Content="Lembrar Mais Tarde" Click="BtnCancel_Click" Padding="12,6" Margin="8,0,0,0"/>
-            <Button x:Name="BtnApply" DockPanel.Dock="Right" Content="🚀 Atualizar Agora" Click="BtnApply_Click" Style="{StaticResource PrimaryButton}" Padding="16,6"/>
+            <Button x:Name="BtnApply" DockPanel.Dock="Right" Content="Atualizar Agora" Click="BtnApply_Click" Style="{StaticResource PrimaryButton}" Padding="16,6"/>
         </DockPanel>
     </Grid>
 </Window>

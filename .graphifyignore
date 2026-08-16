@@ -1,0 +1,32 @@
+# Personal notes / scratch files
+fix e melhorias.md
+
+# Build artifacts - binaries and intermediaries
+bin/
+obj/
+dist/
+docs/dist/
+docs/.astro/
+.astro/
+
+# Dependencies
+node_modules/
+docs/node_modules/
+
+# IDE and OS metadata
+.vs/
+.vscode/
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Runtime config and lock files (no graph value)
+*.runtimeconfig.json
+*.deps.json
+
+# Graphify's own output (never graph the graph)
+graphify-out/
+
+# Inno Setup installer output
+dist-installer/
+publish/

@@ -29,7 +29,6 @@ namespace CGPDI.StudyLab
         private DirectBitmap _canvas2D = null!;
         private WpfViewport3DManager _viewport3D = null!;
         private DispatcherTimer _timer3D = null!;
-        private double _autoRotateAngle = 0;
 
         // Estado para transformações 2D homogêneas
         private System.Windows.Point[] _poly2DVertices = Array.Empty<System.Windows.Point>();
@@ -44,10 +43,17 @@ namespace CGPDI.StudyLab
         private int _simulationStepIndex = 0;
         private DirectBitmap _labBitmap = null!;
 
+        private readonly DispatcherTimer _highlightDebounceTimerLab;
+        private bool _isLabHighlighting = false;
+
         public MainWindow()
         {
             InitializeComponent();
             Icon = AppIconHelper.GetAppIcon();
+
+            _highlightDebounceTimerLab = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+            _highlightDebounceTimerLab.Tick += HighlightDebounceTimerLab_Tick;
+
             Loaded += MainWindow_Loaded;
         }
 
@@ -71,8 +77,7 @@ namespace CGPDI.StudyLab
             _timer3D = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
             _timer3D.Tick += (s, ev) =>
             {
-                _autoRotateAngle += 1.0;
-                // Renderiza frame se necessário
+                _viewport3D?.RotateCamera(1.0);
             };
 
             // 4. Renderiza cena inicial 3D em Software
@@ -102,9 +107,41 @@ namespace CGPDI.StudyLab
                 }
             }
 
+            if (RtbLabXamlCode != null)
+            {
+                BtnLabXamlTemplateBasic_Click(this, new RoutedEventArgs());
+            }
+
+            if (RtbLabEditableCode != null)
+            {
+                RtbLabEditableCode.TextChanged += RtbLabEditableCode_TextChanged;
+            }
+            if (RtbLabXamlCode != null)
+            {
+                RtbLabXamlCode.TextChanged += RtbLabXamlCode_TextChanged;
+            }
+
+            // 7. Conecta Popout do Estúdio de Projetos (Aba 7)
+            if (MainStudioControl != null)
+            {
+                MainStudioControl.PopoutRequested += (s, ev) => BtnOpenProjectStudio_Click(s ?? this, new RoutedEventArgs());
+            }
+
+            // Inicializa textos e códigos de teoria nas abas
+            if (TxtTheoryTitle != null) TxtTheoryTitle.Text = "Cena de Calibração PDI Padrão";
+            if (TxtTheoryMath != null) MathFormulaRenderer.RenderToTextBlock(TxtTheoryMath, "• Conversão perceptual BGRA32 e processamento direto via ponteiros unsafe na memória RAM.");
+            if (RtbTheoryCodeSnippet != null) CSharpSyntaxHighlighter.SetCode(RtbTheoryCodeSnippet, AlgorithmCodeSnippets.GrayscaleCode);
+
+            Update2DTheory("Rasterização 2D e Primitivas Gráficas", "• Reta de Bresenham: dx - dy com inteiros.\n• Círculo Ponto-Médio: 8 octantes simétricos com d = 1 - r.", AlgorithmCodeSnippets.BresenhamLineCode);
+
+            Update3DTheory("Pipeline 3D e Matrizes de Transformação", "• Transformação MVP: v_{clip} = M_{proj} × M_{view} × M_{model} × v_{local}.\n• Iluminação de Blinn-Phong: I = I_a·k_a + I_d·k_d·(N·L) + I_s·k_s·(N·H)^α.", AlgorithmCodeSnippets.Pipeline3DMVPCode);
+
+            UpdateRayTheory("Fundamentos de Ray Tracing Fotorrealista", "• Equação Paramétrica do Raio: r(t) = O + t·D, t > 0.\n• Interseção com Esfera: |O + t·D - C|^2 = R^2 ⟹ Bhaskara.\n• Reflexão Especular: R = D - 2(D·N)N.", AlgorithmCodeSnippets.RayTracingSphereCode);
+
+            UpdateContextualTopBar();
             UpdateStatus("Ambiente carregado com sucesso. Selecione qualquer algoritmo para testar.", 0);
 
-            // 7. Verificação não bloqueante de atualizações no GitHub Releases
+            // 8. Verificação não bloqueante de atualizações no GitHub Releases
             _ = Task.Run(async () =>
             {
                 await Task.Delay(3000);
@@ -120,9 +157,56 @@ namespace CGPDI.StudyLab
             });
         }
 
+        private void RtbLabEditableCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_isLabHighlighting) return;
+            _highlightDebounceTimerLab.Stop();
+            _highlightDebounceTimerLab.Start();
+        }
+
+        private void RtbLabXamlCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_isLabHighlighting) return;
+            _highlightDebounceTimerLab.Stop();
+            _highlightDebounceTimerLab.Start();
+        }
+
+        private void HighlightDebounceTimerLab_Tick(object? sender, EventArgs e)
+        {
+            _highlightDebounceTimerLab.Stop();
+            if (_isLabHighlighting) return;
+            _isLabHighlighting = true;
+
+            try
+            {
+                if (TabLabEditor != null && TabLabEditor.SelectedIndex == 1 && RtbLabXamlCode != null)
+                {
+                    int offset = XamlSyntaxHighlighter.GetCaretCharIndex(RtbLabXamlCode);
+                    string xaml = XamlSyntaxHighlighter.GetPlainText(RtbLabXamlCode);
+                    XamlSyntaxHighlighter.Highlight(RtbLabXamlCode, xaml);
+                    XamlSyntaxHighlighter.SetCaretCharIndex(RtbLabXamlCode, offset);
+                }
+                else if (RtbLabEditableCode != null)
+                {
+                    int offset = CSharpSyntaxHighlighter.GetCaretCharIndex(RtbLabEditableCode);
+                    string code = CSharpSyntaxHighlighter.GetPlainText(RtbLabEditableCode);
+                    CSharpSyntaxHighlighter.Highlight(RtbLabEditableCode, code);
+                    CSharpSyntaxHighlighter.SetCaretCharIndex(RtbLabEditableCode, offset);
+                }
+            }
+            catch
+            {
+                // Fallback seguro
+            }
+            finally
+            {
+                _isLabHighlighting = false;
+            }
+        }
+
         #region Utilitários de Atualização e Medição de Desempenho
 
-        private void ExecuteAlgorithm(string title, string mathDescription, Func<DirectBitmap> algorithmFunc)
+        private void ExecuteAlgorithm(string title, string mathDescription, Func<DirectBitmap> algorithmFunc, string? codeSnippet = null)
         {
             Stopwatch sw = Stopwatch.StartNew();
             try
@@ -137,8 +221,14 @@ namespace CGPDI.StudyLab
                 double ms = sw.Elapsed.TotalMilliseconds;
                 UpdateStatus($"Algoritmo '{title}' executado com sucesso.", ms);
 
-                TxtTheoryTitle.Text = title;
-                TxtTheoryMath.Text = mathDescription;
+                if (TxtTheoryTitle != null) TxtTheoryTitle.Text = title;
+                if (TxtTheoryMath != null) MathFormulaRenderer.RenderToTextBlock(TxtTheoryMath, mathDescription);
+
+                if (RtbTheoryCodeSnippet != null)
+                {
+                    string code = !string.IsNullOrWhiteSpace(codeSnippet) ? codeSnippet : GetDefaultPdiSnippet(title);
+                    CSharpSyntaxHighlighter.SetCode(RtbTheoryCodeSnippet, code);
+                }
 
                 UpdateHistogram();
             }
@@ -147,6 +237,48 @@ namespace CGPDI.StudyLab
                 sw.Stop();
                 MessageBox.Show($"Erro ao executar algoritmo: {ex.Message}", "Erro de Processamento", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private string GetDefaultPdiSnippet(string title)
+        {
+            string lower = title.ToLowerInvariant();
+            if (lower.Contains("cinza") || lower.Contains("grayscale")) return AlgorithmCodeSnippets.GrayscaleCode;
+            if (lower.Contains("invert") || lower.Contains("negativo")) return AlgorithmCodeSnippets.InvertCode;
+            if (lower.Contains("sobel") || lower.Contains("scharr") || lower.Contains("borda")) return AlgorithmCodeSnippets.SobelCode;
+            if (lower.Contains("gauss")) return AlgorithmCodeSnippets.GaussianCode;
+            if (lower.Contains("otsu")) return AlgorithmCodeSnippets.OtsuCode;
+            if (lower.Contains("box blur") || lower.Contains("média")) return AlgorithmCodeSnippets.GaussianCode;
+            if (lower.Contains("fourier") || lower.Contains("dft")) return AlgorithmCodeSnippets.GrayscaleCode;
+            return $@"// Implementação C# do Algoritmo: {title}
+public static DirectBitmap Process(DirectBitmap src)
+{{
+    DirectBitmap dst = new DirectBitmap(src.Width, src.Height);
+    src.Lock(); dst.Lock();
+    // Execução otimizada em paralelo com acesso direto ao BackBuffer
+    src.Unlock(false); dst.Unlock(true);
+    return dst;
+}}";
+        }
+
+        private void Update2DTheory(string title, string math, string code)
+        {
+            if (TxtTheory2DTitle != null) TxtTheory2DTitle.Text = title;
+            if (TxtTheory2DMath != null) MathFormulaRenderer.RenderToTextBlock(TxtTheory2DMath, math);
+            if (RtbTheory2DCodeSnippet != null) CSharpSyntaxHighlighter.SetCode(RtbTheory2DCodeSnippet, code);
+        }
+
+        private void Update3DTheory(string title, string math, string code)
+        {
+            if (TxtTheory3DTitle != null) TxtTheory3DTitle.Text = title;
+            if (TxtTheory3DMath != null) MathFormulaRenderer.RenderToTextBlock(TxtTheory3DMath, math);
+            if (RtbTheory3DCodeSnippet != null) CSharpSyntaxHighlighter.SetCode(RtbTheory3DCodeSnippet, code);
+        }
+
+        private void UpdateRayTheory(string title, string math, string code)
+        {
+            if (TxtTheoryRayTitle != null) TxtTheoryRayTitle.Text = title;
+            if (TxtTheoryRayMath != null) MathFormulaRenderer.RenderToTextBlock(TxtTheoryRayMath, math);
+            if (RtbTheoryRayCodeSnippet != null) CSharpSyntaxHighlighter.SetCode(RtbTheoryRayCodeSnippet, code);
         }
 
         private void UpdateStatus(string message, double elapsedMs)
@@ -793,8 +925,7 @@ namespace CGPDI.StudyLab
         {
             Clear2DCanvas();
             Reset2DPolygon();
-            TxtTheory2DTitle.Text = "Quadro 2D Limpo";
-            TxtTheory2DMath.Text = "Selecione uma primitiva ou transformação para desenhar.";
+            Update2DTheory("Quadro 2D Limpo", "Selecione uma primitiva ou transformação para desenhar.", "// Quadro 2D pronto para renderização.");
         }
 
         private void Btn2D_DrawBresenham_Click(object sender, RoutedEventArgs e)
@@ -814,12 +945,13 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Algoritmo de Linha de Bresenham (1965)";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Algoritmo de Linha de Bresenham (1965)",
                 "• Aritmética 100% Inteira (sem ponto flutuante ou divisões).\n" +
                 "• Variável de Decisão: e = 2·Δy - Δx\n" +
                 "• Incrementa x e acumula o erro. Quando e >= 0, incrementa y e subtrai 2·Δx.\n" +
-                "• Suporta todos os 8 octantes do plano cartesiano.";
+                "• Suporta todos os 8 octantes do plano cartesiano.",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void Btn2D_DrawDDA_Click(object sender, RoutedEventArgs e)
@@ -838,11 +970,12 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Algoritmo DDA (Digital Differential Analyzer)";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Algoritmo DDA (Digital Differential Analyzer)",
                 "• Fórmula Incremental:\n" +
                 "  dx = (x1 - x0) / steps, dy = (y1 - y0) / steps\n" +
-                "• Utiliza ponto flutuante com arredondamento round(x) a cada passo.";
+                "• Utiliza ponto flutuante com arredondamento round(x) a cada passo.",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void Btn2D_DrawWu_Click(object sender, RoutedEventArgs e)
@@ -857,10 +990,11 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Algoritmo de Linhas Suavizadas de Xiaolin Wu (Anti-Aliasing)";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Algoritmo de Linhas Suavizadas de Xiaolin Wu (Anti-Aliasing)",
                 "• Suavização de Serrilhado em Tempo Real:\n" +
-                "• Em cada coordenada x, plota os dois pixels adjacentes com transparência alpha proporcional à distância da linha real.";
+                "• Em cada coordenada x, plota os dois pixels adjacentes com transparência alpha proporcional à distância da linha real.",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void Btn2D_DrawCircle_Click(object sender, RoutedEventArgs e)
@@ -876,10 +1010,11 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Círculo pelo Algoritmo do Ponto Médio (Bresenham Circle)";
-            TxtTheory2DMath.Text =
-                "• Simetria em 8 Octantes: Calcula 1/8 do perímetro (45°) e espelha em (+-x, +-y) e (+-y, +-x).\n" +
-                "• Variável de decisão: d = 1 - r.";
+            Update2DTheory(
+                "Círculo pelo Algoritmo do Ponto Médio (Bresenham Circle)",
+                "• Simetria em 8 Octantes: Calcula 1/8 do perímetro (45°) e espelha em (±x, ±y) e (±y, ±x).\n" +
+                "• Variável de decisão: d = 1 - r.",
+                AlgorithmCodeSnippets.MidpointCircleCode);
         }
 
         private void Btn2D_DrawEllipse_Click(object sender, RoutedEventArgs e)
@@ -897,10 +1032,11 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Elipse pelo Algoritmo do Ponto Médio";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Elipse pelo Algoritmo do Ponto Médio",
                 "• Duas Regiões de inclinação (|dy/dx| < 1 e |dy/dx| > 1).\n" +
-                "• Simetria em 4 Quadrantes (+-x, +-y).";
+                "• Simetria em 4 Quadrantes (±x, ±y).",
+                AlgorithmCodeSnippets.MidpointCircleCode);
         }
 
         private void Btn2D_DrawBezierQuad_Click(object sender, RoutedEventArgs e)
@@ -920,8 +1056,10 @@ namespace CGPDI.StudyLab
             Rasterizer2D.DrawBezierQuadratic(_canvas2D, p0, p1, p2, Color.FromRgb(255, 100, 180), 80);
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Curva de Bézier Quadrática (3 Pontos de Controle)";
-            TxtTheory2DMath.Text = "• Fórmula: B(t) = (1-t)^2·P0 + 2(1-t)t·P1 + t^2·P2 para t ∈ [0, 1].";
+            Update2DTheory(
+                "Curva de Bézier Quadrática (3 Pontos de Controle)",
+                "• Fórmula Paramétrica: B(t) = (1-t)^2·P0 + 2(1-t)t·P1 + t^2·P2 para t ∈ [0, 1].",
+                AlgorithmCodeSnippets.MidpointCircleCode);
         }
 
         private void Btn2D_DrawBezierCubic_Click(object sender, RoutedEventArgs e)
@@ -943,10 +1081,11 @@ namespace CGPDI.StudyLab
             Rasterizer2D.DrawBezierCubic(_canvas2D, p0, p1, p2, p3, Color.FromRgb(80, 220, 255), 100);
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Curva de Bézier Cúbica (4 Pontos de Controle)";
-            TxtTheory2DMath.Text =
-                "• Fórmula: B(t) = (1-t)^3·P0 + 3(1-t)^2 t·P1 + 3(1-t)t^2·P2 + t^3·P3\n" +
-                "• Padrão industrial em fontes vetoriais (TrueType / PostScript / SVG).";
+            Update2DTheory(
+                "Curva de Bézier Cúbica (4 Pontos de Controle)",
+                "• Fórmula Paramétrica: B(t) = (1-t)^3·P0 + 3(1-t)^2 t·P1 + 3(1-t)t^2·P2 + t^3·P3\n" +
+                "• Padrão industrial em fontes vetoriais (TrueType / PostScript / SVG).",
+                AlgorithmCodeSnippets.MidpointCircleCode);
         }
 
         private void Btn2D_DrawScanlinePoly_Click(object sender, RoutedEventArgs e)
@@ -967,10 +1106,11 @@ namespace CGPDI.StudyLab
             Rasterizer2D.DrawPolygonScanline(_canvas2D, star, Color.FromRgb(255, 180, 50));
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Preenchimento de Polígonos por Varredura (Scanline Fill)";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Preenchimento de Polígonos por Varredura (Scanline Fill)",
                 "• Constrói a Edge Table (ET) e Active Edge Table (AET).\n" +
-                "• Preenche os spans de pixels entre pares ordenados de interseções (Regra Par-Ímpar / Paridade).";
+                "• Preenche os spans de pixels entre pares ordenados de interseções (Regra Par-Ímpar / Paridade).",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void Btn2D_DrawClipping_Click(object sender, RoutedEventArgs e)
@@ -1008,11 +1148,12 @@ namespace CGPDI.StudyLab
             }
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = "Recorte de Linhas de Cohen-Sutherland";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                "Recorte de Linhas de Cohen-Sutherland",
                 "• Outcodes de 4 bits: Top (1000), Bottom (0100), Right (0010), Left (0001).\n" +
                 "• Trivial Accept: code0 | code1 == 0\n" +
-                "• Trivial Reject: code0 & code1 != 0";
+                "• Trivial Reject: code0 & code1 != 0",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void Btn2D_FloodFill_Click(object sender, RoutedEventArgs e)
@@ -1022,8 +1163,10 @@ namespace CGPDI.StudyLab
             Rasterizer2D.FloodFill(_canvas2D, 256, 256, Color.FromRgb(40, 100, 220));
             _canvas2D.Unlock(true);
 
-            TxtTheory2DTitle.Text = "Preenchimento por Inundação (Flood Fill)";
-            TxtTheory2DMath.Text = "• Algoritmo iterativo baseado em fila (Queue-based 4-way) para evitar Stack Overflow.";
+            Update2DTheory(
+                "Preenchimento por Inundação (Flood Fill)",
+                "• Algoritmo iterativo baseado em fila (Queue-based 4-way) para evitar Stack Overflow.",
+                AlgorithmCodeSnippets.BresenhamLineCode);
         }
 
         private void ImgDisplay2D_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1066,11 +1209,12 @@ namespace CGPDI.StudyLab
             Rasterizer2D.DrawPolygonScanline(_canvas2D, _poly2DVertices, Color.FromRgb(70, 160, 255));
 
             _canvas2D.Unlock(true);
-            TxtTheory2DTitle.Text = $"Transformação Afim 2D: {name}";
-            TxtTheory2DMath.Text =
+            Update2DTheory(
+                $"Transformação Afim 2D: {name}",
                 "• Composição Matricial Homogênea 3x3:\n" +
                 "  M = T(pivô) · Transformação · T(-pivô)\n" +
-                "• Unifica translação, rotação, escala e cisalhamento na mesma multiplicação matricial.";
+                "• Unifica translação, rotação, escala e cisalhamento na mesma multiplicação matricial.",
+                AlgorithmCodeSnippets.Matrix3x3Code);
         }
 
         #endregion
@@ -1087,6 +1231,12 @@ namespace CGPDI.StudyLab
             bool isPerspective = RbCameraPerspective?.IsChecked == true;
             _viewport3D.SetCameraProjection(isPerspective);
             UpdateStatus($"Câmera 3D alterada para: {(isPerspective ? "Projeção Perspectiva (com ponto de fuga)" : "Projeção Ortográfica (paralela)")}", 0);
+            Update3DTheory(
+                isPerspective ? "Projeção Perspectiva 3D" : "Projeção Ortográfica 3D",
+                isPerspective 
+                    ? "• Projeção Perspectiva: v_{clip} = M_{proj} × M_{view} × M_{model} × v_{local} com divisão perspectiva por W."
+                    : "• Projeção Ortográfica: Mapeamento linear direto sem ponto de fuga angular.",
+                AlgorithmCodeSnippets.Pipeline3DMVPCode);
         }
 
         private void Btn3D_LoadRobot_Click(object sender, RoutedEventArgs e)
@@ -1105,6 +1255,10 @@ namespace CGPDI.StudyLab
 
             UpdateRobotJoints();
             UpdateStatus("Modelagem Hierárquica carregada: Robô Articulado de 4 Níveis (Scene Graph / Cinemática Direta).", 0);
+            Update3DTheory(
+                "Modelagem Hierárquica e Grafo de Cena (Scene Graph)",
+                "• Multiplicação cumulativa de transformações locais: M_{total} = M_{base} × M_{ombro} × M_{cotovelo} × M_{pulso}.",
+                AlgorithmCodeSnippets.Pipeline3DMVPCode);
         }
 
         private void SliderRobot_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -1156,6 +1310,10 @@ namespace CGPDI.StudyLab
             if (ChkRobotAnim != null) ChkRobotAnim.IsChecked = false;
             string shape = (Cmb3DShapes.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Torus";
             _viewport3D.SetShape(shape);
+            Update3DTheory(
+                $"Geometria Paramétrica 3D: {shape}",
+                "• Transformação MVP: v_{clip} = M_{proj} × M_{view} × M_{model} × v_{local}.\n• Iluminação de Blinn-Phong: I = I_a·k_a + I_d·k_d·(N·L) + I_s·k_s·(N·H)^α.",
+                AlgorithmCodeSnippets.Pipeline3DMVPCode);
         }
 
         private void Btn3D_ColorBlue_Click(object sender, RoutedEventArgs e) => _viewport3D?.UpdateMaterial(Color.FromRgb(60, 150, 250), Slider3DSpecular.Value);
@@ -1219,6 +1377,10 @@ namespace CGPDI.StudyLab
 
             ImgDisplay3DSoft.Source = bmp.Bitmap;
             UpdateStatus("Pipeline 3D em Software renderizado.", sw.Elapsed.TotalMilliseconds);
+            UpdateRayTheory(
+                "Renderizador 3D em Software (100% CPU)",
+                "• Pipeline de Rasterização em Software:\n  1. Transformação de Vértices MVP\n  2. Back-face Culling\n  3. Rasterização de Triângulos com Interpolação Baricêntrica e Z-Buffer.",
+                AlgorithmCodeSnippets.Pipeline3DMVPCode);
         }
 
         private void SliderRay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { }
@@ -1234,6 +1396,155 @@ namespace CGPDI.StudyLab
 
             ImgDisplay3DSoft.Source = bmp.Bitmap;
             UpdateStatus($"Ray Tracer renderizado com {bounces} reflexões recursivas.", sw.Elapsed.TotalMilliseconds);
+            UpdateRayTheory(
+                $"Ray Tracer Fotorrealista ({bounces} Bounces)",
+                "• Equação Paramétrica do Raio: r(t) = O + t·D, t > 0.\n• Interseção Raio-Esfera: |O + t·D - C|^2 = R^2 ⟹ Equação Quadrática.\n• Reflexão Especular Recursiva: R = D - 2(D·N)N.\n• Modelo de Blinn-Phong com Iluminação Global Direta + Espelhamento.",
+                AlgorithmCodeSnippets.RayTracingSphereCode);
+        }
+
+        #endregion
+
+        #region Barra de Título Customizada & Menu Contextual
+
+        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                if (e.ClickCount == 2)
+                {
+                    ToggleMaximize();
+                }
+                else
+                {
+                    DragMove();
+                }
+            }
+        }
+
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleMaximize();
+        }
+
+        private void ToggleMaximize()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                BtnMaximize.Content = "🗖";
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+                BtnMaximize.Content = "🗗";
+            }
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source != MainTabControl) return;
+            UpdateContextualTopBar();
+        }
+
+        private void UpdateContextualTopBar()
+        {
+            if (PnlContextualTopActions == null) return;
+            PnlContextualTopActions.Children.Clear();
+
+            int tabIdx = MainTabControl?.SelectedIndex ?? 0;
+            switch (tabIdx)
+            {
+                case 0: // PDI
+                    AddTopButton("Abrir", (s, e) => BtnOpenImage_Click(s, e));
+                    AddTopButton("Salvar", (s, e) => BtnSaveImage_Click(s, e));
+                    AddTopButton("Resetar", (s, e) => BtnResetOriginal_Click(s, e));
+                    AddTopSeparator();
+                    AddTopButton("Calibração", (s, e) => BtnPresetCalibration_Click(s, e));
+                    AddTopButton("Roda HSV", (s, e) => BtnPresetColorWheel_Click(s, e));
+                    AddTopButton("MTF", (s, e) => BtnPresetFrequency_Click(s, e));
+                    AddTopButton("Ruído", (s, e) => BtnPresetNoise_Click(s, e));
+                    break;
+
+                case 1: // 2D
+                    AddTopButton("Limpar Quadro", (s, e) => Btn2D_Clear_Click(s, e));
+                    AddTopSeparator();
+                    AddTopButton("Bresenham", (s, e) => Btn2D_DrawBresenham_Click(s, e));
+                    AddTopButton("Linha Wu", (s, e) => Btn2D_DrawWu_Click(s, e));
+                    AddTopButton("Bézier", (s, e) => Btn2D_DrawBezierCubic_Click(s, e));
+                    AddTopButton("Scanline", (s, e) => Btn2D_DrawScanlinePoly_Click(s, e));
+                    break;
+
+                case 2: // 3D
+                    AddTopButton("Resetar Câmera", (s, e) => Btn3D_ResetCamera_Click(s, e));
+                    AddTopButton("Carregar Robô", (s, e) => Btn3D_LoadRobot_Click(s, e), true);
+                    AddTopSeparator();
+                    AddTopButton("Toro", (s, e) => { if (Cmb3DShapes != null) Cmb3DShapes.SelectedIndex = 0; });
+                    AddTopButton("Esfera", (s, e) => { if (Cmb3DShapes != null) Cmb3DShapes.SelectedIndex = 1; });
+                    AddTopButton("Cubo", (s, e) => { if (Cmb3DShapes != null) Cmb3DShapes.SelectedIndex = 2; });
+                    break;
+
+                case 3: // Ray Tracing
+                    AddTopButton("Renderizar Software 3D", (s, e) => BtnSoftRender_Click(s, e), true);
+                    AddTopButton("Renderizar Ray Tracer", (s, e) => BtnRayTrace_Click(s, e), true);
+                    break;
+
+                case 4: // Central de Estudos
+                    AddTopButton("▶ Praticar no Laboratório", (s, e) => BtnGoToLaboratorioLesson_Click(s, e), true);
+                    break;
+
+                case 5: // Laboratório
+                    AddTopButton("Modo Foco", (s, e) => BtnFocusCode_Click(s, e), true);
+                    AddTopButton("Restaurar Painéis", (s, e) => BtnResetColumns_Click(s, e));
+                    AddTopButton("Janela Cheia", (s, e) => BtnOpenPopoutStudio_Click(s, e));
+                    break;
+
+                case 6: // Estúdio de Projetos
+                    AddTopButton("▶ Executar Código", (s, e) => MainStudioControl?.ExecuteFreeScript(), true);
+                    AddTopButton("Janela Cheia", (s, e) => BtnOpenProjectStudio_Click(s, e));
+                    break;
+            }
+        }
+
+        private void AddTopButton(string text, RoutedEventHandler onClick, bool isPrimary = false)
+        {
+            var btn = new Button
+            {
+                Content = text,
+                Padding = new Thickness(8, 3, 8, 3),
+                Margin = new Thickness(0, 0, 3, 0),
+                FontSize = 11.5
+            };
+            if (isPrimary)
+            {
+                btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2563EB"));
+                btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3B82F6"));
+                btn.FontWeight = FontWeights.Bold;
+            }
+            btn.Click += onClick;
+            PnlContextualTopActions.Children.Add(btn);
+        }
+
+        private void AddTopSeparator()
+        {
+            var sep = new Rectangle
+            {
+                Width = 1,
+                Height = 16,
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E2E40")),
+                Margin = new Thickness(4, 0, 6, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            PnlContextualTopActions.Children.Add(sep);
         }
 
         #endregion
@@ -1247,14 +1558,144 @@ namespace CGPDI.StudyLab
                 TxtDocCategory.Text = topic.Category.ToUpper();
                 TxtDocTitle.Text = topic.Title;
                 TxtDocSummary.Text = topic.Summary;
-                TxtDocMath.Text = topic.MathFormulas;
+                MathFormulaRenderer.RenderToTextBlock(TxtDocMath, topic.MathFormulas);
                 TxtDocExplanation.Text = topic.CodeExplanation;
-                TxtDocSnippet.Text = topic.CodeSnippet;
+                CSharpSyntaxHighlighter.SetCode(RtbDocSnippet, topic.CodeSnippet);
                 TxtDocComplexity.Text = topic.ComplexityAndTips;
                 TxtDocWhereToTest.Text = topic.WhereToTest;
                 if (IcMicrosoftRefs != null)
                 {
                     IcMicrosoftRefs.ItemsSource = topic.MicrosoftReferences;
+                }
+
+                LoadStudyTopicQuiz(topic);
+            }
+        }
+
+        private void LoadStudyTopicQuiz(StudyTopic topic)
+        {
+            if (topic.Quiz == null || string.IsNullOrEmpty(topic.Quiz.Question))
+            {
+                if (GrpStudyTopicQuiz != null) GrpStudyTopicQuiz.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (GrpStudyTopicQuiz != null) GrpStudyTopicQuiz.Visibility = Visibility.Visible;
+            if (TxtStudyTopicQuizQuestion != null) TxtStudyTopicQuizQuestion.Text = topic.Quiz.Question;
+            if (BtnStudyTopicQuizOpt0 != null) BtnStudyTopicQuizOpt0.Content = (topic.Quiz.Options.Count > 0 ? "A) " + topic.Quiz.Options[0] : "");
+            if (BtnStudyTopicQuizOpt1 != null) BtnStudyTopicQuizOpt1.Content = (topic.Quiz.Options.Count > 1 ? "B) " + topic.Quiz.Options[1] : "");
+            if (BtnStudyTopicQuizOpt2 != null) BtnStudyTopicQuizOpt2.Content = (topic.Quiz.Options.Count > 2 ? "C) " + topic.Quiz.Options[2] : "");
+
+            if (BrdStudyTopicQuizFeedback != null) BrdStudyTopicQuizFeedback.Visibility = Visibility.Collapsed;
+        }
+
+        private void BtnStudyTopicQuizOpt_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstStudyTopics?.SelectedItem is not StudyTopic topic || topic.Quiz == null) return;
+            if (sender is not Button btn || !int.TryParse(btn.Tag?.ToString(), out int optIndex)) return;
+
+            bool isCorrect = (optIndex == topic.Quiz.CorrectOptionIndex);
+            if (BrdStudyTopicQuizFeedback != null) BrdStudyTopicQuizFeedback.Visibility = Visibility.Visible;
+
+            if (isCorrect)
+            {
+                if (BrdStudyTopicQuizFeedback != null)
+                {
+                    BrdStudyTopicQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E3A24"));
+                    BrdStudyTopicQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#22C55E"));
+                }
+                if (TxtStudyTopicQuizFeedback != null)
+                {
+                    TxtStudyTopicQuizFeedback.Text = $"✓ RESPOSTA CORRETA!\n{topic.Quiz.Explanation}";
+                    TxtStudyTopicQuizFeedback.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
+                }
+            }
+            else
+            {
+                if (BrdStudyTopicQuizFeedback != null)
+                {
+                    BrdStudyTopicQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A1E1E"));
+                    BrdStudyTopicQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
+                }
+                if (TxtStudyTopicQuizFeedback != null)
+                {
+                    TxtStudyTopicQuizFeedback.Text = $"✕ INCORRETO. Tente novamente!\n{topic.Quiz.Explanation}";
+                    TxtStudyTopicQuizFeedback.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FCA5A5"));
+                }
+            }
+        }
+
+        private void BtnGoToLaboratorioLesson_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstStudyTopics?.SelectedItem is StudyTopic topic && topic.TargetLessonNumber > 0)
+            {
+                MainTabControl.SelectedIndex = 5; // Aba Laboratório
+                int targetIdx = topic.TargetLessonNumber - 1;
+                if (targetIdx >= 0 && targetIdx < _interactiveLessons.Count && LstInteractiveLessons != null)
+                {
+                    LstInteractiveLessons.SelectedIndex = targetIdx;
+                }
+            }
+        }
+
+        private void BtnGoToStudyTheory_Click(object sender, RoutedEventArgs e)
+        {
+            if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
+            {
+                MainTabControl.SelectedIndex = 4; // Aba Central de Estudos
+                int topicIdx = Math.Clamp(lesson.Number - 1, 0, _allStudyTopics.Count - 1);
+                if (LstStudyTopics != null) LstStudyTopics.SelectedIndex = topicIdx;
+            }
+        }
+
+        private void BtnCopyTheoryCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (RtbTheoryCodeSnippet != null)
+            {
+                string code = CSharpSyntaxHighlighter.GetPlainText(RtbTheoryCodeSnippet);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    Clipboard.SetText(code);
+                    UpdateStatus("Código C# de PDI copiado para a área de transferência.", 0);
+                }
+            }
+        }
+
+        private void BtnCopyTheory2DCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (RtbTheory2DCodeSnippet != null)
+            {
+                string code = CSharpSyntaxHighlighter.GetPlainText(RtbTheory2DCodeSnippet);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    Clipboard.SetText(code);
+                    UpdateStatus("Código C# 2D copiado para a área de transferência.", 0);
+                }
+            }
+        }
+
+        private void BtnCopyTheory3DCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (RtbTheory3DCodeSnippet != null)
+            {
+                string code = CSharpSyntaxHighlighter.GetPlainText(RtbTheory3DCodeSnippet);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    Clipboard.SetText(code);
+                    UpdateStatus("Código C# 3D copiado para a área de transferência.", 0);
+                }
+            }
+        }
+
+        private void BtnCopyTheoryRayCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (RtbTheoryRayCodeSnippet != null)
+            {
+                string code = CSharpSyntaxHighlighter.GetPlainText(RtbTheoryRayCodeSnippet);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    Clipboard.SetText(code);
+                    UpdateStatus("Código C# de Ray Tracing copiado para a área de transferência.", 0);
                 }
             }
         }
@@ -1359,22 +1800,44 @@ namespace CGPDI.StudyLab
             TxtLessonModule.Text = lesson.Module.ToUpper();
             TxtLessonTitle.Text = lesson.Title;
             TxtLessonSummary.Text = lesson.Summary;
-            TxtLabCode.Text = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
+
+            string sol = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
+            if (RtbLabCode != null) CSharpSyntaxHighlighter.SetCode(RtbLabCode, sol);
             TxtLabExplanation.Text = lesson.CodeExplanation;
+
+            // Exibe a aba XAML apenas em lições onde há conteúdo de estudo XAML relevante
+            if (lesson.HasXamlContent)
+            {
+                if (TabItemLabXaml != null)
+                {
+                    TabItemLabXaml.Visibility = Visibility.Visible;
+                    if (RtbLabXamlCode != null && lesson.XamlSnippet != null) XamlSyntaxHighlighter.SetCode(RtbLabXamlCode, lesson.XamlSnippet);
+                }
+            }
+            else
+            {
+                if (TabItemLabXaml != null)
+                {
+                    TabItemLabXaml.Visibility = Visibility.Collapsed;
+                    if (TabLabEditor != null && TabLabEditor.SelectedItem == TabItemLabXaml)
+                    {
+                        TabLabEditor.SelectedIndex = 0;
+                    }
+                }
+            }
 
             // Configuração do Desafio de Código do Aluno
             if (TxtChallengeGoal != null) TxtChallengeGoal.Text = lesson.ChallengeGoal;
-            if (TxtLabEditableCode != null) TxtLabEditableCode.Text = lesson.StarterTemplate;
+            if (RtbLabEditableCode != null) CSharpSyntaxHighlighter.SetCode(RtbLabEditableCode, lesson.StarterTemplate);
             if (TxtCompilerReport != null)
             {
-                TxtCompilerReport.Text = "Pronto para testar. Escreva seu código e clique em '🚀 Compilar & Executar' ou '🧪 Rodar Testes'.";
+                TxtCompilerReport.Text = "Pronto para testar. Escreva seu código e clique em 'Compilar e Executar C#' ou 'Executar Testes Unitários'.";
                 TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
             }
 
             ConfigureLabSliders(lesson);
             LoadQuiz(lesson);
 
-            IcLessonMsRefs.ItemsSource = lesson.MicrosoftReferences;
             UpdateLabSimulation();
         }
 
@@ -1468,12 +1931,12 @@ namespace CGPDI.StudyLab
                     break;
 
                 case LessonType.PipelineMVP3D:
-                    TxtLabParam1.Text = "Distância Z da Câmera (Profundidade):";
-                    SliderLab1.Minimum = 1.5; SliderLab1.Maximum = 8.0; SliderLab1.Value = 3.0;
-                    TxtLabParam2.Text = "Campo de Visão (FOV em Graus):";
-                    SliderLab2.Minimum = 45; SliderLab2.Maximum = 110; SliderLab2.Value = 60;
-                    TxtLabParam3.Text = "(Perspectiva):";
-                    SliderLab3.Minimum = 0; SliderLab3.Maximum = 1; SliderLab3.Value = 0;
+                    TxtLabParam1.Text = "Rotação Y do Modelo (0-360°):";
+                    SliderLab1.Minimum = 0; SliderLab1.Maximum = 360; SliderLab1.Value = 45;
+                    TxtLabParam2.Text = "Distância Z da Câmera (Profundidade):";
+                    SliderLab2.Minimum = 1.5; SliderLab2.Maximum = 8.0; SliderLab2.Value = 3.5;
+                    TxtLabParam3.Text = "Campo de Visão (FOV em Graus):";
+                    SliderLab3.Minimum = 30; SliderLab3.Maximum = 120; SliderLab3.Value = 60;
                     break;
 
                 case LessonType.HierarchicalSceneGraph:
@@ -1631,25 +2094,29 @@ namespace CGPDI.StudyLab
         // --- Zoom & Cópia para Tab 5 (Documentação Integrada) ---
         private void BtnZoomInDocCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtDocSnippet.FontSize < 28) TxtDocSnippet.FontSize += 1.5;
+            if (RtbDocSnippet != null && RtbDocSnippet.FontSize < 28) RtbDocSnippet.FontSize += 1.5;
         }
 
         private void BtnZoomOutDocCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtDocSnippet.FontSize > 10) TxtDocSnippet.FontSize -= 1.5;
+            if (RtbDocSnippet != null && RtbDocSnippet.FontSize > 10) RtbDocSnippet.FontSize -= 1.5;
         }
 
         private void BtnResetDocCodeZoom_Click(object sender, RoutedEventArgs e)
         {
-            TxtDocSnippet.FontSize = 13.5;
+            if (RtbDocSnippet != null) RtbDocSnippet.FontSize = 13.0;
         }
 
         private void BtnCopyDocCode_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(TxtDocSnippet.Text))
+            if (RtbDocSnippet != null)
             {
-                Clipboard.SetText(TxtDocSnippet.Text);
-                UpdateStatus("Código C# copiado para a área de transferência!", 0);
+                string code = CSharpSyntaxHighlighter.GetPlainText(RtbDocSnippet);
+                if (!string.IsNullOrEmpty(code))
+                {
+                    Clipboard.SetText(code);
+                    UpdateStatus("Código C# copiado para a área de transferência!", 0);
+                }
             }
         }
 
@@ -1666,27 +2133,28 @@ namespace CGPDI.StudyLab
 
         private void BtnZoomInLabCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtLabCode.FontSize < 28) TxtLabCode.FontSize += 1.5;
+            if (RtbLabCode.FontSize < 28) RtbLabCode.FontSize += 1.5;
             if (TxtLabExplanation.FontSize < 24) TxtLabExplanation.FontSize += 1.0;
         }
 
         private void BtnZoomOutLabCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtLabCode.FontSize > 10) TxtLabCode.FontSize -= 1.5;
+            if (RtbLabCode.FontSize > 10) RtbLabCode.FontSize -= 1.5;
             if (TxtLabExplanation.FontSize > 9) TxtLabExplanation.FontSize -= 1.0;
         }
 
         private void BtnResetLabCodeZoom_Click(object sender, RoutedEventArgs e)
         {
-            TxtLabCode.FontSize = 14.0;
+            RtbLabCode.FontSize = 13.5;
             TxtLabExplanation.FontSize = 13.0;
         }
 
         private void BtnCopyLabCode_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(TxtLabCode.Text))
+            string code = CSharpSyntaxHighlighter.GetPlainText(RtbLabCode);
+            if (!string.IsNullOrEmpty(code))
             {
-                Clipboard.SetText(TxtLabCode.Text);
+                Clipboard.SetText(code);
                 UpdateStatus("Código C# da lição copiado para a área de transferência!", 0);
             }
         }
@@ -1719,11 +2187,12 @@ namespace CGPDI.StudyLab
             BtnRunUserCode.IsEnabled = false;
             BtnRunTests.IsEnabled = false;
             TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
-            TxtCompilerReport.Text = "⏳ Compilando com Roslyn e executando testes em tempo real...";
+            TxtCompilerReport.Text = "Compilando com Roslyn e executando testes em tempo real...";
 
+            string userCode = CSharpSyntaxHighlighter.GetPlainText(RtbLabEditableCode);
             var report = await LiveCodeCompiler.RunTestsAndEvaluateAsync(
                 lesson,
-                TxtLabEditableCode.Text,
+                userCode,
                 _labBitmap,
                 SliderLab1.Value,
                 SliderLab2.Value,
@@ -1742,11 +2211,12 @@ namespace CGPDI.StudyLab
             BtnRunUserCode.IsEnabled = false;
             BtnRunTests.IsEnabled = false;
             TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#93C5FD"));
-            TxtCompilerReport.Text = "⏳ Executando bateria de testes unitários automatizados...";
+            TxtCompilerReport.Text = "Executando bateria de testes unitários automatizados...";
 
+            string userCode = CSharpSyntaxHighlighter.GetPlainText(RtbLabEditableCode);
             var report = await LiveCodeCompiler.RunTestsAndEvaluateAsync(
                 lesson,
-                TxtLabEditableCode.Text,
+                userCode,
                 null, // Apenas testes, sem renderizar no canvas
                 SliderLab1.Value,
                 SliderLab2.Value,
@@ -1814,8 +2284,8 @@ namespace CGPDI.StudyLab
         {
             if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
             {
-                TxtLabEditableCode.Text = lesson.BlankTemplate;
-                TxtCompilerReport.Text = "Modo 'Em Branco' ativado. Escreva o algoritmo do zero e clique em '🚀 Compilar & Executar'.";
+                CSharpSyntaxHighlighter.SetCode(RtbLabEditableCode, lesson.BlankTemplate);
+                TxtCompilerReport.Text = "Modo 'Em Branco' ativado. Escreva o algoritmo do zero e clique em 'Compilar e Executar C#'.";
                 TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
             }
         }
@@ -1824,7 +2294,7 @@ namespace CGPDI.StudyLab
         {
             if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
             {
-                TxtLabEditableCode.Text = lesson.StarterTemplate;
+                CSharpSyntaxHighlighter.SetCode(RtbLabEditableCode, lesson.StarterTemplate);
                 TxtCompilerReport.Text = "Template inicial carregado com comentários orientadores (TODOs).";
                 TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
             }
@@ -1834,20 +2304,21 @@ namespace CGPDI.StudyLab
         {
             if (LstInteractiveLessons?.SelectedItem is InteractiveLesson lesson)
             {
-                TxtLabEditableCode.Text = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
-                TxtCompilerReport.Text = "Gabarito oficial de referência carregado no editor. Clique em '🚀 Compilar & Executar' ou '🧪 Rodar Testes'.";
+                string code = !string.IsNullOrEmpty(lesson.SolutionCode) ? lesson.SolutionCode : lesson.CodeSnippet;
+                CSharpSyntaxHighlighter.SetCode(RtbLabEditableCode, code);
+                TxtCompilerReport.Text = "Gabarito oficial de referência carregado no editor com destaque sintático.";
                 TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
             }
         }
 
         private void BtnZoomInEditableCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtLabEditableCode.FontSize < 32) TxtLabEditableCode.FontSize += 1.5;
+            if (RtbLabEditableCode.FontSize < 32) RtbLabEditableCode.FontSize += 1.5;
         }
 
         private void BtnZoomOutEditableCode_Click(object sender, RoutedEventArgs e)
         {
-            if (TxtLabEditableCode.FontSize > 10) TxtLabEditableCode.FontSize -= 1.5;
+            if (RtbLabEditableCode.FontSize > 10) RtbLabEditableCode.FontSize -= 1.5;
         }
 
         // --- Controles de Layout Retrátil & Estúdio em Janela Dedicada ---
@@ -1930,6 +2401,103 @@ namespace CGPDI.StudyLab
                 UpdateStatus($"Aplicação atualizada na versão mais recente (v{UpdateManager.CurrentVersionString}).", 0);
             }
         }
+
+        private void BtnOpenProjectStudio_Click(object sender, RoutedEventArgs e)
+        {
+            var studioWin = new ProjectStudioWindow { Owner = this };
+            studioWin.Show();
+            UpdateStatus("Estúdio de Projetos do Zero aberto em janela dedicada.", 0);
+        }
+
+        #region Manipuladores WPF / XAML do Laboratório
+
+        private void BtnLabRenderXaml_Click(object sender, RoutedEventArgs e)
+        {
+            if (RtbLabXamlCode == null) return;
+            string xamlCode = XamlSyntaxHighlighter.GetPlainText(RtbLabXamlCode);
+            var result = LiveCodeCompiler.EvaluateXaml(xamlCode);
+
+            if (result.Success && result.Element != null)
+            {
+                PnlLabLiveXamlContainer.Child = result.Element;
+                TabLabVisualizer.SelectedItem = TabItemLabLiveXaml;
+                TxtCompilerReport.Text = $"[XAML Renderizado com Êxito em {result.ExecutionTimeMs:F1} ms]\n{result.Logs}";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
+                UpdateStatus($"Interface WPF instanciada dinamicamente via XamlReader ({result.ExecutionTimeMs:F1} ms).", 0);
+            }
+            else
+            {
+                TxtCompilerReport.Text = $"[Erro de Compilação XAML]:\n{result.ErrorMessage}";
+                TxtCompilerReport.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                UpdateStatus("Erro de sintaxe na marcação XAML.", 0);
+            }
+        }
+
+        private void BtnLabXamlTemplateBasic_Click(object sender, RoutedEventArgs e)
+        {
+            string xaml = @"<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height=""Auto""/>
+        <RowDefinition Height=""*""/>
+    </Grid.RowDefinitions>
+    <Border Grid.Row=""0"" Background=""#1E293B"" CornerRadius=""6"" Padding=""10"" Margin=""0,0,0,10"">
+        <StackPanel>
+            <TextBlock Text=""Painel WPF Nativo Interativo"" Foreground=""#38BDF8"" FontSize=""15"" FontWeight=""Bold""/>
+            <TextBlock Text=""Gerado dinamicamente a partir do seu código XAML via XamlReader."" Foreground=""#94A3B8"" FontSize=""11.5""/>
+        </StackPanel>
+    </Border>
+    <StackPanel Grid.Row=""1"" VerticalAlignment=""Center"" HorizontalAlignment=""Center"">
+        <Button Content=""Botão Dinâmico WPF"" Background=""#2563EB"" Foreground=""#FFFFFF"" Padding=""16,8"" FontSize=""13"" FontWeight=""Bold"" Margin=""0,0,0,10""/>
+        <Slider Minimum=""0"" Maximum=""100"" Value=""65"" Width=""240"" Height=""24""/>
+    </StackPanel>
+</Grid>";
+            XamlSyntaxHighlighter.SetCode(RtbLabXamlCode, xaml);
+            BtnLabRenderXaml_Click(sender, e);
+        }
+
+        private void BtnLabXamlTemplateShapes_Click(object sender, RoutedEventArgs e)
+        {
+            string xaml = @"<Canvas Background=""#0B0F19"">
+    <Ellipse Canvas.Left=""40"" Canvas.Top=""30"" Width=""100"" Height=""100"" Fill=""#3B82F6"" Stroke=""#60A5FA"" StrokeThickness=""3""/>
+    <Rectangle Canvas.Left=""110"" Canvas.Top=""80"" Width=""120"" Height=""80"" Fill=""#10B981"" RadiusX=""8"" RadiusY=""8"" Opacity=""0.85""/>
+    <Polygon Points=""260,30 320,130 200,130"" Fill=""#F59E0B"" Stroke=""#FBBF24"" StrokeThickness=""2""/>
+    <TextBlock Canvas.Left=""40"" Canvas.Top=""180"" Text=""Formas Vetoriais GPU"" Foreground=""#E2E8F0"" FontSize=""12"" FontWeight=""Bold""/>
+</Canvas>";
+            XamlSyntaxHighlighter.SetCode(RtbLabXamlCode, xaml);
+            BtnLabRenderXaml_Click(sender, e);
+        }
+
+        private void BtnLabXamlTemplateAnim_Click(object sender, RoutedEventArgs e)
+        {
+            string xaml = @"<Grid>
+    <Border Width=""120"" Height=""120"" CornerRadius=""60"" Background=""#EC4899"" HorizontalAlignment=""Center"" VerticalAlignment=""Center"">
+        <Border.Triggers>
+            <EventTrigger RoutedEvent=""Border.Loaded"">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior=""Forever"" AutoReverse=""True"">
+                        <DoubleAnimation Storyboard.TargetProperty=""Opacity"" From=""0.2"" To=""1.0"" Duration=""0:0:1.5""/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+        <TextBlock Text=""Pulsar WPF"" Foreground=""#FFFFFF"" FontWeight=""Bold"" FontSize=""13"" HorizontalAlignment=""Center"" VerticalAlignment=""Center""/>
+    </Border>
+</Grid>";
+            XamlSyntaxHighlighter.SetCode(RtbLabXamlCode, xaml);
+            BtnLabRenderXaml_Click(sender, e);
+        }
+
+        private void BtnLabCopyXaml_Click(object sender, RoutedEventArgs e)
+        {
+            string text = XamlSyntaxHighlighter.GetPlainText(RtbLabXamlCode);
+            if (!string.IsNullOrEmpty(text))
+            {
+                Clipboard.SetText(text);
+                UpdateStatus("Marcação XAML copiada para a área de transferência!", 0);
+            }
+        }
+
+        #endregion
 
         #endregion
 

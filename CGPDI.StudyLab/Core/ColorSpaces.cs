@@ -241,6 +241,42 @@ namespace CGPDI.StudyLab.Core
             return Color.FromArgb(alpha, (byte)(255 - r), (byte)(255 - g), (byte)(255 - b));
         }
 
+        #region Empacotamento de Cores e Memória Direta (BGRA32)
+        
+        /// <summary>
+        /// Empacota 4 canais byte em um único valor inteiro de 32 bits no formato nativo Little-Endian BGRA32.
+        /// Formato de memória: [Byte 0: Blue | Byte 1: Green | Byte 2: Red | Byte 3: Alpha]
+        /// </summary>
+        public static uint PackBgra(byte b, byte g, byte r, byte a = 255)
+        {
+            return (uint)(b | (g << 8) | (r << 16) | (a << 24));
+        }
+
+        /// <summary>
+        /// Sobrecarga com inteiros e clamping automático entre 0 e 255.
+        /// </summary>
+        public static uint PackBgra(int b, int g, int r, int a = 255)
+        {
+            byte cb = (byte)Math.Clamp(b, 0, 255);
+            byte cg = (byte)Math.Clamp(g, 0, 255);
+            byte cr = (byte)Math.Clamp(r, 0, 255);
+            byte ca = (byte)Math.Clamp(a, 0, 255);
+            return (uint)(cb | (cg << 8) | (cr << 16) | (ca << 24));
+        }
+
+        /// <summary>
+        /// Desempacota um valor uint 32-bit BGRA em seus 4 canais componentes.
+        /// </summary>
+        public static void UnpackBgra(uint bgra, out byte b, out byte g, out byte r, out byte a)
+        {
+            b = (byte)(bgra & 0xFF);
+            g = (byte)((bgra >> 8) & 0xFF);
+            r = (byte)((bgra >> 16) & 0xFF);
+            a = (byte)((bgra >> 24) & 0xFF);
+        }
+
+        #endregion
+
         #endregion
     }
 }

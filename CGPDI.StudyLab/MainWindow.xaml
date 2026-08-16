@@ -3,12 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:CGPDI.StudyLab.Views"
         mc:Ignorable="d"
         Title="CGPDI StudyLab — Laboratório Universitário de Computação Gráfica &amp; Processamento Digital de Imagens (2D/3D)"
         Height="850" Width="1350"
         MinHeight="650" MinWidth="950"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        ResizeMode="CanResizeWithGrip"
         Background="#101014"
         Foreground="#E2E2EA"
         FontFamily="Segoe UI">
@@ -119,7 +123,6 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="ItemBorder" Property="Background" Value="#2B4BB5"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -132,49 +135,38 @@
             <Setter Property="Foreground" Value="#FFFFFF"/>
             <Setter Property="BorderBrush" Value="#38384C"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="Margin" Value="0,2,0,6"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <ToggleButton x:Name="ToggleButton"
+                            <ToggleButton Name="ToggleButton"
                                           Template="{StaticResource ComboBoxToggleButton}"
-                                          Focusable="False"
+                                          Focusable="false"
                                           IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                           ClickMode="Press"/>
-                            <ContentPresenter x:Name="ContentSite"
+                            <ContentPresenter Name="ContentSite"
                                               IsHitTestVisible="False"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              Margin="10,6,26,6"
+                                              Margin="8,3,28,3"
                                               VerticalAlignment="Center"
-                                              HorizontalAlignment="Left">
-                                <ContentPresenter.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#FFFFFF"/>
-                                        <Setter Property="FontWeight" Value="SemiBold"/>
-                                    </Style>
-                                </ContentPresenter.Resources>
-                            </ContentPresenter>
-                            <!-- Popup da Lista de Itens com Fundo Escuro Nítido -->
-                            <Popup x:Name="Popup"
+                                              HorizontalAlignment="Left"/>
+                            <Popup Name="Popup"
                                    Placement="Bottom"
                                    IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True"
                                    Focusable="False"
                                    PopupAnimation="Slide">
-                                <Border x:Name="DropDownBorder"
-                                        Background="#161620"
-                                        BorderBrush="#3E3E52"
+                                <Border Name="DropDownBorder"
+                                        Background="#181822"
+                                        BorderBrush="#38384C"
                                         BorderThickness="1"
-                                        CornerRadius="5"
+                                        CornerRadius="4"
                                         Margin="0,2,0,0"
-                                        Padding="3"
                                         MinWidth="{TemplateBinding ActualWidth}"
                                         MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                     <ScrollViewer x:Name="DropDownScrollViewer" SnapsToDevicePixels="True">
@@ -207,7 +199,7 @@
             <Setter Property="FontSize" Value="12"/>
         </Style>
 
-        <!-- Estilo para GridSplitter Invisível/Elegante -->
+        <!-- Estilo para GridSplitter -->
         <Style TargetType="GridSplitter">
             <Setter Property="Background" Value="#1A1A24"/>
             <Setter Property="ShowsPreview" Value="False"/>
@@ -230,32 +222,46 @@
             </Setter>
         </Style>
 
-        <!-- Estilo para TabItem -->
+        <!-- Estilo Dark Completo para TabControl e TabItem -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="#090C16"/>
+            <Setter Property="BorderBrush" Value="#1C2438"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
         <Style TargetType="TabItem">
-            <Setter Property="Background" Value="#16161E"/>
-            <Setter Property="Foreground" Value="#9A9AA8"/>
-            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Background" Value="#101422"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="BorderBrush" Value="#1C2438"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="Padding" Value="13,7"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Border x:Name="TabBorder"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="#20202C"
-                                BorderThickness="0,0,0,2"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5,5,0,0"
                                 Padding="{TemplateBinding Padding}"
                                 Margin="2,0">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" ContentSource="Header"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#1E1E2A"/>
-                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#4F72E8"/>
-                                <Setter Property="Foreground" Value="#FFFFFF"/>
-                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="#D0D6FF"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#182034"/>
+                                <Setter Property="Foreground" Value="#F1F5F9"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#1A2338"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#3B82F6"/>
+                                <Setter TargetName="TabBorder" Property="BorderThickness" Value="1,2,1,0"/>
+                                <Setter Property="Foreground" Value="#38BDF8"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -266,13 +272,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Header / Top Bar -->
+            <RowDefinition Height="Auto"/> <!-- Header / Top Bar Customizada -->
             <RowDefinition Height="*"/>    <!-- Main Workspace -->
             <RowDefinition Height="Auto"/> <!-- Status Bar / Performance HUD -->
         </Grid.RowDefinitions>
 
-        <!-- Top Bar Header Responsivo e Compacto (Linha Única) -->
-        <Border Grid.Row="0" Background="#12121A" BorderBrush="#222232" BorderThickness="0,0,0,1" Padding="10,5">
+        <!-- Top Bar Header & Barra de Título Customizada (Unificada) -->
+        <Border Grid.Row="0" Background="#12121A" BorderBrush="#222232" BorderThickness="0,0,0,1" Padding="10,5" MouseDown="TitleBar_MouseDown">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -284,65 +290,61 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
                     <Viewbox Width="22" Height="22" Margin="0,0,8,0" VerticalAlignment="Center">
                         <Canvas Width="64" Height="64">
-                            <!-- Face Superior (Ciano) -->
                             <Path Data="M 32,8 L 54,20 L 32,32 L 10,20 Z" Fill="#38BDF8" Stroke="#67E8F9" StrokeThickness="1.5"/>
-                            <!-- Face Esquerda (Magenta) -->
                             <Path Data="M 10,20 L 32,32 L 32,56 L 10,44 Z" Fill="#EC4899" Stroke="#F472B6" StrokeThickness="1.5"/>
-                            <!-- Face Direita (Ouro/Âmbar) -->
                             <Path Data="M 32,32 L 54,20 L 54,44 L 32,56 Z" Fill="#FBBF24" Stroke="#FCD34D" StrokeThickness="1.5"/>
-                            <!-- Pixel Grid Interno -->
-                            <Path Data="M 32,14 L 38,17.5 L 32,21 L 26,17.5 Z" Fill="#E0F2FE"/>
-                            <Path Data="M 16,28 L 22,31.5 L 22,38.5 L 16,35 Z" Fill="#BE185D"/>
-                            <Path Data="M 42,31.5 L 48,28 L 48,35 L 42,38.5 Z" Fill="#D97706"/>
-                            <!-- Vértice Central Brilhante -->
                             <Ellipse Canvas.Left="29.5" Canvas.Top="29.5" Width="5" Height="5" Fill="#FFFFFF"/>
                         </Canvas>
                     </Viewbox>
-                    <TextBlock Text="CGPDI STUDYLAB" FontSize="14" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Text="CGPDI STUDYLAB" FontSize="13.5" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                     <Border Background="#1E293B" CornerRadius="3" Padding="5,1" Margin="8,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text=".NET 10 • WPF • GPU" FontSize="10" Foreground="#38BDF8" FontWeight="Bold"/>
                     </Border>
                 </StackPanel>
 
-                <!-- Ações Globais e Botão Popout de Estúdio em Destaque -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="🗖 Estúdio em Nova Janela (Tela Cheia)" Click="BtnOpenPopoutStudio_Click" Style="{StaticResource PrimaryButton}" Padding="10,4" Margin="0,0,8,0" FontWeight="Bold" ToolTip="Abre o estúdio completo em janela dedicada ou maximizada"/>
-                    <Button Content="📂 Abrir" Click="BtnOpenImage_Click" Padding="8,3" Margin="0,0,3,0"/>
-                    <Button Content="💾 Salvar" Click="BtnSaveImage_Click" Padding="8,3" Margin="0,0,3,0"/>
-                    <Button Content="🔄 Resetar" Click="BtnResetOriginal_Click" Padding="8,3" Margin="0,0,8,0"/>
-                    
-                    <!-- Presets Rápidos -->
-                    <Button Content="🎨 Calibração" Click="BtnPresetCalibration_Click" Padding="6,3" Margin="0,0,2,0"/>
-                    <Button Content="🌀 Roda HSV" Click="BtnPresetColorWheel_Click" Padding="6,3" Margin="0,0,2,0"/>
-                    <Button Content="🌐 MTF" Click="BtnPresetFrequency_Click" Padding="6,3" Margin="0,0,2,0"/>
-                    <Button Content="🧂 Ruído" Click="BtnPresetNoise_Click" Padding="6,3" Margin="0,0,6,0"/>
+                <!-- Menu Superior Inteligente Contextual (Ações da Aba Ativa) -->
+                <StackPanel x:Name="PnlContextualTopActions" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- Preenchido dinamicamente via code-behind conforme a aba selecionada -->
+                </StackPanel>
 
-                    <Button Content="🌐 Docs Online" Click="BtnOpenOnlineDocs_Click" Padding="8,3" Margin="0,0,4,0"/>
-                    <Button Content="🔔 Atualizações" Click="BtnCheckUpdates_Click" Padding="8,3" ToolTip="Verificar novas versões e atualizações no GitHub"/>
+                <!-- Docs, Atualizações e Controle de Janela -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Docs Online" Click="BtnOpenOnlineDocs_Click" Padding="7,3" Margin="0,0,3,0"/>
+                    <Button Content="Atualizações" Click="BtnCheckUpdates_Click" Padding="7,3" Margin="0,0,8,0" ToolTip="Verificar novas versões e atualizações no GitHub"/>
+
+                    <Button Content="🗕" Click="BtnMinimize_Click" Width="30" Height="26" Margin="0,0,2,0" Background="#182032" Foreground="#94A3B8" BorderBrush="#252F46" ToolTip="Minimizar"/>
+                    <Button x:Name="BtnMaximize" Content="🗖" Click="BtnMaximize_Click" Width="30" Height="26" Margin="0,0,2,0" Background="#182032" Foreground="#94A3B8" BorderBrush="#252F46" ToolTip="Maximizar/Restaurar"/>
+                    <Button Content="✕" Click="BtnClose_Click" Width="32" Height="26" Background="#7F1D1D" Foreground="#FCA5A5" BorderBrush="#991B1B" FontWeight="Bold" ToolTip="Fechar"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Main Tab Control em Linha Única Sem Quebra -->
-        <TabControl Grid.Row="1" Background="#101014" BorderThickness="0">
+        <!-- Main Tab Control com as 7 Abas Principais -->
+        <TabControl x:Name="MainTabControl" Grid.Row="1" Background="#101014" BorderThickness="0" SelectionChanged="MainTabControl_SelectionChanged">
 
             <!-- ================================================================================== -->
             <!-- ABA 1: PROCESSAMENTO DIGITAL DE IMAGENS (PDI)                                     -->
             <!-- ================================================================================== -->
-            <TabItem Header="🖼️ PDI">
+            <TabItem x:Name="TabItemPdi">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 1,1 L 11,1 L 11,11 L 1,11 Z M 3,4 A 1,1 0 1,1 3,3.9 Z M 2,10 L 5,6 L 8,9 L 9,7 L 11,10 Z" Fill="#38BDF8" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Processamento de Imagens (PDI)" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="6">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="310" MinWidth="250" MaxWidth="450"/> <!-- Painel Esquerdo -->
-                        <ColumnDefinition Width="5"/>                                 <!-- Divisor Redimensionável -->
-                        <ColumnDefinition Width="*" MinWidth="300"/>                  <!-- Viewport Central Imagem -->
-                        <ColumnDefinition Width="5"/>                                 <!-- Divisor Redimensionável -->
-                        <ColumnDefinition Width="330" MinWidth="260" MaxWidth="500"/> <!-- Teoria & Histograma -->
+                        <ColumnDefinition Width="310" MinWidth="250" MaxWidth="450"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*" MinWidth="300"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="340" MinWidth="260" MaxWidth="520"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left Controls Panel (Scrollable) -->
+                    <!-- Painel Esquerdo: Controles PDI -->
                     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
                         <StackPanel>
-                            <!-- Espaços de Cores & Canais -->
+                            <!-- 1. Modelos de Cor & Canais -->
                             <GroupBox Header="1. Modelos de Cor &amp; Canais">
                                 <StackPanel>
                                     <UniformGrid Columns="2">
@@ -363,7 +365,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Operações Pontuais -->
+                            <!-- 2. Operações Pontuais -->
                             <GroupBox Header="2. Operações Pontuais">
                                 <StackPanel>
                                     <TextBlock Text="Brilho (Delta):" Foreground="#A8A8B8" FontSize="11"/>
@@ -382,20 +384,20 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Histograma & Contraste -->
+                            <!-- 3. Processamento de Histograma -->
                             <GroupBox Header="3. Processamento de Histograma">
                                 <StackPanel>
-                                    <Button Content="Equalização Global (Luminância HSV)" Click="BtnEqualizeHsv_Click" Style="{StaticResource PrimaryButton}"/>
+                                    <Button Content="Equalização Global (HSV)" Click="BtnEqualizeHsv_Click" Style="{StaticResource PrimaryButton}"/>
                                     <Button Content="Equalização RGB Independente" Click="BtnEqualizeRgb_Click"/>
                                     <Button Content="Expansão de Contraste (Min-Max)" Click="BtnContrastStretch_Click"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Filtros Espaciais (Convoluções) -->
+                            <!-- 4. Filtros Espaciais (Convoluções) -->
                             <GroupBox Header="4. Filtros Espaciais (Convoluções)">
                                 <StackPanel>
                                     <UniformGrid Columns="2">
-                                        <Button Content="Box Blur 3x3 (Média)" Click="BtnBoxBlur3_Click"/>
+                                        <Button Content="Box Blur 3x3" Click="BtnBoxBlur3_Click"/>
                                         <Button Content="Box Blur 5x5" Click="BtnBoxBlur5_Click"/>
                                         <Button Content="Gaussiano 3x3" Click="BtnGaussian3_Click"/>
                                         <Button Content="Gaussiano 5x5 (σ=1.4)" Click="BtnGaussian5_Click"/>
@@ -403,13 +405,13 @@
                                     <UniformGrid Columns="2" Margin="0,3,0,0">
                                         <Button Content="Nitidez (Sharpen)" Click="BtnSharpen_Click"/>
                                         <Button Content="Unsharp Masking" Click="BtnUnsharpMask_Click"/>
-                                        <Button Content="Mediana 3x3 (Anti-Ruído)" Click="BtnMedian_Click"/>
-                                        <Button Content="Relevo 3D (Emboss 45°)" Click="BtnEmboss_Click"/>
+                                        <Button Content="Mediana 3x3" Click="BtnMedian_Click"/>
+                                        <Button Content="Relevo 3D (Emboss)" Click="BtnEmboss_Click"/>
                                     </UniformGrid>
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Detecção de Bordas -->
+                            <!-- 5. Detecção de Bordas & Gradientes -->
                             <GroupBox Header="5. Detecção de Bordas &amp; Gradientes">
                                 <StackPanel>
                                     <UniformGrid Columns="2">
@@ -424,7 +426,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Morfologia Matemática & Segmentação -->
+                            <!-- 6. Morfologia & Segmentação -->
                             <GroupBox Header="6. Morfologia &amp; Segmentação">
                                 <StackPanel>
                                     <UniformGrid Columns="2">
@@ -444,7 +446,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Transformações Geométricas 2D -->
+                            <!-- 7. Transformações Geométricas 2D -->
                             <GroupBox Header="7. Transformações Geométricas 2D">
                                 <StackPanel>
                                     <TextBlock Text="Método de Interpolação:" Foreground="#A8A8B8" FontSize="11"/>
@@ -470,10 +472,10 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Frequência & Procedurais -->
+                            <!-- 8. Frequência, Ruído & Fractais -->
                             <GroupBox Header="8. Frequência, Ruído &amp; Fractais">
                                 <StackPanel>
-                                    <Button Content="Transformada de Fourier (2D DFT Spectrum)" Click="BtnFourierSpectrum_Click" Style="{StaticResource PrimaryButton}"/>
+                                    <Button Content="Transformada de Fourier (2D DFT)" Click="BtnFourierSpectrum_Click" Style="{StaticResource PrimaryButton}"/>
                                     <UniformGrid Columns="2" Margin="0,3,0,0">
                                         <Button Content="Terreno fBm (Perlin)" Click="BtnPerlinFbm_Click"/>
                                         <Button Content="Ruído Voronoi Celular" Click="BtnVoronoi_Click"/>
@@ -485,27 +487,25 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- GridSplitter Esquerdo -->
                     <GridSplitter Grid.Column="1"/>
 
-                    <!-- Center Viewport (Image Display com ajuste fluido à tela cheia) -->
+                    <!-- Viewport Central da Imagem PDI -->
                     <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
                         <Grid>
                             <Image x:Name="ImgDisplay" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                         </Grid>
                     </Border>
 
-                    <!-- GridSplitter Direito -->
                     <GridSplitter Grid.Column="3"/>
 
-                    <!-- Right Panel: Mathematical Theory & Histogram Inspector -->
+                    <!-- Painel Direito: Histograma + Teoria & Código C# -->
                     <Grid Grid.Column="4">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="180" MinHeight="140"/> <!-- Gráfico de Histograma -->
-                            <RowDefinition Height="*"/>                   <!-- Explicação Teórica -->
+                            <RowDefinition Height="170" MinHeight="130"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Histogram Chart Canvas -->
+                        <!-- Gráfico de Histograma -->
                         <GroupBox Grid.Row="0" Header="📊 Histograma de Cores em Tempo Real">
                             <Grid Background="#0A0A10">
                                 <Canvas x:Name="CanvasHistogram" Margin="4" SizeChanged="CanvasHistogram_SizeChanged"/>
@@ -518,17 +518,30 @@
                             </Grid>
                         </GroupBox>
 
-                        <!-- Smart Theoretical Card -->
-                        <GroupBox Grid.Row="1" Header="💡 Explicação Teórica &amp; Algoritmo" Margin="0,6,0,0">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel Margin="2">
-                                    <TextBlock x:Name="TxtTheoryTitle" Text="Selecione um Algoritmo de PDI" FontSize="13.5" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
-                                    <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
-                                    <TextBlock x:Name="TxtTheoryMath" Text="A teoria matemática, formulação e complexidade computacional serão exibidas aqui em tempo real conforme você interage com os controles."
-                                               TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </GroupBox>
+                        <!-- TabControl Teoria & Código C# -->
+                        <TabControl Grid.Row="1" Background="#0C0C12" BorderBrush="#20202C" Margin="0,4,0,0">
+                            <TabItem Header="💡 Teoria &amp; Fórmulas">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+                                    <StackPanel>
+                                        <TextBlock x:Name="TxtTheoryTitle" Text="Selecione um Algoritmo de PDI" FontSize="13" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                        <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                        <TextBlock x:Name="TxtTheoryMath" Text="A formulação matemática exata e os conceitos serão exibidos aqui." TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem Header="💻 Código C#">
+                                <Grid Margin="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button Content="Copiar Código C#" Click="BtnCopyTheoryCode_Click" HorizontalAlignment="Right" Padding="6,2" FontSize="10.5" Margin="0,0,0,4"/>
+                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="6">
+                                        <RichTextBox x:Name="RtbTheoryCodeSnippet" IsReadOnly="True" Background="Transparent" Foreground="#E2E8F0" BorderThickness="0" FontFamily="Consolas, Cascadia Code" FontSize="11.5" VerticalScrollBarVisibility="Auto" AcceptsTab="True" SelectionBrush="#2563EB"/>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -536,17 +549,23 @@
             <!-- ================================================================================== -->
             <!-- ABA 2: COMPUTAÇÃO GRÁFICA 2D (RASTERIZAÇÃO & MATRIZES)                            -->
             <!-- ================================================================================== -->
-            <TabItem Header="📐 CG 2D">
+            <TabItem x:Name="TabItem2D">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 1,11 L 1,7 L 7,1 L 11,5 L 5,11 Z M 7,1 L 9,3" Stroke="#34D399" StrokeThickness="1.3" Fill="Transparent" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Rasterização 2D" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" MinWidth="240" MaxWidth="450"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="*" MinWidth="300"/>
                         <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="330" MinWidth="260" MaxWidth="500"/>
+                        <ColumnDefinition Width="340" MinWidth="260" MaxWidth="520"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left: 2D Tools -->
+                    <!-- Controles 2D -->
                     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
                         <StackPanel>
                             <GroupBox Header="1. Ferramentas de Rasterização 2D">
@@ -572,12 +591,12 @@
                                         <Button Content="Escalar (1.2x)" Click="Btn2D_TransformScale_Click"/>
                                         <Button Content="Cisalhar (Shear X)" Click="Btn2D_TransformShear_Click"/>
                                     </UniformGrid>
-                                    <Button Content="🔄 Limpar / Resetar Quadro 2D" Click="Btn2D_Clear_Click" Margin="2,6,2,2"/>
+                                    <Button Content="Limpar Quadro 2D" Click="Btn2D_Clear_Click" Margin="2,6,2,2"/>
                                 </StackPanel>
                             </GroupBox>
 
                             <GroupBox Header="3. Dica Interativa">
-                                <TextBlock Text="💡 Clique em qualquer ponto do quadro 2D com o mouse para disparar o algoritmo de Flood Fill (Inundação) interativo!"
+                                <TextBlock Text="Clique em qualquer ponto do quadro 2D com o mouse para disparar o algoritmo de Flood Fill (Inundação) interativo."
                                            Foreground="#8CA0E8" FontSize="11" TextWrapping="Wrap" LineHeight="16"/>
                             </GroupBox>
                         </StackPanel>
@@ -585,7 +604,7 @@
 
                     <GridSplitter Grid.Column="1"/>
 
-                    <!-- Center: 2D Rasterizer Canvas Display (Fluido à tela cheia) -->
+                    <!-- Viewport 2D -->
                     <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
                         <Grid>
                             <Image x:Name="ImgDisplay2D" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseDown="ImgDisplay2D_MouseDown"/>
@@ -594,44 +613,63 @@
 
                     <GridSplitter Grid.Column="3"/>
 
-                    <!-- Right: 2D Theory Details -->
-                    <GroupBox Grid.Column="4" Header="💡 Detalhes Teóricos de Rasterização 2D">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel Margin="2">
-                                <TextBlock x:Name="TxtTheory2DTitle" Text="Algoritmos de Rasterização 2D" FontSize="13.5" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
-                                <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
-                                <TextBlock x:Name="TxtTheory2DMath" Text="Selecione um botão à esquerda para traçar primitivas 2D calculadas a partir dos primeiros princípios matemáticos da computação gráfica."
-                                           TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </GroupBox>
+                    <!-- Painel Teórico & Código 2D -->
+                    <TabControl Grid.Column="4" Background="#0C0C12" BorderBrush="#20202C">
+                        <TabItem Header="💡 Teoria &amp; Fórmulas">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+                                <StackPanel>
+                                    <TextBlock x:Name="TxtTheory2DTitle" Text="Algoritmos de Rasterização 2D" FontSize="13" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                    <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                    <TextBlock x:Name="TxtTheory2DMath" Text="Selecione um botão à esquerda para traçar primitivas 2D." TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="💻 Código C#">
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Button Content="Copiar Código C#" Click="BtnCopyTheory2DCode_Click" HorizontalAlignment="Right" Padding="6,2" FontSize="10.5" Margin="0,0,0,4"/>
+                                <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="6">
+                                    <RichTextBox x:Name="RtbTheory2DCodeSnippet" IsReadOnly="True" Background="Transparent" Foreground="#E2E8F0" BorderThickness="0" FontFamily="Consolas, Cascadia Code" FontSize="11.5" VerticalScrollBarVisibility="Auto" AcceptsTab="True" SelectionBrush="#2563EB"/>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
 
             <!-- ================================================================================== -->
             <!-- ABA 3: COMPUTAÇÃO GRÁFICA 3D (WPF VIEWPORT 3D ACELERADO)                          -->
             <!-- ================================================================================== -->
-            <TabItem Header="🧊 CG 3D (GPU)">
+            <TabItem x:Name="TabItem3D">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 6,1 L 11,4 L 6,7 L 1,4 Z M 1,4 L 6,7 L 6,12 L 1,9 Z M 6,7 L 11,4 L 11,9 L 6,12 Z" Fill="#FBBF24" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Computação Gráfica 3D" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="6">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="310" MinWidth="250" MaxWidth="450"/>
+                        <ColumnDefinition Width="300" MinWidth="240" MaxWidth="450"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="*" MinWidth="300"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="340" MinWidth="260" MaxWidth="520"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left: 3D Scene Controls -->
+                    <!-- Controles 3D -->
                     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
                         <StackPanel>
-                            <!-- Projeções da Câmera (Ementa: Projeções 3D) -->
-                            <GroupBox Header="1. Câmera &amp; Tipo de Projeção">
+                            <GroupBox Header="1. Câmera e Tipo de Projeção">
                                 <StackPanel>
                                     <RadioButton x:Name="RbCameraPerspective" Content="Projeção Perspectiva (com ponto de fuga)" Foreground="#E2E2EA" IsChecked="True" Checked="RbCameraProj_Checked" Margin="0,2,0,3"/>
-                                    <RadioButton x:Name="RbCameraOrthographic" Content="Projeção Ortográfica (Paralela sem fuga)" Foreground="#E2E2EA" Checked="RbCameraProj_Checked" Margin="0,2,0,4"/>
-                                    <Button Content="🎯 Resetar Câmera Orbital (Arcball)" Click="Btn3D_ResetCamera_Click" Margin="0,2,0,0"/>
+                                    <RadioButton x:Name="RbCameraOrthographic" Content="Projeção Ortográfica (Paralela)" Foreground="#E2E2EA" Checked="RbCameraProj_Checked" Margin="0,2,0,4"/>
+                                    <Button Content="Resetar Câmera Orbital (Arcball)" Click="Btn3D_ResetCamera_Click" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Geometrias Paramétricas Primitivas -->
                             <GroupBox Header="2. Geometria Paramétrica 3D">
                                 <StackPanel>
                                     <ComboBox x:Name="Cmb3DShapes" SelectedIndex="0" SelectionChanged="Cmb3DShapes_SelectionChanged">
@@ -651,10 +689,9 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Modelagem Hierárquica (Unidade 3 do Plano de Ensino) -->
                             <GroupBox Header="3. Modelagem Hierárquica (Unidade 3)">
                                 <StackPanel>
-                                    <Button Content="🤖 Carregar Robô Articulado (Scene Graph)" Click="Btn3D_LoadRobot_Click" Style="{StaticResource PrimaryButton}" Margin="0,2,0,4"/>
+                                    <Button Content="Carregar Robô Articulado (Scene Graph)" Click="Btn3D_LoadRobot_Click" Style="{StaticResource PrimaryButton}" Margin="0,2,0,4"/>
                                     
                                     <TextBlock Text="Rotação da Base (Eixo Y):" Foreground="#A8A8B8" FontSize="11"/>
                                     <Slider x:Name="SliderRobotBase" Minimum="-180" Maximum="180" Value="0" ValueChanged="SliderRobot_ValueChanged"/>
@@ -672,8 +709,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Iluminação e Materiais de Phong -->
-                            <GroupBox Header="4. Iluminação de Phong &amp; Materiais">
+                            <GroupBox Header="4. Iluminação de Phong e Materiais">
                                 <StackPanel>
                                     <TextBlock Text="Brilho Especular (Shininess):" Foreground="#A8A8B8" FontSize="11"/>
                                     <Slider x:Name="Slider3DSpecular" Minimum="5" Maximum="120" Value="40" ValueChanged="Slider3DMaterial_ValueChanged"/>
@@ -684,37 +720,66 @@
                                     <CheckBox x:Name="Chk3DAutoRotate" Content="Rotação Automática da Cena" Foreground="#E2E2EA" Margin="0,4,0,2" Checked="Chk3DAutoRotate_CheckedChanged" Unchecked="Chk3DAutoRotate_CheckedChanged"/>
                                 </StackPanel>
                             </GroupBox>
-
-                            <GroupBox Header="5. Instruções de Câmera 3D">
-                                <TextBlock Text="🖱️ Arraste com o Botão Esquerdo para orbitar a câmera 360°&#x0a;⚙️ Role a Roda do Mouse para dar Zoom In / Zoom Out&#x0a;🌟 Renderização com Aceleração DirectX nativa do WPF"
-                                           Foreground="#8CA0E8" FontSize="11" TextWrapping="Wrap" LineHeight="16"/>
-                            </GroupBox>
                         </StackPanel>
                     </ScrollViewer>
 
                     <GridSplitter Grid.Column="1"/>
 
-                    <!-- Center: WPF Viewport 3D (Ocupa 100% da tela cheia) -->
+                    <!-- Viewport 3D -->
                     <Border Grid.Column="2" Background="#08080E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6">
                         <Viewport3D x:Name="ViewportMain"/>
                     </Border>
+
+                    <GridSplitter Grid.Column="3"/>
+
+                    <!-- Painel Teórico & Código 3D -->
+                    <TabControl Grid.Column="4" Background="#0C0C12" BorderBrush="#20202C">
+                        <TabItem Header="💡 Teoria &amp; MVP">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+                                <StackPanel>
+                                    <TextBlock x:Name="TxtTheory3DTitle" Text="Pipeline 3D e Matrizes de Transformação" FontSize="13" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                    <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                    <TextBlock x:Name="TxtTheory3DMath" Text="Transformação MVP: v_{clip} = M_{proj} × M_{view} × M_{model} × v_{local}.&#x0a;&#x0a;Iluminação de Blinn-Phong: I = I_a·k_a + I_d·k_d·(N·L) + I_s·k_s·(N·H)^α." TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="💻 Código C#">
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Button Content="Copiar Código C#" Click="BtnCopyTheory3DCode_Click" HorizontalAlignment="Right" Padding="6,2" FontSize="10.5" Margin="0,0,0,4"/>
+                                <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="6">
+                                    <RichTextBox x:Name="RtbTheory3DCodeSnippet" IsReadOnly="True" Background="Transparent" Foreground="#E2E8F0" BorderThickness="0" FontFamily="Consolas, Cascadia Code" FontSize="11.5" VerticalScrollBarVisibility="Auto" AcceptsTab="True" SelectionBrush="#2563EB"/>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
 
             <!-- ================================================================================== -->
-            <!-- ABA 4: SOFTWARE 3D & RAY TRACING (RENDERIZADORES DO ZERO)                         -->
+            <!-- ABA 4: SOFTWARE 3D & RAY TRACING                                                  -->
             <!-- ================================================================================== -->
-            <TabItem Header="⚡ Ray Tracing">
+            <TabItem x:Name="TabItemRayTracing">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 6,1 A 5,5 0 1,1 5.9,1 Z M 6,3 A 3,3 0 1,0 6,9 A 3,3 0 1,0 6,3 Z M 1,6 L 11,6" Stroke="#EC4899" StrokeThickness="1.2" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Ray Tracing" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" MinWidth="240" MaxWidth="450"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="*" MinWidth="300"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="340" MinWidth="260" MaxWidth="520"/>
                     </Grid.ColumnDefinitions>
 
                     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
                         <StackPanel>
-                            <!-- Pipeline 3D CPU -->
                             <GroupBox Header="1. Pipeline 3D em Software (100% CPU)">
                                 <StackPanel>
                                     <ComboBox x:Name="CmbSoftMesh" SelectedIndex="0" SelectionChanged="CmbSoftMesh_SelectionChanged">
@@ -738,7 +803,6 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <!-- Ray Tracer Whitted -->
                             <GroupBox Header="2. Ray Tracer Matemático">
                                 <StackPanel>
                                     <TextBlock Text="Ângulo da Câmera:" Foreground="#A8A8B8" FontSize="11"/>
@@ -747,7 +811,7 @@
                                     <TextBlock Text="Profundidade de Reflexão (Bounces):" Foreground="#A8A8B8" FontSize="11"/>
                                     <Slider x:Name="SliderRayBounces" Minimum="1" Maximum="4" Value="2" ValueChanged="SliderRay_ValueChanged"/>
 
-                                    <Button Content="⭐ Renderizar Ray Tracer" Click="BtnRayTrace_Click" Style="{StaticResource PrimaryButton}" Margin="2,4,2,2"/>
+                                    <Button Content="Renderizar Ray Tracer" Click="BtnRayTrace_Click" Style="{StaticResource PrimaryButton}" Margin="2,4,2,2"/>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
@@ -755,19 +819,52 @@
 
                     <GridSplitter Grid.Column="1"/>
 
-                    <!-- Center: Software 3D & Raytracer Display fluido -->
+                    <!-- Visualizador 3D Software / Raytracer -->
                     <Border Grid.Column="2" Background="#0A0A0E" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
                         <Grid>
                             <Image x:Name="ImgDisplay3DSoft" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                         </Grid>
                     </Border>
+
+                    <GridSplitter Grid.Column="3"/>
+
+                    <!-- Painel Teórico & Código Ray Tracing -->
+                    <TabControl Grid.Column="4" Background="#0C0C12" BorderBrush="#20202C">
+                        <TabItem Header="💡 Teoria &amp; Raios">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+                                <StackPanel>
+                                    <TextBlock x:Name="TxtTheoryRayTitle" Text="Fundamentos de Ray Tracing Fotorrealista" FontSize="13" FontWeight="Bold" Foreground="#6588F8" TextWrapping="Wrap"/>
+                                    <Border Height="1" Background="#242434" Margin="0,5,0,6"/>
+                                    <TextBlock x:Name="TxtTheoryRayMath" Text="Equação Paramétrica do Raio: r(t) = O + t·D, t > 0.&#x0a;&#x0a;Interseção com Esfera: |O + t·D - C|² = R² ⟹ Equação quadrática resolvida por Bhaskara.&#x0a;&#x0a;Reflexão Especular: R = D - 2(D·N)N." TextWrapping="Wrap" Foreground="#C6C6D4" FontSize="11.5" LineHeight="17"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="💻 Código C#">
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Button Content="Copiar Código C#" Click="BtnCopyTheoryRayCode_Click" HorizontalAlignment="Right" Padding="6,2" FontSize="10.5" Margin="0,0,0,4"/>
+                                <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="6">
+                                    <RichTextBox x:Name="RtbTheoryRayCodeSnippet" IsReadOnly="True" Background="Transparent" Foreground="#E2E8F0" BorderThickness="0" FontFamily="Consolas, Cascadia Code" FontSize="11.5" VerticalScrollBarVisibility="Auto" AcceptsTab="True" SelectionBrush="#2563EB"/>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
 
             <!-- ================================================================================== -->
             <!-- ABA 5: CENTRAL DE ESTUDOS & DOCUMENTAÇÃO PASSO A PASSO                            -->
             <!-- ================================================================================== -->
-            <TabItem Header="📖 Central de Estudos">
+            <TabItem x:Name="TabItemCentralEstudos">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 6,1 L 11,4 L 6,7 L 1,4 Z M 3,5.5 L 3,9 C 3,10.5 9,10.5 9,9 L 9,5.5" Stroke="#A78BFA" StrokeThickness="1.3" Fill="Transparent" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Central de Estudos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="340" MinWidth="260" MaxWidth="500"/>
@@ -775,27 +872,27 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left: Topic Selector & Search -->
+                    <!-- Lista de Tópicos e Busca -->
                     <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Search Box -->
-                            <RowDefinition Height="*"/>    <!-- Topics List -->
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Search Filter Box -->
+                        <!-- Caixa de Busca -->
                         <Border Grid.Row="0" Background="#161622" BorderBrush="#2E2E40" BorderThickness="1" CornerRadius="4" Margin="0,0,0,6" Padding="6,4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="🔍 " Foreground="#8EA6F5" VerticalAlignment="Center"/>
+                                <TextBlock Text="Busca: " Foreground="#8EA6F5" VerticalAlignment="Center"/>
                                 <TextBox x:Name="TxtSearchStudy" Grid.Column="1" Background="Transparent" Foreground="#FFFFFF" BorderThickness="0"
                                          FontSize="12" VerticalAlignment="Center" TextChanged="TxtSearchStudy_TextChanged"/>
                             </Grid>
                         </Border>
 
-                        <!-- List of Study Topics -->
+                        <!-- Lista de Tópicos de Estudo -->
                         <ListBox x:Name="LstStudyTopics" Grid.Row="1" Background="#12121A" BorderBrush="#242432" BorderThickness="1"
                                  SelectionChanged="LstStudyTopics_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
@@ -808,60 +905,39 @@
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Margin" Value="1"/>
-                                    <Setter Property="Padding" Value="2"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListBoxItem">
-                                                <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="4">
-                                                    <ContentPresenter/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#242436"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#2B4BB5"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
 
                     <GridSplitter Grid.Column="1"/>
 
-                    <!-- Right: Detailed Theory & Step-by-Step Code Reader -->
+                    <!-- Detalhes Teóricos, Fórmulas, Código e Quiz -->
                     <Border Grid.Column="2" Background="#0C0C12" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="10">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
-                                <!-- Header do Tópico -->
                                 <Border Background="#161622" BorderBrush="#2D2D42" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <TextBlock x:Name="TxtDocCategory" Text="1. FUNDAMENTOS &amp; MEMÓRIA" Foreground="#4F72E8" FontSize="11" FontWeight="Bold"/>
-                                        <TextBlock x:Name="TxtDocTitle" Text="Título do Tópico de Estudo" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold" Margin="0,2,0,4" TextWrapping="Wrap"/>
-                                        <TextBlock x:Name="TxtDocSummary" Text="Resumo pedagógico e conceitos fundamentais do algoritmo." Foreground="#C4C4D4" FontSize="12" TextWrapping="Wrap" LineHeight="17"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock x:Name="TxtDocCategory" Text="1. FUNDAMENTOS &amp; MEMÓRIA" Foreground="#4F72E8" FontSize="11" FontWeight="Bold"/>
+                                            <TextBlock x:Name="TxtDocTitle" Text="Título do Tópico de Estudo" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold" Margin="0,2,0,4" TextWrapping="Wrap"/>
+                                            <TextBlock x:Name="TxtDocSummary" Text="Resumo pedagógico e conceitos fundamentais do algoritmo." Foreground="#C4C4D4" FontSize="12" TextWrapping="Wrap" LineHeight="17"/>
+                                        </StackPanel>
+                                        <Button x:Name="BtnGoToLaboratorioLesson" Grid.Column="1" Content="▶ Praticar no Laboratório" Click="BtnGoToLaboratorioLesson_Click" Style="{StaticResource PrimaryButton}" Padding="10,6" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                    </Grid>
                                 </Border>
 
-                                <!-- 1. Fundamentação Matemática -->
-                                <GroupBox Header="📐 1. Formulação Matemática &amp; Teoria">
-                                    <TextBlock x:Name="TxtDocMath" Text="Fórmulas e equações matemáticas..." Foreground="#D8D8E8" FontSize="11.5" TextWrapping="Wrap" LineHeight="18" FontFamily="Consolas"/>
+                                <GroupBox Header="1. Formulação Matemática e Teoria">
+                                    <TextBlock x:Name="TxtDocMath" Text="Fórmulas e equações matemáticas..." Foreground="#D8D8E8" FontSize="12" TextWrapping="Wrap" LineHeight="19" FontFamily="Consolas, Segoe UI"/>
                                 </GroupBox>
 
-                                <!-- 2. Explicação Passo a Passo do Algoritmo -->
-                                <GroupBox Header="💡 2. Como Funciona Passo a Passo">
+                                <GroupBox Header="2. Como Funciona Passo a Passo">
                                     <TextBlock x:Name="TxtDocExplanation" Text="Explicação detalhada do algoritmo..." Foreground="#C8C8D8" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
                                 </GroupBox>
 
-                                <!-- 3. Trecho Real do Código C# -->
-                                <GroupBox Header="💻 3. Implementação em Código C# (Comentado)">
+                                <GroupBox Header="3. Implementação em Código C# (Comentado)">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -871,32 +947,64 @@
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="Fonte do Código:" Foreground="#A0A0B4" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                    <Button Content="🔍 A-" Click="BtnZoomOutDocCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Diminuir tamanho da fonte"/>
-                                                    <Button Content="🔍 A+" Click="BtnZoomInDocCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Aumentar tamanho da fonte"/>
+                                                    <Button Content="A-" Click="BtnZoomOutDocCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Diminuir fonte"/>
+                                                    <Button Content="A+" Click="BtnZoomInDocCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Aumentar fonte"/>
                                                     <Button Content="100%" Click="BtnResetDocCodeZoom_Click" Padding="6,2" ToolTip="Restaurar tamanho padrão"/>
                                                 </StackPanel>
-                                                <Button Content="📋 Copiar Código" Click="BtnCopyDocCode_Click" HorizontalAlignment="Right" Padding="8,2" ToolTip="Copiar código C#"/>
+                                                <Button Content="Copiar Código" Click="BtnCopyDocCode_Click" HorizontalAlignment="Right" Padding="8,2" ToolTip="Copiar código C#"/>
                                             </Grid>
                                         </Border>
-                                        <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="10">
-                                            <TextBox x:Name="TxtDocSnippet" Text="// Código C#..." IsReadOnly="True" Background="Transparent" Foreground="#98E088"
-                                                     BorderThickness="0" FontFamily="Consolas" FontSize="13.5" TextWrapping="Wrap"/>
+                                        <Border Grid.Row="1" Background="#06060A" BorderBrush="#202030" BorderThickness="1" CornerRadius="4" Padding="8">
+                                            <RichTextBox x:Name="RtbDocSnippet" IsReadOnly="True" Background="Transparent" Foreground="#E2E8F0"
+                                                         BorderThickness="0" FontFamily="Consolas, Cascadia Code" FontSize="13" VerticalScrollBarVisibility="Auto" AcceptsTab="True" SelectionBrush="#2563EB"/>
                                         </Border>
                                     </Grid>
                                 </GroupBox>
 
-                                <!-- 4. Complexidade & Dicas -->
-                                <GroupBox Header="⚡ 4. Complexidade Computacional &amp; Dicas de Otimização">
-                                    <TextBlock x:Name="TxtDocComplexity" Text="Complexidade O(N)..." Foreground="#FFD700" FontSize="13" TextWrapping="Wrap" LineHeight="19"/>
+                                <!-- Quiz de Fixação Interativo -->
+                                <GroupBox x:Name="GrpStudyTopicQuiz" Header="4. Quiz de Fixação e Avaliação do Conteúdo">
+                                    <StackPanel Margin="2">
+                                        <TextBlock x:Name="TxtStudyTopicQuizQuestion" Text="Pergunta do Quiz..." Foreground="#FFFFFF" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                                        <Button x:Name="BtnStudyTopicQuizOpt0" Click="BtnStudyTopicQuizOpt_Click" Tag="0" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,6" MinHeight="36">
+                                            <Button.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Button x:Name="BtnStudyTopicQuizOpt1" Click="BtnStudyTopicQuizOpt_Click" Tag="1" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,6" MinHeight="36">
+                                            <Button.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Button x:Name="BtnStudyTopicQuizOpt2" Click="BtnStudyTopicQuizOpt_Click" Tag="2" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,6" MinHeight="36">
+                                            <Button.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Border x:Name="BrdStudyTopicQuizFeedback" Visibility="Collapsed" CornerRadius="4" Padding="10,8" Margin="0,6,0,0" Background="#1E2A20" BorderBrush="#2E7D32" BorderThickness="1">
+                                            <TextBlock x:Name="TxtStudyTopicQuizFeedback" Text="Feedback..." Foreground="#A5D6A7" FontSize="12" TextWrapping="Wrap" LineHeight="17"/>
+                                        </Border>
+                                    </StackPanel>
                                 </GroupBox>
 
-                                <!-- 5. Onde Testar no Software -->
-                                <GroupBox Header="🧪 5. Onde Testar e Visualizar no Programa">
-                                    <TextBlock x:Name="TxtDocWhereToTest" Text="Localização nas abas..." Foreground="#40E0D0" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                <GroupBox Header="5. Complexidade Computacional e Otimização">
+                                    <TextBlock x:Name="TxtDocComplexity" Text="Complexidade O(N)..." Foreground="#FFD700" FontSize="12.5" TextWrapping="Wrap" LineHeight="19"/>
                                 </GroupBox>
 
-                                <!-- 6. Referências Oficiais Microsoft Learn -->
-                                <GroupBox Header="📚 6. Referências Oficiais Microsoft Learn (Clique para Abrir)">
+                                <GroupBox Header="6. Onde Testar no Software">
+                                    <TextBlock x:Name="TxtDocWhereToTest" Text="Localização nas abas..." Foreground="#40E0D0" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                </GroupBox>
+
+                                <GroupBox Header="7. Referências Oficiais Microsoft Learn">
                                     <StackPanel>
                                         <ItemsControl x:Name="IcMicrosoftRefs">
                                             <ItemsControl.ItemTemplate>
@@ -908,10 +1016,10 @@
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
                                                             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
-                                                                <TextBlock Text="{Binding Title}" Foreground="#60A5FA" FontSize="12.5" FontWeight="Bold"/>
-                                                                <TextBlock Text="{Binding Description}" Foreground="#A8A8B8" FontSize="11.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                                                <TextBlock Text="{Binding Title}" Foreground="#60A5FA" FontSize="12" FontWeight="Bold"/>
+                                                                <TextBlock Text="{Binding Description}" Foreground="#A8A8B8" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"/>
                                                             </StackPanel>
-                                                            <Button Grid.Column="1" Content="🌐 Abrir no Navegador" Tag="{Binding Url}" Click="BtnOpenMsRef_Click" VerticalAlignment="Center" Padding="8,4"/>
+                                                            <Button Grid.Column="1" Content="Abrir Documentação" Tag="{Binding Url}" Click="BtnOpenMsRef_Click" VerticalAlignment="Center" Padding="8,4"/>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>
@@ -928,48 +1036,54 @@
             <!-- ================================================================================== -->
             <!-- ABA 6: LABORATÓRIO INTERATIVO (C# & WPF GUIADO)                                  -->
             <!-- ================================================================================== -->
-            <TabItem Header="🎓 Laboratório C#/WPF">
+            <TabItem x:Name="TabItemLaboratorio">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 4,2 L 1,6 L 4,10 M 8,2 L 11,6 L 8,10 M 7,1 L 5,11" Stroke="#38BDF8" StrokeThickness="1.3" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Laboratório C#/WPF" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid Margin="4">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Barra de Controle de Layout Retrátil -->
-                        <RowDefinition Height="*"/>    <!-- Workspace 3 Colunas -->
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Barra de Controle de Layout Retrátil & Acesso ao Estúdio -->
+                    <!-- Toolbar de Layout -->
                     <Border Grid.Row="0" Background="#141420" BorderBrush="#252538" BorderThickness="1" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
                         <Grid>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button x:Name="BtnToggleLabTrack" Content="◀ Recolher Trilha" Click="BtnToggleLabTrack_Click" Padding="8,3" FontSize="11.5" ToolTip="Oculta ou exibe a lista de lições e quiz"/>
-                                <Button x:Name="BtnTogglePlayground" Content="◀ Recolher Canvas" Click="BtnTogglePlayground_Click" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Oculta ou exibe o canvas de simulação"/>
-                                <Button x:Name="BtnFocusCode" Content="🗖 Modo Foco (Só Código)" Click="BtnFocusCode_Click" Style="{StaticResource PrimaryButton}" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Maximiza o editor de código e testes em 100% da tela"/>
-                                <Button x:Name="BtnResetColumns" Content="🔄 Restaurar Painéis" Click="BtnResetColumns_Click" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Restaura a visualização balanceada de 3 colunas"/>
+                                <Button x:Name="BtnToggleLabTrack" Content="Ocultar Trilha" Click="BtnToggleLabTrack_Click" Padding="8,3" FontSize="11.5" ToolTip="Oculta ou exibe a lista de lições e quiz"/>
+                                <Button x:Name="BtnTogglePlayground" Content="Ocultar Canvas" Click="BtnTogglePlayground_Click" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Oculta ou exibe o canvas de simulação"/>
+                                <Button x:Name="BtnFocusCode" Content="Modo Foco" Click="BtnFocusCode_Click" Style="{StaticResource PrimaryButton}" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Maximiza o editor de código em 100% da tela"/>
+                                <Button x:Name="BtnResetColumns" Content="Restaurar Painéis" Click="BtnResetColumns_Click" Padding="8,3" FontSize="11.5" Margin="4,0,0,0" ToolTip="Restaura a visualização balanceada de 3 colunas"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Button Content="🗖 Estúdio em Janela Dedicada (Tela Cheia)" Click="BtnOpenPopoutStudio_Click" Style="{StaticResource PrimaryButton}" Padding="10,4" FontSize="12" FontWeight="Bold" ToolTip="Abre uma janela independente de tela cheia com máxima área útil"/>
+                                <Button Content="Laboratório em Janela Cheia" Click="BtnOpenPopoutStudio_Click" Style="{StaticResource PrimaryButton}" Padding="10,4" FontSize="11.5" FontWeight="Bold" ToolTip="Abre o Laboratório em janela independente com máxima área útil"/>
                             </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!-- Workspace das 3 Colunas Redimensionáveis & Recolhíveis -->
+                    <!-- Workspace das 3 Colunas: Trilha/Quiz -> Visualizador -> Editor -->
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="ColLabTrack" Width="390" MinWidth="0" MaxWidth="600"/>
+                            <ColumnDefinition x:Name="ColLabTrack" Width="380" MinWidth="0" MaxWidth="550"/>
                             <ColumnDefinition x:Name="ColLabSplitter1" Width="5"/>
                             <ColumnDefinition x:Name="ColLabPlayground" Width="400" MinWidth="0" MaxWidth="650"/>
                             <ColumnDefinition x:Name="ColLabSplitter2" Width="5"/>
                             <ColumnDefinition x:Name="ColLabCode" Width="*" MinWidth="300"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Coluna 1: Trilha de Aprendizado + Quiz + Referências -->
+                        <!-- Coluna 1: Trilha de Aprendizado + Quiz em Destaque -->
                         <Grid Grid.Column="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="180" MinHeight="120"/>
+                                <RowDefinition Height="170" MinHeight="100"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Barra de Progresso e Navegação Rápida -->
+                            <!-- Barra de Progresso da Trilha -->
                             <Border Grid.Row="0" Background="#161622" BorderBrush="#2E2E40" BorderThickness="1" CornerRadius="4" Margin="0,0,0,6" Padding="10,8">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,4">
@@ -978,8 +1092,8 @@
                                     </Grid>
                                     <ProgressBar x:Name="PbLessonProgress" Minimum="1" Maximum="12" Value="1" Height="7" Foreground="#3B82F6" Background="#242436" BorderThickness="0" Margin="0,0,0,6"/>
                                     <UniformGrid Columns="2">
-                                        <Button x:Name="BtnPrevLesson" Content="⬅️ Anterior" Click="BtnPrevLesson_Click" Padding="6,5" FontSize="12"/>
-                                        <Button x:Name="BtnNextLesson" Content="Próximo ➡️" Click="BtnNextLesson_Click" Style="{StaticResource PrimaryButton}" Padding="6,5" FontSize="12"/>
+                                        <Button x:Name="BtnPrevLesson" Content="Anterior" Click="BtnPrevLesson_Click" Padding="6,5" FontSize="12"/>
+                                        <Button x:Name="BtnNextLesson" Content="Próximo" Click="BtnNextLesson_Click" Style="{StaticResource PrimaryButton}" Padding="6,5" FontSize="12"/>
                                     </UniformGrid>
                                 </StackPanel>
                             </Border>
@@ -997,274 +1111,250 @@
                                         </Border>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Margin" Value="1"/>
-                                        <Setter Property="Padding" Value="2"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="ListBoxItem">
-                                                    <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" CornerRadius="4">
-                                                        <ContentPresenter/>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="ItemBorder" Property="Background" Value="#242436"/>
-                                                        </Trigger>
-                                                        <Trigger Property="IsSelected" Value="True">
-                                                            <Setter TargetName="ItemBorder" Property="Background" Value="#2563EB"/>
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
                             </ListBox>
 
-                            <!-- Quiz Interativo & Referências da Lição Atual (com ScrollViewer) -->
-                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel>
-                                    <GroupBox Header="❓ Quiz de Fixação (Avaliação do Conceito)">
-                                        <StackPanel>
-                                            <TextBlock x:Name="TxtQuizQuestion" Text="Pergunta do Quiz..." Foreground="#FFFFFF" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,8" FontWeight="SemiBold" LineHeight="19"/>
-                                            
-                                            <Button x:Name="BtnQuizOpt0" Content="Opção A" Click="BtnQuizOption_Click" Tag="0" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,8" FontSize="12" MinHeight="38">
-                                                <Button.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="17" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
-                                                    </DataTemplate>
-                                                </Button.ContentTemplate>
-                                            </Button>
-
-                                            <Button x:Name="BtnQuizOpt1" Content="Opção B" Click="BtnQuizOption_Click" Tag="1" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,8" FontSize="12" MinHeight="38">
-                                                <Button.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="17" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
-                                                    </DataTemplate>
-                                                </Button.ContentTemplate>
-                                            </Button>
-
-                                            <Button x:Name="BtnQuizOpt2" Content="Opção C" Click="BtnQuizOption_Click" Tag="2" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="10,8" FontSize="12" MinHeight="38">
-                                                <Button.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="17" Foreground="#F8FAFC" FontSize="12" HorizontalAlignment="Left"/>
-                                                    </DataTemplate>
-                                                </Button.ContentTemplate>
-                                            </Button>
-
-                                            <Border x:Name="BrdQuizFeedback" Visibility="Collapsed" CornerRadius="4" Padding="10,8" Margin="0,8,0,0" Background="#1E2A20" BorderBrush="#2E7D32" BorderThickness="1">
-                                                <TextBlock x:Name="TxtQuizFeedback" Text="Feedback..." Foreground="#A5D6A7" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
-                                            </Border>
-                                        </StackPanel>
-                                    </GroupBox>
-
-                                    <GroupBox Header="📚 Referências Microsoft Learn">
-                                        <ItemsControl x:Name="IcLessonMsRefs">
-                                            <ItemsControl.ItemTemplate>
+                            <!-- Quiz Interativo em Destaque (Sem corte de texto) -->
+                            <GroupBox Grid.Row="2" Header="Quiz de Fixação (Avaliação do Conceito)">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="2">
+                                    <StackPanel>
+                                        <TextBlock x:Name="TxtQuizQuestion" Text="Pergunta do Quiz..." Foreground="#FFFFFF" FontSize="12.5" TextWrapping="Wrap" Margin="0,0,0,8" FontWeight="SemiBold" LineHeight="18"/>
+                                        
+                                        <Button x:Name="BtnQuizOpt0" Click="BtnQuizOption_Click" Tag="0" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="8,6" MinHeight="36">
+                                            <Button.ContentTemplate>
                                                 <DataTemplate>
-                                                    <Border Background="#161622" BorderBrush="#2D2D42" BorderThickness="1" CornerRadius="4" Padding="8,6" Margin="0,0,0,4">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Title}" Foreground="#60A5FA" FontSize="11.5" FontWeight="Bold" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                                                            <Button Grid.Column="1" Content="🌐 Abrir" Tag="{Binding Url}" Click="BtnOpenMsRef_Click" Padding="8,3" FontSize="11" Margin="6,0,0,0" VerticalAlignment="Center"/>
-                                                        </Grid>
-                                                    </Border>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="11.5" HorizontalAlignment="Left"/>
                                                 </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </GroupBox>
-                                </StackPanel>
-                            </ScrollViewer>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Button x:Name="BtnQuizOpt1" Click="BtnQuizOption_Click" Tag="1" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="8,6" MinHeight="36">
+                                            <Button.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="11.5" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Button x:Name="BtnQuizOpt2" Click="BtnQuizOption_Click" Tag="2" Margin="0,3" HorizontalContentAlignment="Stretch" Padding="8,6" MinHeight="36">
+                                            <Button.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" LineHeight="16" Foreground="#F8FAFC" FontSize="11.5" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </Button.ContentTemplate>
+                                        </Button>
+
+                                        <Border x:Name="BrdQuizFeedback" Visibility="Collapsed" CornerRadius="4" Padding="10,8" Margin="0,6,0,6" Background="#1E2A20" BorderBrush="#2E7D32" BorderThickness="1">
+                                            <TextBlock x:Name="TxtQuizFeedback" Text="Feedback..." Foreground="#A5D6A7" FontSize="11.5" TextWrapping="Wrap" LineHeight="17"/>
+                                        </Border>
+
+                                        <Button x:Name="BtnGoToStudyTheory" Content="📖 Ver Teoria Completa deste Tópico" Click="BtnGoToStudyTheory_Click" Padding="8,5" FontSize="11" Margin="0,4,0,4"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </GroupBox>
                         </Grid>
 
                         <GridSplitter x:Name="Splitter1" Grid.Column="1"/>
 
-                        <!-- Coluna 2: Playground & Canvas de Renderização em Tempo Real -->
+                        <!-- Coluna 2: Playground & Canvas de Renderização -->
                         <Border Grid.Column="2" Background="#0C0C12" BorderBrush="#20202C" BorderThickness="1" CornerRadius="6" Padding="6">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/> <!-- Header da Lição -->
                                     <RowDefinition Height="Auto"/> <!-- Sliders do Playground -->
-                                    <RowDefinition Height="*"/>    <!-- Canvas de Renderização em Tempo Real -->
+                                    <RowDefinition Height="*"/>    <!-- Canvas de Renderização -->
                                 </Grid.RowDefinitions>
 
                                 <!-- Header da Lição -->
-                                <Border Grid.Row="0" Background="#161622" BorderBrush="#2D2D42" BorderThickness="1" CornerRadius="5" Padding="12,10" Margin="0,0,0,6">
+                                <Border Grid.Row="0" Background="#161622" BorderBrush="#2D2D42" BorderThickness="1" CornerRadius="5" Padding="10,8" Margin="0,0,0,6">
                                     <StackPanel>
-                                        <TextBlock x:Name="TxtLessonModule" Text="MÓDULO 1: FUNDAMENTOS" Foreground="#60A5FA" FontSize="11" FontWeight="Bold"/>
-                                        <TextBlock x:Name="TxtLessonTitle" Text="Título da Lição Interativa" Foreground="#FFFFFF" FontSize="16" FontWeight="Bold" Margin="0,2,0,2"/>
-                                        <TextBlock x:Name="TxtLessonSummary" Text="Resumo prático..." Foreground="#CBD5E1" FontSize="12.5" TextWrapping="Wrap" LineHeight="18"/>
+                                        <TextBlock x:Name="TxtLessonModule" Text="MÓDULO 1: FUNDAMENTOS" Foreground="#60A5FA" FontSize="10.5" FontWeight="Bold"/>
+                                        <TextBlock x:Name="TxtLessonTitle" Text="Título da Lição Interativa" Foreground="#FFFFFF" FontSize="14.5" FontWeight="Bold" Margin="0,1,0,2"/>
+                                        <TextBlock x:Name="TxtLessonSummary" Text="Resumo prático..." Foreground="#CBD5E1" FontSize="11.5" TextWrapping="Wrap" LineHeight="16"/>
                                     </StackPanel>
                                 </Border>
 
-                                <!-- Controles do Playground com Badges -->
-                                <GroupBox Grid.Row="1" Header="🧪 Playground Interativo (Experimentação Manual)" Margin="0,0,0,6">
+                                <!-- Controles do Playground -->
+                                <GroupBox Grid.Row="1" Header="Playground Interativo" Margin="0,0,0,6">
                                     <Grid Margin="2">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <!-- Sliders dinâmicos com valores destacados -->
                                         <StackPanel Grid.Row="0" Margin="0,0,0,4">
                                             <Grid Margin="0,1,0,1">
-                                                <TextBlock x:Name="TxtLabParam1" Text="Parâmetro 1:" Foreground="#E2E8F0" FontSize="12" FontWeight="SemiBold"/>
-                                                <TextBlock x:Name="TxtLabVal1" Text="[ 128 ]" Foreground="#38BDF8" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                <TextBlock x:Name="TxtLabParam1" Text="Parâmetro 1:" Foreground="#E2E8F0" FontSize="11.5"/>
+                                                <TextBlock x:Name="TxtLabVal1" Text="[ 128 ]" Foreground="#38BDF8" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Right"/>
                                             </Grid>
-                                            <Slider x:Name="SliderLab1" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="24" Margin="0,0,0,4"/>
+                                            <Slider x:Name="SliderLab1" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="22" Margin="0,0,0,3"/>
 
                                             <Grid Margin="0,1,0,1">
-                                                <TextBlock x:Name="TxtLabParam2" Text="Parâmetro 2:" Foreground="#E2E8F0" FontSize="12" FontWeight="SemiBold"/>
-                                                <TextBlock x:Name="TxtLabVal2" Text="[ 128 ]" Foreground="#38BDF8" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                <TextBlock x:Name="TxtLabParam2" Text="Parâmetro 2:" Foreground="#E2E8F0" FontSize="11.5"/>
+                                                <TextBlock x:Name="TxtLabVal2" Text="[ 128 ]" Foreground="#38BDF8" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Right"/>
                                             </Grid>
-                                            <Slider x:Name="SliderLab2" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="24" Margin="0,0,0,4"/>
+                                            <Slider x:Name="SliderLab2" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="22" Margin="0,0,0,3"/>
 
                                             <Grid Margin="0,1,0,1">
-                                                <TextBlock x:Name="TxtLabParam3" Text="Parâmetro 3:" Foreground="#E2E8F0" FontSize="12" FontWeight="SemiBold"/>
-                                                <TextBlock x:Name="TxtLabVal3" Text="[ 128 ]" Foreground="#38BDF8" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                <TextBlock x:Name="TxtLabParam3" Text="Parâmetro 3:" Foreground="#E2E8F0" FontSize="11.5"/>
+                                                <TextBlock x:Name="TxtLabVal3" Text="[ 128 ]" Foreground="#38BDF8" FontSize="11.5" FontWeight="Bold" HorizontalAlignment="Right"/>
                                             </Grid>
-                                            <Slider x:Name="SliderLab3" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="24" Margin="0,0,0,2"/>
+                                            <Slider x:Name="SliderLab3" Minimum="0" Maximum="255" Value="128" ValueChanged="SliderLab_ValueChanged" Height="22" Margin="0,0,0,2"/>
                                         </StackPanel>
 
-                                        <!-- Botões de Ação -->
                                         <UniformGrid Grid.Row="1" Columns="3" Margin="0,2,0,0">
-                                            <Button Content="▶️ Passo a Passo" Click="BtnStepSimulation_Click" Style="{StaticResource PrimaryButton}" Padding="4,6" FontSize="11.5" Margin="0,0,2,0"/>
-                                            <Button Content="⚡ Completo" Click="BtnRunAllSimulation_Click" Padding="4,6" FontSize="11.5" Margin="2,0,2,0"/>
-                                            <Button Content="🔄 Resetar" Click="BtnResetSimulation_Click" Padding="4,6" FontSize="11.5" Margin="2,0,0,0"/>
+                                            <Button Content="Passo" Click="BtnStepSimulation_Click" Style="{StaticResource PrimaryButton}" Padding="4,5" FontSize="11" Margin="0,0,2,0"/>
+                                            <Button Content="Executar Tudo" Click="BtnRunAllSimulation_Click" Padding="4,5" FontSize="11" Margin="2,0,2,0"/>
+                                            <Button Content="Resetar" Click="BtnResetSimulation_Click" Padding="4,5" FontSize="11" Margin="2,0,0,0"/>
                                         </UniformGrid>
                                     </Grid>
                                 </GroupBox>
 
-                                <!-- Canvas de Renderização em Tempo Real (Altura Total Restante) -->
-                                <Border Grid.Row="2" Background="#0A0A10" BorderBrush="#242436" BorderThickness="1" CornerRadius="4" Padding="4">
-                                    <Grid>
-                                        <Image x:Name="ImgLabSimulation" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                                    </Grid>
-                                </Border>
+                                <!-- Viewport Duplo (DirectBitmap e WPF Nativo) -->
+                                <TabControl x:Name="TabLabVisualizer" Grid.Row="2" Background="#0A0A10" BorderBrush="#242436" Margin="0,2,0,0">
+                                    <TabItem Header="Canvas de Memória">
+                                        <Border Background="#06060A" Padding="4">
+                                            <Image x:Name="ImgLabSimulation" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                        </Border>
+                                    </TabItem>
+                                    <TabItem x:Name="TabItemLabLiveXaml" Header="WPF Nativo ao Vivo">
+                                        <Border Background="#0D0D18" Padding="6" CornerRadius="4">
+                                            <Border x:Name="PnlLabLiveXamlContainer" BorderBrush="#33334D" BorderThickness="1" CornerRadius="6" Background="#141424" Padding="8">
+                                                <TextBlock Text="O controle WPF dinâmico será renderizado aqui." Foreground="#94A3B8" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </Border>
+                                    </TabItem>
+                                </TabControl>
                             </Grid>
                         </Border>
 
                         <GridSplitter x:Name="Splitter2" Grid.Column="3"/>
 
-                        <!-- Coluna 3: Editor C# Interativo, Testes Automatizados & Gabarito -->
-                        <TabControl Grid.Column="4" Background="#101018" BorderBrush="#2A2A3C">
-                            <!-- Aba 1: Programar do Zero (Desafio C# com Roslyn & Testes Automatizados) -->
-                            <TabItem Header="✏️ Programar do Zero (Desafio &amp; Testes)">
+                        <!-- Coluna 3: Editor C# & WPF Interativo, Testes & Gabarito -->
+                        <TabControl x:Name="TabLabEditor" Grid.Column="4" Background="#101018" BorderBrush="#2A2A3C">
+                            <!-- Aba 1: Editor C# com Roslyn -->
+                            <TabItem Header="Código C# (.cs)">
                                 <Grid Margin="6">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="5"/>
-                                        <RowDefinition Height="180" MinHeight="100"/>
+                                        <RowDefinition Height="130" MinHeight="80"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Banner do Desafio -->
-                                    <Border Grid.Row="0" Background="#141E2C" BorderBrush="#1D4ED8" BorderThickness="1" CornerRadius="4" Padding="8,6" Margin="0,0,0,4">
+                                    <!-- Desafio da Lição -->
+                                    <Border Grid.Row="0" Background="#141E2C" BorderBrush="#1D4ED8" BorderThickness="1" CornerRadius="4" Padding="8,5" Margin="0,0,0,4">
                                         <StackPanel>
-                                            <TextBlock Text="🎯 MISSÃO DE CÓDIGO DO ALUNO:" Foreground="#60A5FA" FontSize="11" FontWeight="Bold"/>
-                                            <TextBlock x:Name="TxtChallengeGoal" Text="Implemente a função..." Foreground="#E2E8F0" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            <TextBlock Text="MISSÃO PRÁTICA DO ALUNO:" Foreground="#60A5FA" FontSize="10.5" FontWeight="Bold"/>
+                                            <TextBlock x:Name="TxtChallengeGoal" Text="Implemente a rotina solicitada..." Foreground="#FFFFFF" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                         </StackPanel>
                                     </Border>
 
-                                    <!-- Toolbar de Ação do Editor Responsiva (Sem Sobreposição) -->
+                                    <!-- Toolbar -->
                                     <Border Grid.Row="1" Background="#181824" BorderBrush="#2C2C40" BorderThickness="1" CornerRadius="4" Padding="6,4" Margin="0,0,0,4">
                                         <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button x:Name="BtnRunUserCode" Content="🚀 Compilar &amp; Executar" Click="BtnRunUserCode_Click" Style="{StaticResource PrimaryButton}" Padding="9,4" FontSize="11.5" Margin="0,0,4,3" ToolTip="Compila e renderiza no Canvas"/>
-                                            <Button x:Name="BtnRunTests" Content="🧪 Rodar Testes" Click="BtnRunTests_Click" Padding="8,4" FontSize="11.5" Margin="0,0,4,3" ToolTip="Executa a bateria de testes unitários automatizados"/>
-                                            <Button Content="🔄 Carregar Gabarito Oficial" Click="BtnRestoreOfficialCode_Click" Padding="8,4" FontSize="11" Margin="0,0,4,3" Background="#1E3A5F" BorderBrush="#3B82F6" Foreground="#93C5FD" FontWeight="Bold" ToolTip="Substitui o editor pelo gabarito oficial completo"/>
-                                            <Button Content="💡 Template" Click="BtnStarterCode_Click" Padding="6,4" FontSize="11" Margin="0,0,4,3" ToolTip="Carrega template com TODOs"/>
-                                            <Button Content="✨ Em Branco" Click="BtnBlankCode_Click" Padding="6,4" FontSize="11" Margin="0,0,6,3" ToolTip="Limpa para escrever 100% do zero"/>
-                                            <Button Content="🔍 A-" Click="BtnZoomOutEditableCode_Click" Padding="6,3" FontSize="11" Margin="0,0,3,3" ToolTip="Diminuir fonte"/>
-                                            <Button Content="🔍 A+" Click="BtnZoomInEditableCode_Click" Padding="6,3" FontSize="11" Margin="0,0,3,3" ToolTip="Aumentar fonte"/>
+                                            <Button x:Name="BtnRunUserCode" Content="Compilar e Executar C#" Click="BtnRunUserCode_Click" Style="{StaticResource PrimaryButton}" Padding="8,4" FontSize="11.5" Margin="0,0,4,2"/>
+                                            <Button x:Name="BtnRunTests" Content="Executar Testes" Click="BtnRunTests_Click" Padding="8,4" FontSize="11.5" Margin="0,0,4,2"/>
+                                            <Button Content="Carregar Gabarito" Click="BtnRestoreOfficialCode_Click" Padding="6,4" FontSize="11" Margin="0,0,4,2"/>
+                                            <Button Content="Restaurar Template" Click="BtnStarterCode_Click" Padding="6,4" FontSize="11" Margin="0,0,4,2"/>
+                                            <Button Content="Limpar" Click="BtnBlankCode_Click" Padding="6,4" FontSize="11" Margin="0,0,4,2"/>
                                         </WrapPanel>
                                     </Border>
 
-                                    <!-- Editor de Código C# Interativo do Aluno -->
-                                    <Border Grid.Row="2" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="8">
-                                        <TextBox x:Name="TxtLabEditableCode" AcceptsReturn="True" AcceptsTab="True" Background="Transparent" Foreground="#F8FAFC"
-                                                 BorderThickness="0" FontFamily="Consolas" FontSize="14.5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                                                 CaretBrush="#38BDF8"/>
+                                    <!-- RichTextBox Editor C# -->
+                                    <Border Grid.Row="2" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="6">
+                                        <RichTextBox x:Name="RtbLabEditableCode" Background="Transparent" Foreground="#F8FAFC"
+                                                     BorderThickness="0" FontFamily="Consolas, Cascadia Code, Courier New" FontSize="13"
+                                                     VerticalScrollBarVisibility="Auto" AcceptsTab="True" CaretBrush="#38BDF8"
+                                                     SelectionBrush="#2563EB" SelectionOpacity="0.7"/>
                                     </Border>
 
                                     <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch"/>
 
-                                    <!-- Painel de Relatório de Testes Automatizados & Erros Roslyn -->
-                                    <GroupBox Grid.Row="4" Header="🧪 Relatório de Testes Automatizados &amp; Compilação (Roslyn)">
+                                    <!-- Relatório de Testes e Erros Roslyn -->
+                                    <GroupBox Grid.Row="4" Header="Relatório de Testes Automatizados e Roslyn">
                                         <TextBox x:Name="TxtCompilerReport" IsReadOnly="True" Background="#06060A" Foreground="#A5D6A7" BorderThickness="0"
-                                                 FontFamily="Consolas" FontSize="12.5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="6"/>
+                                                 FontFamily="Consolas" FontSize="11.5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="6"/>
                                     </GroupBox>
                                 </Grid>
                             </TabItem>
 
-                            <!-- Aba 2: Código de Referência & Explicação Linha a Linha (Gabarito de Estudo) -->
-                            <TabItem Header="📖 Estudo &amp; Gabarito Oficial">
-                                <Grid Margin="6">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="2*" MinHeight="140"/>
-                                        <RowDefinition Height="5"/>
-                                        <RowDefinition Height="3*" MinHeight="140"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Toolbar de Código -->
-                                    <Border Grid.Row="0" Background="#181824" BorderBrush="#2C2C40" BorderThickness="1" CornerRadius="4" Padding="6,4" Margin="0,0,0,4">
-                                        <Grid>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Fonte do Código:" Foreground="#A0A0B4" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                <Button Content="🔍 A-" Click="BtnZoomOutLabCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Diminuir fonte"/>
-                                                <Button Content="🔍 A+" Click="BtnZoomInLabCode_Click" Padding="6,2" Margin="0,0,4,0" ToolTip="Aumentar fonte"/>
-                                                <Button Content="100%" Click="BtnResetLabCodeZoom_Click" Padding="6,2" ToolTip="Restaurar tamanho padrão"/>
-                                            </StackPanel>
-                                            <Button Content="📋 Copiar Código C#" Click="BtnCopyLabCode_Click" HorizontalAlignment="Right" Padding="8,2" FontSize="11" Style="{StaticResource PrimaryButton}"/>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Visualizador do Código C# Oficial -->
-                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="8">
-                                        <TextBox x:Name="TxtLabCode" IsReadOnly="True" Background="Transparent" Foreground="#86EFAC" BorderThickness="0"
-                                                 FontFamily="Consolas" FontSize="14" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                                    </Border>
-
-                                    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch"/>
-
-                                    <!-- Explicação Linha a Linha Detalhada -->
-                                    <GroupBox Grid.Row="3" Header="💡 Explicação Linha a Linha &amp; Conceitos Fundamentais">
-                                        <TextBox x:Name="TxtLabExplanation" IsReadOnly="True" Background="#0A0A12" Foreground="#F1F5F9" BorderThickness="0"
-                                                 FontSize="13" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="6"/>
-                                    </GroupBox>
-                                </Grid>
-                            </TabItem>
-
-                            <!-- Aba 3: Console de Inspeção de Memória RAM & Logs -->
-                            <TabItem Header="🖥️ Console da RAM">
+                            <!-- Aba 2: Marcação WPF / XAML ao Vivo -->
+                            <TabItem x:Name="TabItemLabXaml" Header="Marcação WPF (.xaml)">
                                 <Grid Margin="6">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Toolbar do Console -->
+                                    <Border Grid.Row="0" Background="#181824" BorderBrush="#2C2C40" BorderThickness="1" CornerRadius="4" Padding="6,4" Margin="0,0,0,4">
+                                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Renderizar XAML" Click="BtnLabRenderXaml_Click" Style="{StaticResource PrimaryButton}" Padding="8,4" FontSize="11.5" Margin="0,0,4,2"/>
+                                            <Button Content="Exemplo Básico" Click="BtnLabXamlTemplateBasic_Click" Padding="6,4" FontSize="11" Margin="0,0,4,2"/>
+                                            <Button Content="Canvas &amp; Formas" Click="BtnLabXamlTemplateShapes_Click" Padding="6,4" FontSize="11" Margin="0,0,4,2"/>
+                                            <Button Content="Copiar XAML" Click="BtnLabCopyXaml_Click" Padding="6,4" FontSize="11" Margin="0,0,0,2"/>
+                                        </WrapPanel>
+                                    </Border>
+
+                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="6">
+                                        <RichTextBox x:Name="RtbLabXamlCode" Background="Transparent" Foreground="#9CDCFE"
+                                                     BorderThickness="0" FontFamily="Consolas, Cascadia Code, Courier New" FontSize="13"
+                                                     VerticalScrollBarVisibility="Auto" AcceptsTab="True" CaretBrush="#38BDF8"
+                                                     SelectionBrush="#2563EB" SelectionOpacity="0.7"/>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+
+                            <!-- Aba 3: Estudo e Gabarito Oficial -->
+                            <TabItem Header="Estudo e Gabarito">
+                                <Grid Margin="6">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="2*" MinHeight="120"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="3*" MinHeight="120"/>
+                                    </Grid.RowDefinitions>
+
                                     <Border Grid.Row="0" Background="#181824" BorderBrush="#2C2C40" BorderThickness="1" CornerRadius="4" Padding="6,4" Margin="0,0,0,4">
                                         <Grid>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Fonte do Console:" Foreground="#A0A0B4" FontSize="11.5" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                <Button Content="🔍 A-" Click="BtnZoomOutConsole_Click" Padding="6,2" Margin="0,0,4,0"/>
-                                                <Button Content="🔍 A+" Click="BtnZoomInConsole_Click" Padding="6,2" Margin="0,0,4,0"/>
+                                                <TextBlock Text="Fonte:" Foreground="#A0A0B4" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                <Button Content="A-" Click="BtnZoomOutLabCode_Click" Padding="6,2" Margin="0,0,4,0"/>
+                                                <Button Content="A+" Click="BtnZoomInLabCode_Click" Padding="6,2" Margin="0,0,4,0"/>
                                             </StackPanel>
-                                            <Button Content="📋 Copiar Logs" Click="BtnCopyConsole_Click" HorizontalAlignment="Right" Padding="8,2" FontSize="11"/>
+                                            <Button Content="Copiar Código C#" Click="BtnCopyLabCode_Click" HorizontalAlignment="Right" Padding="8,2" FontSize="11"/>
                                         </Grid>
                                     </Border>
 
-                                    <!-- Log de Execução e Memória -->
-                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="8">
+                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="6">
+                                        <RichTextBox x:Name="RtbLabCode" IsReadOnly="True" Background="Transparent" Foreground="#86EFAC" BorderThickness="0"
+                                                     FontFamily="Consolas, Cascadia Code" FontSize="12.5" VerticalScrollBarVisibility="Auto"/>
+                                    </Border>
+
+                                    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch"/>
+
+                                    <GroupBox Grid.Row="3" Header="Explicação Linha a Linha">
+                                        <TextBox x:Name="TxtLabExplanation" IsReadOnly="True" Background="#0A0A12" Foreground="#F1F5F9" BorderThickness="0"
+                                                 FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="6"/>
+                                    </GroupBox>
+                                </Grid>
+                            </TabItem>
+
+                            <!-- Aba 4: Console RAM -->
+                            <TabItem Header="Console da RAM">
+                                <Grid Margin="6">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0" Background="#181824" BorderBrush="#2C2C40" BorderThickness="1" CornerRadius="4" Padding="6,4" Margin="0,0,0,4">
+                                        <Button Content="Copiar Logs" Click="BtnCopyConsole_Click" HorizontalAlignment="Right" Padding="8,2" FontSize="11"/>
+                                    </Border>
+
+                                    <Border Grid.Row="1" Background="#06060A" BorderBrush="#202032" BorderThickness="1" CornerRadius="4" Padding="6">
                                         <TextBox x:Name="TxtLabConsole" IsReadOnly="True" Background="Transparent" Foreground="#38BDF8" BorderThickness="0"
-                                                 FontFamily="Consolas" FontSize="13" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                                                 FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                                     </Border>
                                 </Grid>
                             </TabItem>
@@ -1273,10 +1363,23 @@
                 </Grid>
             </TabItem>
 
+            <!-- ================================================================================== -->
+            <!-- ABA 7: ESTÚDIO DE PROJETOS (C# & WPF DO ZERO)                                     -->
+            <!-- ================================================================================== -->
+            <TabItem x:Name="TabItemEstudio">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Data="M 1,2 L 5,6 L 1,10 M 7,10 L 11,10" Stroke="#10B981" StrokeThickness="1.5" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Estúdio de Projetos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <views:ProjectStudioControl x:Name="MainStudioControl"/>
+            </TabItem>
+
         </TabControl>
 
-        <!-- Bottom Performance HUD & Status Bar -->
-        <Border Grid.Row="2" Background="#14141C" BorderBrush="#242432" BorderThickness="0,1,0,0" Padding="12,5">
+        <!-- Status Bar / Performance HUD -->
+        <Border Grid.Row="2" Background="#14141C" BorderBrush="#242432" BorderThickness="0,1,0,0" Padding="12,4">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -1284,16 +1387,16 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Status: " Foreground="#7E7E8E" FontSize="11.5"/>
-                    <TextBlock x:Name="TxtStatus" Text="Pronto. Imagem de calibração carregada." Foreground="#40E0D0" FontSize="11.5" FontWeight="SemiBold"/>
+                    <TextBlock Text="Status: " Foreground="#7E7E8E" FontSize="11"/>
+                    <TextBlock x:Name="TxtStatus" Text="Pronto. Imagem de calibração carregada." Foreground="#40E0D0" FontSize="11" FontWeight="SemiBold"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="⏱️ Tempo: " Foreground="#7E7E8E" FontSize="11.5"/>
-                    <TextBlock x:Name="TxtExecutionTime" Text="0.0 ms" Foreground="#FFD700" FontSize="11.5" FontWeight="Bold" Margin="0,0,14,0"/>
+                    <TextBlock Text="Tempo: " Foreground="#7E7E8E" FontSize="11"/>
+                    <TextBlock x:Name="TxtExecutionTime" Text="0.0 ms" Foreground="#FFD700" FontSize="11" FontWeight="Bold" Margin="0,0,14,0"/>
 
-                    <TextBlock Text="📐 Resolução: " Foreground="#7E7E8E" FontSize="11.5"/>
-                    <TextBlock x:Name="TxtResolution" Text="512x512 (262.144 px)" Foreground="#FFFFFF" FontSize="11.5" FontWeight="Bold"/>
+                    <TextBlock Text="Resolução: " Foreground="#7E7E8E" FontSize="11"/>
+                    <TextBlock x:Name="TxtResolution" Text="512x512 (262.144 px)" Foreground="#FFFFFF" FontSize="11" FontWeight="Bold"/>
                 </StackPanel>
             </Grid>
         </Border>

@@ -1,5 +1,8 @@
+using System.Runtime.CompilerServices;
 using System.Windows;
 using CGPDI.StudyLab.Core;
+
+[assembly: InternalsVisibleTo("CGPDI.StudyLab.Tests")]
 
 namespace CGPDI.StudyLab
 {

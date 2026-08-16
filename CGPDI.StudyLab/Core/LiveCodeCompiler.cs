@@ -23,10 +23,28 @@ namespace CGPDI.StudyLab.Core
     {
         public bool Success { get; set; }
         public string? CompilerError { get; set; }
+        public string? ErrorMessage => CompilerError;
         public List<TestResult> Tests { get; set; } = new List<TestResult>();
         public string ConsoleLogs { get; set; } = string.Empty;
         public double ExecutionTimeMs { get; set; }
         public bool RenderApplied { get; set; }
+
+        public string FeedbackReport
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(CompilerError)) return CompilerError;
+                var sb = new StringBuilder();
+                sb.AppendLine(Success ? "TODOS OS TESTES PASSARAM COM SUCESSO!" : "ALGUNS TESTES FALHARAM:");
+                foreach (var t in Tests)
+                {
+                    sb.AppendLine($"• [{(t.Passed ? "APROVADO" : "FALHA")}] {t.Name}: Esperado '{t.Expected}' | Obtido '{t.Actual}'");
+                    if (!string.IsNullOrEmpty(t.Details))
+                        sb.AppendLine($"    Detalhe: {t.Details}");
+                }
+                return sb.ToString();
+            }
+        }
     }
 
     public static class LiveCodeCompiler
@@ -37,22 +55,29 @@ namespace CGPDI.StudyLab.Core
                 typeof(Math).Assembly,
                 typeof(DirectBitmap).Assembly,
                 typeof(Vector3).Assembly,
-                typeof(System.Linq.Enumerable).Assembly)
+                typeof(System.Linq.Enumerable).Assembly,
+                typeof(System.Windows.UIElement).Assembly,
+                typeof(System.Windows.Media.Color).Assembly,
+                typeof(System.Windows.Media.Media3D.Vector3D).Assembly,
+                typeof(System.Text.RegularExpressions.Regex).Assembly)
             .WithImports(
                 "System",
                 "System.Math",
                 "System.Collections.Generic",
                 "System.Text",
+                "System.Text.RegularExpressions",
                 "System.Numerics",
+                "System.Windows",
+                "System.Windows.Media",
                 "CGPDI.StudyLab.Core");
 
         public static async Task<EvaluationReport> RunTestsAndEvaluateAsync(
             InteractiveLesson lesson,
             string userCode,
-            DirectBitmap? targetBitmap,
-            double param1,
-            double param2,
-            double param3)
+            DirectBitmap? targetBitmap = null,
+            double param1 = 128,
+            double param2 = 128,
+            double param3 = 128)
         {
             var report = new EvaluationReport();
             var stopwatch = Stopwatch.StartNew();
@@ -1121,5 +1146,252 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
         }
 
         #endregion
+
+        #region Execução de Código e Projetos Livres (Criador do Zero)
+
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, ScriptRunner<object>> _customScriptCache = new();
+
+        /// <summary>
+        /// Limpa o cache de scripts compilados.
+        /// </summary>
+        public static void ClearCustomScriptCache() => _customScriptCache.Clear();
+
+        /// <summary>
+        /// Compila e executa qualquer script C# customizado sem limites, desenhando diretamente no Output DirectBitmap.
+        /// Utiliza cache de delegados Roslyn para renderização a 60 FPS durante o uso de sliders.
+        /// </summary>
+        public static async Task<CustomScriptResult> ExecuteCustomScriptAsync(
+            string code,
+            DirectBitmap outputBitmap,
+            DirectBitmap? inputBitmap,
+            double p1, double p2, double p3, double p4)
+        {
+            var result = new CustomScriptResult();
+            var logs = new StringBuilder();
+            var sw = Stopwatch.StartNew();
+
+            var globals = new CustomScriptGlobals
+            {
+                Output = outputBitmap,
+                Input = inputBitmap,
+                Param1 = p1,
+                Param2 = p2,
+                Param3 = p3,
+                Param4 = p4,
+                Print = msg => logs.AppendLine(msg)
+            };
+
+            try
+            {
+                if (!_customScriptCache.TryGetValue(code, out var runner))
+                {
+                    // Detecta se o usuário digitou uma classe completa com namespace (padrão code-behind WPF)
+                    string sanitizedCode = code;
+                    if (code.Contains("namespace ") && code.Contains("class "))
+                    {
+                        // Fornece aviso pedagógico no log
+                        logs.AppendLine("[Dica Pedagógica]: No editor de scripts C#, você tem acesso direto às variáveis Output (DirectBitmap), Input, e Param1..Param4.");
+                    }
+
+                    var script = CSharpScript.Create(sanitizedCode, DefaultOptions, typeof(CustomScriptGlobals));
+                    var compilation = script.Compile();
+                    if (compilation.Length > 0)
+                    {
+                        var errorSb = new StringBuilder();
+                        foreach (var diag in compilation)
+                        {
+                            if (diag.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
+                            {
+                                var lineSpan = diag.Location.GetLineSpan();
+                                errorSb.AppendLine($"Linha {lineSpan.StartLinePosition.Line + 1}, Coluna {lineSpan.StartLinePosition.Character + 1}: {diag.GetMessage()}");
+                            }
+                        }
+                        if (errorSb.Length > 0)
+                        {
+                            result.Success = false;
+                            result.ErrorMessage = errorSb.ToString();
+                            return result;
+                        }
+                    }
+                    runner = script.CreateDelegate();
+                    _customScriptCache[code] = runner;
+                }
+
+                outputBitmap.Lock();
+                inputBitmap?.Lock();
+                try
+                {
+                    await runner(globals);
+                }
+                finally
+                {
+                    outputBitmap.Unlock(true);
+                    inputBitmap?.Unlock(false);
+                }
+
+                sw.Stop();
+                result.Success = true;
+                result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+                result.Logs = logs.ToString();
+            }
+            catch (CompilationErrorException ex)
+            {
+                sw.Stop();
+                result.Success = false;
+                result.ErrorMessage = string.Join("\n", ex.Diagnostics);
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                result.Success = false;
+                result.ErrorMessage = $"Erro de execução:\n{ex.Message}";
+            }
+
+            return result;
+        }
+
+        public static XamlEvaluationResult EvaluateXaml(string xamlCode)
+        {
+            var result = new XamlEvaluationResult();
+            var sw = Stopwatch.StartNew();
+
+            if (string.IsNullOrWhiteSpace(xamlCode))
+            {
+                result.Success = false;
+                result.ErrorMessage = "O código XAML fornecido está vazio.";
+                return result;
+            }
+
+            try
+            {
+                string fullXaml = xamlCode.Trim();
+
+                // 1. Remove x:Class, x:ClassModifier, mc:Ignorable e namespaces de design para compatibilidade direta com XamlReader
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+x:Class(Modifier)?=""[^""]*""", "");
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+mc:Ignorable=""[^""]*""", "");
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+xmlns:mc=""[^""]*""", "");
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+xmlns:d=""[^""]*""", "");
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+d:[A-Za-z0-9]+=""[^""]*""", "");
+                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+WindowStartupLocation=""[^""]*""", "");
+
+                // 2. Se o usuário não incluiu os namespaces raiz do WPF, injeta automaticamente para conveniência
+                if (!fullXaml.Contains("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"") &&
+                    !fullXaml.Contains("xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'"))
+                {
+                    int firstSpace = fullXaml.IndexOfAny(new[] { ' ', '>', '\r', '\n', '\t' });
+                    if (firstSpace > 1 && fullXaml.StartsWith("<"))
+                    {
+                        string tag = fullXaml.Substring(1, firstSpace - 1);
+                        string rest = fullXaml.Substring(firstSpace);
+                        fullXaml = $"<{tag} xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"{rest}";
+                    }
+                }
+
+                object parsedObject = System.Windows.Markup.XamlReader.Parse(fullXaml);
+                System.Windows.UIElement? uiElement = null;
+
+                if (parsedObject is System.Windows.Window win)
+                {
+                    // Extrai e desvincula o conteúdo de Window para permitir hospedagem segura em container visual
+                    var content = win.Content as System.Windows.UIElement;
+                    win.Content = null;
+
+                    if (content != null)
+                    {
+                        var hostBorder = new System.Windows.Controls.Border
+                        {
+                            Background = win.Background ?? System.Windows.Media.Brushes.Transparent,
+                            Child = content,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                            VerticalAlignment = System.Windows.VerticalAlignment.Stretch
+                        };
+                        uiElement = hostBorder;
+                    }
+                    else
+                    {
+                        uiElement = new System.Windows.Controls.TextBlock
+                        {
+                            Text = "Janela WPF instanciada com sucesso.",
+                            Foreground = System.Windows.Media.Brushes.LightGray,
+                            FontSize = 13,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            VerticalAlignment = System.Windows.VerticalAlignment.Center
+                        };
+                    }
+                }
+                else if (parsedObject is System.Windows.Controls.Page page)
+                {
+                    var content = page.Content as System.Windows.UIElement;
+                    page.Content = null;
+                    uiElement = content ?? new System.Windows.Controls.TextBlock
+                    {
+                        Text = "Página WPF instanciada com sucesso.",
+                        Foreground = System.Windows.Media.Brushes.LightGray,
+                        FontSize = 13,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                        VerticalAlignment = System.Windows.VerticalAlignment.Center
+                    };
+                }
+                else if (parsedObject is System.Windows.UIElement elem)
+                {
+                    uiElement = elem;
+                }
+
+                if (uiElement != null)
+                {
+                    sw.Stop();
+                    result.Success = true;
+                    result.Element = uiElement;
+                    result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+                    result.Logs = $"Elemento visual WPF instanciado com sucesso: <{uiElement.GetType().Name}> em {result.ExecutionTimeMs:F1} ms.";
+                }
+                else
+                {
+                    sw.Stop();
+                    result.Success = false;
+                    result.ErrorMessage = $"O objeto XAML instanciado ({parsedObject?.GetType().Name}) não é um elemento visual UIElement válido do WPF.";
+                }
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                result.Success = false;
+                result.ErrorMessage = $"Erro de sintaxe/análise XAML:\n{ex.Message}";
+            }
+
+            return result;
+        }
+
+        #endregion
+    }
+
+    public class XamlEvaluationResult
+    {
+        public bool Success { get; set; }
+        public System.Windows.UIElement? Element { get; set; }
+        public string? ErrorMessage { get; set; }
+        public double ExecutionTimeMs { get; set; }
+        public string Logs { get; set; } = string.Empty;
+    }
+
+    public class CustomScriptGlobals
+    {
+        public DirectBitmap Output { get; set; } = null!;
+        public DirectBitmap? Input { get; set; }
+        public int Width => Output.Width;
+        public int Height => Output.Height;
+        public double Param1 { get; set; }
+        public double Param2 { get; set; }
+        public double Param3 { get; set; }
+        public double Param4 { get; set; }
+        public Action<string> Print { get; set; } = _ => { };
+    }
+
+    public class CustomScriptResult
+    {
+        public bool Success { get; set; }
+        public string? ErrorMessage { get; set; }
+        public double ExecutionTimeMs { get; set; }
+        public string Logs { get; set; } = string.Empty;
     }
 }

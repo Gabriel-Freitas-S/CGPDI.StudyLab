@@ -10,6 +10,14 @@ namespace CGPDI.StudyLab.Core
         public string Description { get; set; } = "";
     }
 
+    public class StudyQuiz
+    {
+        public string Question { get; set; } = "";
+        public List<string> Options { get; set; } = new();
+        public int CorrectOptionIndex { get; set; } = 0;
+        public string Explanation { get; set; } = "";
+    }
+
     public class StudyTopic
     {
         public string Id { get; set; } = "";
@@ -21,6 +29,8 @@ namespace CGPDI.StudyLab.Core
         public string CodeSnippet { get; set; } = "";
         public string ComplexityAndTips { get; set; } = "";
         public string WhereToTest { get; set; } = "";
+        public int TargetLessonNumber { get; set; } = 1;
+        public StudyQuiz? Quiz { get; set; }
         public List<DocReference> MicrosoftReferences { get; set; } = new List<DocReference>();
     }
 
@@ -41,30 +51,45 @@ namespace CGPDI.StudyLab.Core
                     Category = "1. Fundamentos & Memória",
                     Title = "Manipulação Direta de Memória com Ponteiros (Unsafe Pointers & Stride)",
                     Summary = "Como manipular pixels diretamente na memória RAM a 60+ FPS sem o overhead do GetPixel/SetPixel clássico.",
+                    TargetLessonNumber = 1,
                     MathFormulas = 
                         "• Cálculo do Endereço de Memória do Pixel (x, y) no Buffer BGRA32:\n" +
-                        "  Endereço = BaseBuffer + (y * Stride) + (x * 4)\n\n" +
+                        "  Endereço = BaseBuffer + (y · Stride) + (x · 4)\n\n" +
                         "• Onde:\n" +
-                        "  - BaseBuffer: Ponteiro para o byte 0 da imagem na memória.\n" +
-                        "  - Stride (Largura em Bytes): Width * 4 (alinhado a 4 ou 16 bytes pela GPU).\n" +
-                        "  - 4 Bytes por Pixel: Byte 0 = Azul (B), Byte 1 = Verde (G), Byte 2 = Vermelho (R), Byte 3 = Alpha (A).",
+                        "  - BaseBuffer: Ponteiro bruto para o byte 0 da imagem na RAM.\n" +
+                        "  - Stride (Largura em Bytes): Width · 4 (alinhado a 4 ou 16 bytes pela GPU).\n" +
+                        "  - 4 Bytes por Pixel: Byte 0 = Azul (B), Byte 1 = Verde (G), Byte 2 = Vermelho (R), Byte 3 = Alpha (A).\n\n" +
+                        "• Aceleração de Hardware:\n" +
+                        "  WriteableBitmap.Lock() → Escrita em ponteiro byte* → WriteableBitmap.AddDirtyRect() → Unlock()",
                     CodeExplanation =
-                        "1. O método Bitmap.Lock() bloqueia o buffer traseiro do WriteableBitmap para evitar que o Garbage Collector (GC) o mova.\n" +
-                        "2. Obtemos um ponteiro bruto (byte*) via Bitmap.BackBuffer.ToPointer().\n" +
-                        "3. Usamos Parallel.For(0, Height, y => ...) para paralelizar o processamento em todas as CPUs.\n" +
-                        "4. Bitmap.AddDirtyRect() notifica o DirectX do WPF que a área foi alterada para redesenho com aceleração de hardware.",
+                        "1. O método Bitmap.Lock() bloqueia o buffer traseiro do WriteableBitmap para evitar que o Garbage Collector (GC) o mova durante a execução.\n" +
+                        "2. Obtemos um ponteiro bruto (byte*) via Bitmap.BackBuffer.ToPointer() sem overhead de marshaling.\n" +
+                        "3. Usamos Parallel.For(0, Height, y => ...) para paralelizar o processamento em todas as CPUs disponíveis.\n" +
+                        "4. Bitmap.AddDirtyRect() notifica o DirectX do WPF que a área foi alterada para redesenho com aceleração de hardware nativa.",
                     CodeSnippet =
 @"public unsafe class DirectBitmap
 {
     // Acesso direto via ponteiro sem overhead
     byte* pixelPtr = _backBuffer + (y * Stride) + (x * 4);
-    byte b = pixelPtr[0]; // Azul
-    byte g = pixelPtr[1]; // Verde
-    byte r = pixelPtr[2]; // Vermelho
-    byte a = pixelPtr[3]; // Alpha
+    byte b = pixelPtr[0]; // Canal Azul (B)
+    byte g = pixelPtr[1]; // Canal Verde (G)
+    byte r = pixelPtr[2]; // Canal Vermelho (R)
+    byte a = pixelPtr[3]; // Canal Alpha (A)
 }",
-                    ComplexityAndTips = "• Complexidade: O(W * H) com paralelismo multinúcleo O((W*H)/N_cores). 100x mais rápido que GetPixel do GDI+.",
+                    ComplexityAndTips = "• Complexidade: O(W · H) com paralelismo multinúcleo O((W · H) / N_cores). Mais de 100x mais rápido que GetPixel do GDI+.",
                     WhereToTest = "Base de todo o processamento de imagens (PDI), Rasterização 2D e Ray Tracer.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Por que o cálculo do endereço de memória de um pixel utiliza (y * Stride + x * 4) no formato BGRA32?",
+                        Options = new List<string>
+                        {
+                            "Porque a imagem é armazenada como uma matriz unidimensional contígua, onde cada linha tem tamanho Stride e cada pixel ocupa 4 bytes (B, G, R, A).",
+                            "Porque cada pixel ocupa 1 byte e o Stride representa a altura da imagem.",
+                            "Porque o Garbage Collector exige que o índice X seja multiplicado por 4 para alinhamento de 64 bits."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! Na memória RAM/VRAM, uma imagem 2D é um bloco contíguo de bytes. Cada linha ocupa 'Stride' bytes e cada pixel no formato BGRA32 possui 4 bytes (Azul, Verde, Vermelho, Alpha)."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -78,12 +103,6 @@ namespace CGPDI.StudyLab.Core
                             Title = "Classe WriteableBitmap (System.Windows.Media.Imaging)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap",
                             Description = "Documentação oficial dos métodos Lock, Unlock, AddDirtyRect e propriedade BackBuffer."
-                        },
-                        new DocReference
-                        {
-                            Title = "Gerenciamento de Memória & Garbage Collection no .NET",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/standard/garbage-collection/",
-                            Description = "Como o GC gerencia o Heap gerenciado e por que fixamos ponteiros para evitar realocações."
                         }
                     }
                 },
@@ -96,28 +115,41 @@ namespace CGPDI.StudyLab.Core
                     Category = "2. Teoria da Cor & Percepção",
                     Title = "Modelos de Cor (RGB, HSV, YCbCr, CMYK e Escala de Cinza Perceptiva)",
                     Summary = "A física da luz, fisiologia dos fotorreceptores humanos (cones) e conversão entre modelos cromáticos.",
+                    TargetLessonNumber = 2,
                     MathFormulas =
-                        "• Luminância sRGB (ITU-R BT.709):\n" +
+                        "• Luminância sRGB Perceptiva (ITU-R BT.709):\n" +
                         "  Y = 0.2126·R + 0.7152·G + 0.0722·B\n\n" +
                         "• Luminância NTSC/PAL (ITU-R BT.601):\n" +
                         "  Y = 0.299·R + 0.587·G + 0.114·B\n\n" +
                         "• Espaço Cilíndrico HSV (Hue, Saturation, Value):\n" +
                         "  V = max(R, G, B)\n" +
-                        "  S = (V - min(R, G, B)) / V\n" +
-                        "  H = 60° · ((G - B)/Δ mod 6) [se max=R]\n\n" +
-                        "• Compressão JPEG YCbCr:\n" +
+                        "  S = (V - min(R, G, B)) / V  (se V > 0)\n" +
+                        "  H = 60° · ((G - B) / Δ mod 6)  [se max = R]\n\n" +
+                        "• Separação de Crominância YCbCr (Padrão JPEG/MPEG):\n" +
                         "  Y  =  0.299·R + 0.587·G + 0.114·B\n" +
                         "  Cb = 128 - 0.1687·R - 0.3313·G + 0.5·B\n" +
                         "  Cr = 128 + 0.5·R - 0.4187·G - 0.0813·B",
                     CodeExplanation =
                         "1. O olho humano possui 3 tipos de cones: L (vermelho), M (verde) e S (azul). Temos quase o dobro de cones sensíveis ao espectro verde.\n" +
-                        "2. Por isso, a conversão para escala de cinza dá mais de 71% de peso ao canal Verde (BT.709).\n" +
+                        "2. Por isso, a conversão para escala de cinza dá mais de 71% de peso ao canal Verde no padrão sRGB (BT.709).\n" +
                         "3. No modelo YCbCr, a visão humana é menos sensível a variações de cor do que de brilho, permitindo descartar metade da informação de crominância (Chroma Subsampling 4:2:0 em JPEG/MPEG).",
                     CodeSnippet =
 @"// Conversão rápida de luminância inteira sem ponto flutuante:
 byte lum = (byte)((r * 2126 + g * 7152 + b * 722) / 10000);",
-                    ComplexityAndTips = "• Complexidade: O(1) por pixel. LUTs podem pré-computar transformações.",
+                    ComplexityAndTips = "• Complexidade: O(1) por pixel. LUTs (Look-Up Tables) podem pré-computar transformações instantâneas.",
                     WhereToTest = "Aba PDI -> Seção 1: 'Modelos de Cor & Canais'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Por que o canal Verde (G) recebe o maior peso (71.52%) na conversão para escala de cinza no padrão ITU-R BT.709?",
+                        Options = new List<string>
+                        {
+                            "Porque os fotorreceptores da retina humana (cones M) possuem pico de sensibilidade na faixa do espectro verde.",
+                            "Porque o canal Verde ocupa mais memória do que os canais Vermelho e Azul no formato BGRA32.",
+                            "Porque as placas de vídeo não conseguem processar o canal Azul com precisão de 8 bits."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! A resposta fototópica do sistema visual humano é muito mais sensível aos comprimentos de onda correspondentes à luz verde, conferindo-lhe maior luminância percebida."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -125,12 +157,6 @@ byte lum = (byte)((r * 2126 + g * 7152 + b * 722) / 10000);",
                             Title = "PixelFormats.Bgra32 Property (System.Windows.Media)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.pixelformats.bgra32",
                             Description = "Especificação do formato Bgra32 com 32 bits por pixel e suporte nativo a canal alfa."
-                        },
-                        new DocReference
-                        {
-                            Title = "Estrutura Color (System.Windows.Media)",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.color",
-                            Description = "Estrutura padrão do WPF para representação de cores com canais A, R, G, B."
                         }
                     }
                 },
@@ -143,17 +169,18 @@ byte lum = (byte)((r * 2126 + g * 7152 + b * 722) / 10000);",
                     Category = "3. Filtros Espaciais & Convoluções",
                     Title = "Convolução Espacial 2D, Gaussiano, Unsharp Mask e Mediana",
                     Summary = "Filtragem linear no domínio espacial através de máscaras/kernels e filtros não-lineares de ordenação.",
+                    TargetLessonNumber = 3,
                     MathFormulas =
                         "• Equação da Convolução Discreta 2D:\n" +
-                        "  g(x, y) = \\sum_{u=-k}^{k} \\sum_{v=-k}^{k} f(x - u, y - v) · K(u, v)\n\n" +
-                        "• Distribuição Gaussiana 2D (Filtro Passa-Baixa):\n" +
-                        "  G(x, y) = \\frac{1}{2\\pi\\sigma^2} e^{-\\frac{x^2 + y^2}{2\\sigma^2}}\n\n" +
-                        "• Máscara de Desfoque (Unsharp Masking):\n" +
+                        "  g(x, y) = ∑_{u=-k}^{k} ∑_{v=-k}^{k} f(x - u, y - v) · K(u, v)\n\n" +
+                        "• Distribuição Gaussiana 2D (Filtro Passa-Baixa Suavizador):\n" +
+                        "  G(x, y) = (1 / (2πσ²)) · exp(-(x² + y²) / (2σ²))\n\n" +
+                        "• Máscara de Nitidez (Unsharp Masking):\n" +
                         "  Resultado = Original + Ganho · (Original - Gaussiano)",
                     CodeExplanation =
                         "1. O kernel K desliza sobre a imagem. Para cada pixel central (x, y), multiplica seus vizinhos pelos pesos correspondentes da matriz.\n" +
                         "2. Tratamento de borda com Clamp: Math.Clamp(x + kx, 0, width - 1) para evitar índices fora do buffer.\n" +
-                        "3. Filtro da Mediana (Não-Linear): Coleta a vizinhança numa lista, ordena (Array.Sort) e seleciona o elemento central. Não borra bordas e elimina ruído Sal & Pimenta perfeitamente.",
+                        "3. Filtro da Mediana (Não-Linear): Coleta a vizinhança numa lista, ordena e seleciona o elemento central. Não borra bordas e elimina ruído Sal & Pimenta perfeitamente.",
                     CodeSnippet =
 @"// Convolução paralela genérica 2D:
 Parallel.For(0, height, y => {
@@ -169,8 +196,20 @@ Parallel.For(0, height, y => {
         dstRow[x * 4 + 0] = (byte)Math.Clamp(sumB / divisor + bias, 0, 255);
     }
 });",
-                    ComplexityAndTips = "• Complexidade: O(W * H * K^2). Filtros Gaussianos grandes podem ser separados em 1D horizontal + 1D vertical reduzindo para O(W * H * 2K).",
+                    ComplexityAndTips = "• Complexidade: O(W · H · K²). Filtros Gaussianos grandes podem ser separados em 1D horizontal + 1D vertical reduzindo para O(W · H · 2K).",
                     WhereToTest = "Aba PDI -> Seção 4: 'Filtros Espaciais (Convoluções)'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual é a principal vantagem do Filtro da Mediana em relação ao Filtro de Média (Box Blur) ao remover ruído do tipo 'Sal e Pimenta'?",
+                        Options = new List<string>
+                        {
+                            "O filtro da mediana preserva bordas nítidas porque não calcula a média matemática dos pixels discrepantes, substituindo o valor pelo termo central ordenado.",
+                            "O filtro da mediana consome menos operações de CPU do que uma convolução linear 3x3.",
+                            "O filtro da mediana utiliza aceleração direta de ponto flutuante na GPU sem necessidade de ordenação."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! Por ser um filtro estatístico não-linear de ordenação, a mediana descarta os valores extremos (0 ou 255 causados pelo ruído) sem suavizar ou borrar as transições de bordas do objeto."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -178,12 +217,6 @@ Parallel.For(0, height, y => {
                             Title = "Classe Parallel (System.Threading.Tasks)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.threading.tasks.parallel",
                             Description = "Execução de laços paralelos em múltiplos núcleos de CPU com particionamento automático de carga."
-                        },
-                        new DocReference
-                        {
-                            Title = "Método Math.Clamp no .NET",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.math.clamp",
-                            Description = "Tratamento de contorno e limites numéricos sem desvios condicionais lentos."
                         }
                     }
                 },
@@ -196,14 +229,15 @@ Parallel.For(0, height, y => {
                     Category = "4. Detecção de Bordas & Visão",
                     Title = "Operadores de Gradiente (Sobel, Scharr, Laplace) e Algoritmo Canny Completo",
                     Summary = "Detecção de contornos através da primeira e segunda derivada espacial e o algoritmo Canny em 5 etapas.",
+                    TargetLessonNumber = 4,
                     MathFormulas =
                         "• Operador Sobel (Primeira Derivada Discreta):\n" +
                         "  Gx = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]] * f\n" +
                         "  Gy = [[-1, -2, -1], [ 0,  0,  0], [ 1,  2,  1]] * f\n" +
-                        "  Magnitude: G = \\sqrt{Gx^2 + Gy^2}\n" +
-                        "  Orientação: \\theta = \\text{atan2}(Gy, Gx)\n\n" +
+                        "  Magnitude: G = √(Gx² + Gy²)\n" +
+                        "  Orientação: θ = atan2(Gy, Gx)\n\n" +
                         "• Operador Laplaciano (Segunda Derivada Isocrônica):\n" +
-                        "  \\nabla^2 f = \\frac{\\partial^2 f}{\\partial x^2} + \\frac{\\partial^2 f}{\\partial y^2}\n" +
+                        "  ∇²f = (∂²f / ∂x²) + (∂²f / ∂y²)\n" +
                         "  Kernel 8-vizinhos: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]",
                     CodeExplanation =
                         "PIPELINE DO ALGORITMO CANNY (5 ETAPAS):\n" +
@@ -226,8 +260,20 @@ while (edgeQueue.Count > 0) {
         }
     }
 }",
-                    ComplexityAndTips = "• Complexidade: O(W * H). Considerado o algoritmo padrão-ouro para segmentação de contornos.",
+                    ComplexityAndTips = "• Complexidade: O(W · H). Considerado o algoritmo padrão-ouro para segmentação de contornos.",
                     WhereToTest = "Aba PDI -> Seção 5: 'Detecção de Bordas & Gradientes'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual é a função da etapa de 'Supressão de Não-Máximos' (NMS) no detector de bordas de Canny?",
+                        Options = new List<string>
+                        {
+                            "Afinar as bordas detectadas para exatamente 1 pixel de espessura, mantendo apenas os picos locais na direção do gradiente.",
+                            "Eliminar o ruído de alta frequência através de uma convolução Gaussiana.",
+                            "Classificar os pixels em bordas fortes e fracas através de dois limiares."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! O NMS compara a magnitude do gradiente do pixel central com os vizinhos na direção perpendicular à borda; se o pixel central não for o máximo local, seu valor é suprimido a 0."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -235,12 +281,6 @@ while (edgeQueue.Count > 0) {
                             Title = "Classe Queue<T> (System.Collections.Generic)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.collections.generic.queue-1",
                             Description = "Fila FIFO de alta performance para busca em largura (BFS) na histerese do Canny."
-                        },
-                        new DocReference
-                        {
-                            Title = "Otimização de Métodos com AggressiveInlining",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.runtime.compilerservices.methodimploptions",
-                            Description = "Como orientar o compilador JIT a embutir rotinas críticas de cálculo de gradiente."
                         }
                     }
                 },
@@ -253,18 +293,19 @@ while (edgeQueue.Count > 0) {
                     Category = "5. Histograma & Morfologia",
                     Title = "Equalização de Histograma (CDF), Limiarização de Otsu e Morfologia Matemática",
                     Summary = "Maximização de contraste global, binarização automática ótima e teoria dos conjuntos morfológica.",
+                    TargetLessonNumber = 5,
                     MathFormulas =
                         "• Função de Distribuição Acumulada (CDF) e Equalização:\n" +
-                        "  CDF(i) = \\sum_{j=0}^{i} P(j)\n" +
-                        "  h_{eq}(v) = \\text{round}\\left( \\frac{CDF(v) - CDF_{min}}{(W \\times H) - CDF_{min}} \\times 255 \\right)\n\n" +
+                        "  CDF(i) = ∑_{j=0}^{i} P(j)\n" +
+                        "  h_{eq}(v) = round(((CDF(v) - CDF_{min}) / ((W · H) - CDF_{min})) · 255)\n\n" +
                         "• Critério de Variância Inter-Classes de Otsu:\n" +
-                        "  \\sigma_B^2(t) = \\omega_0(t) \\cdot \\omega_1(t) \\cdot [\\mu_0(t) - \\mu_1(t)]^2\n" +
-                        "  Onde \\omega_0, \\omega_1 são os pesos acumulados e \\mu_0, \\mu_1 são as médias das classes.\n\n" +
+                        "  σ_B²(t) = ω_0(t) · ω_1(t) · [μ_0(t) - μ_1(t)]²\n" +
+                        "  Onde ω_0, ω_1 são os pesos acumulados e μ_0, μ_1 são as médias das classes.\n\n" +
                         "• Operadores Morfológicos:\n" +
-                        "  Erosão: (A \\ominus B)(x, y) = \\min_{(i,j) \\in B} f(x+i, y+j)\n" +
-                        "  Dilatação: (A \\oplus B)(x, y) = \\max_{(i,j) \\in B} f(x-i, y-j)\n" +
-                        "  Abertura: (A \\ominus B) \\oplus B  (Remove pequenos ruídos claros)\n" +
-                        "  Fechamento: (A \\oplus B) \\ominus B  (Preenche buracos escuros)",
+                        "  Erosão: (A ⊖ B)(x, y) = min_{(i,j) ∈ B} f(x+i, y+j)\n" +
+                        "  Dilatação: (A ⊕ B)(x, y) = max_{(i,j) ∈ B} f(x-i, y-j)\n" +
+                        "  Abertura: (A ⊖ B) ⊕ B  (Remove pequenos ruídos claros)\n" +
+                        "  Fechamento: (A ⊕ B) ⊖ B  (Preenche buracos escuros)",
                     CodeExplanation =
                         "1. A Equalização de Histograma estende a faixa dinâmica da imagem para que a distribuição de tons se torne uniforme.\n" +
                         "2. O algoritmo de Otsu busca o limiar T* de 0 a 255 que maximiza a separação estatística entre o fundo e os objetos.\n" +
@@ -281,8 +322,20 @@ for (int ky = -radius; ky <= radius; ky++) {
     }
 }
 dstPixel = minVal;",
-                    ComplexityAndTips = "• Complexidade Otsu: O(W*H + 256). Extremamente eficiente para segmentação automática.",
+                    ComplexityAndTips = "• Complexidade Otsu: O(W · H + 256). Extremamente eficiente para segmentação automática.",
                     WhereToTest = "Aba PDI -> Seção 3 e Seção 6.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual operação morfológica é ideal para eliminar pequenos pontos de ruído brilhantes isolados sem alterar o tamanho geral dos objetos principais?",
+                        Options = new List<string>
+                        {
+                            "Abertura (Erosão seguida de Dilatação com o mesmo elemento estruturante).",
+                            "Fechamento (Dilatação seguida de Erosão).",
+                            "Subtração linear de histograma."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! A Abertura elimina saliências finas e pequenos objetos brilhantes na etapa de erosão, restaurando o contorno dos objetos maiores na etapa de dilatação subsequente."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -302,17 +355,18 @@ dstPixel = minVal;",
                     Category = "6. Rasterização 2D (Primeiros Princípios)",
                     Title = "Algoritmo de Reta de Bresenham, Círculo Ponto Médio, Curvas de Bézier e Scanline Fill",
                     Summary = "Como transformar primitivas vetoriais geométricas em matrizes de pixels usando matemática discreta.",
+                    TargetLessonNumber = 6,
                     MathFormulas =
                         "• Reta de Bresenham (Aritmética 100% Inteira):\n" +
-                        "  e = 2\\Delta y - \\Delta x\n" +
-                        "  Se e >= 0: y = y + sy; e = e + 2(\\Delta y - \\Delta x)\n" +
-                        "  Se e < 0:  e = e + 2\\Delta y\n\n" +
+                        "  e = 2·Δy - Δx\n" +
+                        "  Se e >= 0: y = y + sy; e = e + 2·(Δy - Δx)\n" +
+                        "  Se e < 0:  e = e + 2·Δy\n\n" +
                         "• Círculo do Ponto Médio (Simetria em 8 Octantes):\n" +
                         "  Variável de decisão: d = 1 - r\n" +
                         "  Se d < 0: d = d + 2x + 3\n" +
                         "  Se d >= 0: y = y - 1; d = d + 2(x - y) + 5\n\n" +
                         "• Curva de Bézier Cúbica (Polinômio de Bernstein):\n" +
-                        "  B(t) = (1-t)^3 P_0 + 3(1-t)^2 t P_1 + 3(1-t)t^2 P_2 + t^3 P_3, \\quad t \\in [0, 1]\n\n" +
+                        "  B(t) = (1-t)³·P0 + 3(1-t)²·t·P1 + 3(1-t)·t²·P2 + t³·P3,  t ∈ [0, 1]\n\n" +
                         "• Recorte Cohen-Sutherland (Outcodes de 4 bits):\n" +
                         "  Top (1000), Bottom (0100), Right (0010), Left (0001)",
                     CodeExplanation =
@@ -334,7 +388,19 @@ while (true) {
     if (e2 < dy) { err += dx; y0 += sy; }
 }",
                     ComplexityAndTips = "• Complexidade: Bresenham é O(max(Δx, Δy)). É a base da rasterização de triângulos em placas gráficas.",
-                    WhereToTest = "Aba '✏️ Computação Gráfica 2D (Rasterização)'.",
+                    WhereToTest = "Aba 'Rasterização 2D'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Por que o algoritmo de Bresenham foi um marco revolucionário na computação gráfica?",
+                        Options = new List<string>
+                        {
+                            "Porque elimina completamente cálculos em ponto flutuante e divisões, operando exclusivamente com adições, subtrações e deslocamentos inteiros rápidos.",
+                            "Porque foi o primeiro algoritmo a utilizar aceleração Ray Tracing em tempo real.",
+                            "Porque calcula curvas tridimensionais sem precisar de matrizes de projeção."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! Jack Bresenham demonstrou que a decisão de qual pixel vizinho acender pode ser tomada apenas rastreando o erro acumulado com aritmética inteira simples."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -342,12 +408,6 @@ while (true) {
                             Title = "Classe Point (System.Windows)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.point",
                             Description = "Representação de coordenadas cartesianas (X, Y) no espaço bidimensional."
-                        },
-                        new DocReference
-                        {
-                            Title = "Matrizes de Transformação 2D no WPF",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.matrix",
-                            Description = "Estrutura Matrix 3x3 homogênea para transformações afins no WPF."
                         }
                     }
                 },
@@ -360,16 +420,17 @@ while (true) {
                     Category = "7. Computação Gráfica 3D & Pipeline",
                     Title = "Pipeline 3D Completo, Matrizes MVP, Z-Buffering, Iluminação Phong e Câmeras",
                     Summary = "A jornada matemática do vértice 3D no espaço de objeto até o pixel 2D na tela.",
+                    TargetLessonNumber = 7,
                     MathFormulas =
                         "• Transformação MVP (Model -> View -> Projection):\n" +
-                        "  v_{clip} = M_{proj} \\times M_{view} \\times M_{model} \\times v_{local}\n\n" +
+                        "  v_{clip} = M_{proj} × M_{view} × M_{model} × v_{local}\n\n" +
                         "• Divisão Perspectiva (NDC [-1, 1]):\n" +
-                        "  v_{ndc} = (x / w, \\; y / w, \\; z / w)\n\n" +
+                        "  v_{ndc} = (x / w,  y / w,  z / w)\n\n" +
                         "• Descarte de Faces Ocultas (Back-face Culling):\n" +
-                        "  \\vec{N}_{face} \\cdot \\vec{V}_{view} < 0 \\implies \\text{Face voltada para frente (visível)}\n\n" +
+                        "  N_{face} · V_{view} < 0 ⟹ Face voltada para frente (visível)\n\n" +
                         "• Modelo de Iluminação de Phong / Blinn-Phong:\n" +
-                        "  I = I_a k_a + I_d k_d (\\vec{N} \\cdot \\vec{L}) + I_s k_s (\\vec{N} \\cdot \\vec{H})^{\\alpha}\n" +
-                        "  Onde \\vec{H} = \\frac{\\vec{L} + \\vec{V}}{|\\vec{L} + \\vec{V}|} é o half-vector de Blinn.",
+                        "  I = I_a·k_a + I_d·k_d·(N · L) + I_s·k_s·(N · H)^α\n" +
+                        "  Onde H = (L + V) / |L + V| é o half-vector de Blinn.",
                     CodeExplanation =
                         "ETAPAS DO PIPELINE GRÁFICO 3D:\n" +
                         "1. Espaço de Objeto -> Mundo (Model Matrix): Aplica translação, rotação e escala do modelo.\n" +
@@ -386,8 +447,20 @@ if (z < zBuffer[zIdx]) {
     zBuffer[zIdx] = z; // Atualiza profundidade
     row[x] = colorBgra; // Escreve cor
 }",
-                    ComplexityAndTips = "• Complexidade: O(Triângulos * Pixels/Triângulo). Paralelizável nativamente em GPUs.",
-                    WhereToTest = "Aba '🧊 CG 3D' e Aba '⚡ Software 3D & Ray Tracing'.",
+                    ComplexityAndTips = "• Complexidade: O(Triângulos · Pixels/Triângulo). Paralelizável nativamente em GPUs.",
+                    WhereToTest = "Aba 'Computação Gráfica 3D' e Aba 'Ray Tracing'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual é o propósito da 'Divisão Perspectiva' (dividir as coordenadas X, Y, Z pelo componente homogêneo W)?",
+                        Options = new List<string>
+                        {
+                            "Produzir o efeito de escorço de perspectiva, fazendo com que objetos distantes (com maior valor de profundidade) pareçam menores na tela em NDC [-1, 1].",
+                            "Eliminar os triângulos que estão de costas para a câmera (Back-face Culling).",
+                            "Calcular a iluminação especular do modelo de Phong."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! Na projeção perspectiva, a matriz 4x4 armazena a profundidade Z no componente W. Ao dividir X e Y por W, objetos com maior distância são projetados mais próximos do centro óptico da câmera."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -395,18 +468,6 @@ if (z < zBuffer[zIdx]) {
                             Title = "Visão geral de gráficos 3D no WPF",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview",
                             Description = "Guia completo de geometria 3D, câmeras, luzes e materiais acelerados por hardware no WPF."
-                        },
-                        new DocReference
-                        {
-                            Title = "System.Numerics.Matrix4x4 Struct",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.numerics.matrix4x4",
-                            Description = "Matriz de transformação 4x4 otimizada com aceleração por instruções de hardware SIMD."
-                        },
-                        new DocReference
-                        {
-                            Title = "Classe MeshGeometry3D (System.Windows.Media.Media3D)",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.meshgeometry3d",
-                            Description = "Construção de malhas triangulares através de posições, normais e índices de triângulos."
                         }
                     }
                 },
@@ -419,11 +480,12 @@ if (z < zBuffer[zIdx]) {
                     Category = "8. Modelagem Hierárquica (Unidade 3)",
                     Title = "Grafos de Cena (Scene Graph), Design Top-Down e Cinemática Direta (Robô Articulado)",
                     Summary = "Composição de objetos complexos articulados e propagação de transformações geométricas pai-filho.",
+                    TargetLessonNumber = 8,
                     MathFormulas =
                         "• Propagação Matricial em Árvore (Scene Graph):\n" +
-                        "  M_{global, filho} = M_{global, pai} \\times M_{local, filho}\n\n" +
+                        "  M_{global, filho} = M_{global, pai} × M_{local, filho}\n\n" +
                         "• Cinemática Direta do Braço Robótico (4 Níveis):\n" +
-                        "  M_{garra} = T_{base} \\times R_y(\\theta_{base}) \\times T_{ombro} \\times R_z(\\theta_{ombro}) \\times T_{cotovelo} \\times R_z(\\theta_{cotovelo}) \\times R_x(\\theta_{pulso})",
+                        "  M_{garra} = T_{base} × R_y(θ_{base}) × T_{ombro} × R_z(θ_{ombro}) × T_{cotovelo} × R_z(θ_{cotovelo}) × R_x(θ_{pulso})",
                     CodeExplanation =
                         "1. Motivação: Em vez de recalcular manualmente a posição absoluta de cada articulação, criamos uma hierarquia onde cada parte é filha da anterior.\n" +
                         "2. Ao girar a base, o braço, antebraço e garras giram juntos automaticamente.\n" +
@@ -438,7 +500,19 @@ baseNode.AddChild(armNode);
 armNode.AddChild(forearmNode);
 // A matriz de transformação do pai afeta automaticamente os filhos!",
                     ComplexityAndTips = "• Design Top-Down: Planeja o sistema completo. Construção Bottom-Up: Monta as peças primitivas e conecta nas juntas.",
-                    WhereToTest = "Aba '🧊 Computação Gráfica 3D' -> Seção 3: 'Modelagem Hierárquica (Unidade 3)'.",
+                    WhereToTest = "Aba 'Computação Gráfica 3D' -> Seção 3: 'Modelagem Hierárquica'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Em um Grafo de Cena (Scene Graph), como a transformação de um nó pai afeta seus nós descendentes (filhos)?",
+                        Options = new List<string>
+                        {
+                            "A matriz de transformação global do filho é obtida multiplicando a matriz acumulada do pai pela matriz local do filho, propagando o movimento automaticamente.",
+                            "Os filhos não são afetados pelas rotações do pai, exigindo recálculo manual com trigonometria.",
+                            "Apenas a translação é propagada; rotações são canceladas pelo Z-Buffer."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! Na modelagem hierárquica, as transformações são acumuladas multiplicando matrizes ao longo dos ramos da árvore hierárquica."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -446,12 +520,6 @@ armNode.AddChild(forearmNode);
                             Title = "Classe Transform3DGroup (System.Windows.Media.Media3D)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.transform3dgroup",
                             Description = "Agrupamento e composição de transformações hierárquicas compostas no WPF."
-                        },
-                        new DocReference
-                        {
-                            Title = "Classe Model3DGroup (System.Windows.Media.Media3D)",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.model3dgroup",
-                            Description = "Coleção de modelos tridimensionais tratados como uma única unidade lógica."
                         }
                     }
                 },
@@ -464,14 +532,15 @@ armNode.AddChild(forearmNode);
                     Category = "9. Renderização Realística & Ray Tracing",
                     Title = "Traçado de Raios (Whitted Ray Tracer), Sombras, Reflexões e Refração de Snell",
                     Summary = "Simulação física do transporte de luz traçando raios da câmera até as fontes luminosas.",
+                    TargetLessonNumber = 9,
                     MathFormulas =
-                        "• Equação do Raio: \\vec{r}(t) = \\vec{O} + t \\cdot \\vec{D}, \\quad t > 0\n\n" +
-                        "• Interseção Raio-Esfera (|\\vec{O} + t\\vec{D} - \\vec{C}|^2 = R^2):\n" +
-                        "  a t^2 + b t + c = 0 \\implies t = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\n\n" +
+                        "• Equação Paramétrica do Raio: r(t) = O + t · D,  t > 0\n\n" +
+                        "• Interseção Raio-Esfera (|O + tD - C|² = R²):\n" +
+                        "  a·t² + b·t + c = 0 ⟹ t = (-b ± √(b² - 4ac)) / (2a)\n\n" +
                         "• Reflexão Especular:\n" +
-                        "  \\vec{R} = \\vec{D} - 2(\\vec{D} \\cdot \\vec{N})\\vec{N}\n\n" +
+                        "  R = D - 2(D · N)N\n\n" +
                         "• Lei de Refração de Snell (Vidro/Água):\n" +
-                        "  n_1 \\sin(\\theta_1) = n_2 \\sin(\\theta_2)",
+                        "  n1 · sin(θ1) = n2 · sin(θ2)",
                     CodeExplanation =
                         "1. Raio Primário: Sai da câmera passando por cada pixel da tela em direção à cena.\n" +
                         "2. Teste de Interseção: Encontra o objeto mais próximo (menor t > 0).\n" +
@@ -486,8 +555,20 @@ if (mat.Reflectivity > 0 && depth < maxDepth) {
     Vec3 reflectColor = TraceRay(reflectRay, depth + 1);
     finalColor = Vec3.Lerp(finalColor, reflectColor, mat.Reflectivity);
 }",
-                    ComplexityAndTips = "• Complexidade: O(Pixels * Objetos * Profundidade_Rebatimento * Luzes). Gera fotorrealismo espetacular com reflexões e vidros perfeitos.",
-                    WhereToTest = "Aba '⚡ Software 3D & Ray Tracing' -> Seção 2: 'Ray Tracer Matemático'.",
+                    ComplexityAndTips = "• Complexidade: O(Pixels · Objetos · Profundidade_Rebatimento · Luzes). Gera fotorrealismo espetacular com reflexões e vidros perfeitos.",
+                    WhereToTest = "Aba 'Ray Tracing'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "No algoritmo de Ray Tracing clássico (Whitted), como é determinada a sombra de um ponto na superfície de um objeto?",
+                        Options = new List<string>
+                        {
+                            "Lançando um 'Raio de Sombra' (Shadow Ray) do ponto de interseção até a fonte de luz; se outro objeto opaco interceptar esse raio antes da luz, o ponto está na sombra.",
+                            "Consultando o valor no Z-Buffer para verificar se o ponto está atrás da câmera.",
+                            "Calculando o produto vetorial entre a normal da superfície e o vetor da câmera."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! O teste de visibilidade direta entre o ponto iluminado e as fontes de luz gera sombras duras e precisas de forma analítica no Ray Tracing."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -495,12 +576,6 @@ if (mat.Reflectivity > 0 && depth < maxDepth) {
                             Title = "Estrutura Vector3 (System.Numerics)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.numerics.vector3",
                             Description = "Operações vetoriais de produto escalar, produto vetorial, reflexão e normalização."
-                        },
-                        new DocReference
-                        {
-                            Title = "Instruções Intrínsecas de Hardware no .NET (AVX/SSE)",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.runtime.intrinsics.x86",
-                            Description = "Como o .NET utiliza instruções vetoriais da CPU para acelerar cálculos matemáticos de Ray Tracing."
                         }
                     }
                 },
@@ -513,6 +588,7 @@ if (mat.Reflectivity > 0 && depth < maxDepth) {
                     Category = "10. Arquitetura & Aceleração GPU",
                     Title = "Arquitetura do Software, Subsistema milcore e DirectX Rendering Tier",
                     Summary = "Como o WPF orquestra a comunicação entre a CPU gerenciada e a placa de vídeo via DirectX.",
+                    TargetLessonNumber = 10,
                     MathFormulas =
                         "• Hierarquia de Renderização WPF:\n" +
                         "  C# Gerenciado (UI Thread) -> Render Thread -> milcore (C++ Não Gerenciado) -> Direct3D (GPU)\n\n" +
@@ -533,6 +609,18 @@ if (renderingTier >= 2)
 }",
                     ComplexityAndTips = "• Dica: Manter zero alocações (GC Gen0 = 0) garante taxa constante de 60 FPS sem engasgos de renderização.",
                     WhereToTest = "HUD de Status no rodapé do aplicativo com medição de tempo em tempo real.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual componente de baixo nível do WPF é responsável por enviar comandos diretamente ao Direct3D na placa de vídeo?",
+                        Options = new List<string>
+                        {
+                            "milcore (Media Integration Layer Core), executado em C++ nativo em uma thread de renderização dedicada separada da thread de interface (UI Thread).",
+                            "Garbage Collector do .NET Framework.",
+                            "O subsistema Windows GDI32 legado."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! O milcore é o motor gráfico não gerenciado em C++ que recebe as árvores de composição do WPF e compila chamadas nativas Direct3D para a GPU."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -540,12 +628,6 @@ if (renderingTier >= 2)
                             Title = "Níveis de Renderização de Gráficos (Graphics Tiers)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/advanced/graphics-rendering-tiers",
                             Description = "Documentação oficial dos níveis de aceleração por hardware e recursos de GPU no WPF."
-                        },
-                        new DocReference
-                        {
-                            Title = "Classe RenderCapability (System.Windows.Media)",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.rendercapability",
-                            Description = "API para inspeção do nível de suporte gráfico do hardware em tempo de execução."
                         }
                     }
                 },
@@ -558,6 +640,7 @@ if (renderingTier >= 2)
                     Category = "11. Plano de Ensino & Avaliações",
                     Title = "Roteiro de Estudos para os Trabalhos Acadêmicos (T1, T2 e T3)",
                     Summary = "Guia passo a passo para preparação e desenvolvimento das avaliações práticas da disciplina universitária.",
+                    TargetLessonNumber = 11,
                     MathFormulas =
                         "• Divisão do Conteúdo Programático:\n" +
                         "  - T1: Processamento Digital de Imagens (Canais, Filtros Convolucionais, Canny, Histograma e Morfologia).\n" +
@@ -571,8 +654,20 @@ if (renderingTier >= 2)
 @"// Roteiro de estudos interativo:
 // Navegue pelas abas superiores do programa e compare os resultados
 // visuais com as fórmulas matemáticas da documentação!",
-                    ComplexityAndTips = "• Consulte o site online para explicações teóricas detalhadas com analogias do dia a dia.",
-                    WhereToTest = "Aba '📖 Central de Estudos' e documentação online.",
+                    ComplexityAndTips = "• Consulte as abas interativas para verificar os resultados de cada algoritmo em tempo real.",
+                    WhereToTest = "Central de Estudos e Laboratório C#/WPF.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual dos tópicos a seguir faz parte do escopo fundamental do Trabalho T2 (Computação Gráfica 2D e 3D)?",
+                        Options = new List<string>
+                        {
+                            "Rasterização de primitivas (Bresenham, Círculo de Ponto Médio), Curvas de Bézier e Pipeline 3D com matrizes MVP e Z-Buffer.",
+                            "Compressão de vídeo MPEG e streaming RTP.",
+                            "Compilação de shaders HLSL para WebGL."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! O Trabalho T2 aborda a base matemática de conversão geométrica discreta 2D e o pipeline clássico 3D de visualização."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -580,12 +675,6 @@ if (renderingTier >= 2)
                             Title = "Roteiros de Aprendizagem do .NET no Microsoft Learn",
                             Url = "https://learn.microsoft.com/pt-br/training/dotnet/",
                             Description = "Cursos e trilhas de aprendizagem oficiais gratuitas da Microsoft."
-                        },
-                        new DocReference
-                        {
-                            Title = "Documentação Oficial do .NET",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/",
-                            Description = "Portal principal com tutoriais, guias conceituais e documentação de APIs."
                         }
                     }
                 },
@@ -598,6 +687,7 @@ if (renderingTier >= 2)
                     Category = "12. Estúdio de Código & Roslyn",
                     Title = "Estúdio de Código C#, Compilação Roslyn & Renderização Dinâmica em Tempo Real",
                     Summary = "Como o StudyLab utiliza o Microsoft.CodeAnalysis (Roslyn) para compilar, testar e renderizar dinamicamente algoritmos escritos pelo aluno em tempo de execução.",
+                    TargetLessonNumber = 12,
                     MathFormulas =
                         "• Pipeline de Execução Dinâmica:\n" +
                         "  Código C# do Aluno -> Compilação Roslyn (CSharpScript.EvaluateAsync) -> Testes Unitários -> Injeção Gráfica em DirectBitmap -> Renderização a 60 FPS\n\n" +
@@ -619,7 +709,19 @@ var scriptOptions = ScriptOptions.Default
 var resultado = await CSharpScript.EvaluateAsync<uint>(userCode, scriptOptions);
 // O valor retornado é injetado diretamente nos pixels do DirectBitmap!",
                     ComplexityAndTips = "• Dica: Experimente alterar os canais de cor, fatores de escala ou matrizes para ver o resultado visual mudar na hora no Canvas!",
-                    WhereToTest = "Aba '🎓 Trilha & Estúdio C#' e botão '🗖 Estúdio em Nova Janela'.",
+                    WhereToTest = "Aba 'Laboratório C#/WPF' e Aba 'Estúdio de Projetos'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual API do .NET Compiler Platform (Roslyn) é utilizada para avaliar e executar trechos de código C# em tempo de execução sem gerar arquivos temporários no disco?",
+                        Options = new List<string>
+                        {
+                            "Microsoft.CodeAnalysis.CSharp.Scripting (CSharpScript.EvaluateAsync / CreateDelegate).",
+                            "System.Reflection.Emit clássico.",
+                            "MSBuild.exe em processo filho externo."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! O pacote Roslyn Scripting compila e emite assemblies diretamente na memória em milissegundos para execução interativa."
+                    },
                     MicrosoftReferences = new List<DocReference>
                     {
                         new DocReference
@@ -627,12 +729,79 @@ var resultado = await CSharpScript.EvaluateAsync<uint>(userCode, scriptOptions);
                             Title = "Visão Geral dos Compiladores .NET (Roslyn APIs)",
                             Url = "https://learn.microsoft.com/pt-br/dotnet/csharp/roslyn-overview",
                             Description = "Guia oficial da plataforma de compiladores .NET e APIs de análise sintática e semântica."
+                        }
+                    }
+                },
+                #endregion
+
+                #region 13. Revisão Avançada C#, XAML & Arquitetura WPF
+                new StudyTopic
+                {
+                    Id = "wpf_xaml_deepdive",
+                    Category = "13. Revisão C#, XAML & WPF",
+                    Title = "Revisão Completa de C#, XAML, DependencyProperties e Renderização WPF",
+                    Summary = "Tudo sobre como o WPF funciona: Árvore Visual e Lógica, XAML parsing, DependencyProperties, RoutedEvents e aceleração DirectX.",
+                    TargetLessonNumber = 12,
+                    MathFormulas =
+                        "• Hierarquia de Classes Base do WPF:\n" +
+                        "  Object -> DispatcherObject -> DependencyObject -> Visual -> UIElement -> FrameworkElement -> Control\n\n" +
+                        "• Árvore Lógica vs. Árvore Visual:\n" +
+                        "  - Logical Tree: Representa a estrutura de elementos declarada no XAML (ex: Button com Content).\n" +
+                        "  - Visual Tree: Representa todos os nós visuais detalhados gerados por ControlTemplates (Border, ContentPresenter, TextBlock).\n\n" +
+                        "• Mecanismo de DependencyProperty:\n" +
+                        "  Valor Efetivo = Resolução de Precedência (Local > Style > Template > Herança > Valor Padrão)",
+                    CodeExplanation =
+                        "1. XAML (Extensible Application Markup Language) é um formato XML declarativo que o compilador do WPF traduz em código C# instanciando objetos e configurando propriedades.\n" +
+                        "2. DependencyProperties permitem recursos avançados como Data Binding, Animações, Estilos automáticos e herança de propriedades entre controles pai e filho sem ocupar memória em campos de instância redundantes.\n" +
+                        "3. RoutedEvents percorrem a árvore visual em três estratégias: Direct (apenas no elemento), Tunneling (do topo para o elemento, prefixo Preview) e Bubbling (do elemento subindo até a janela raiz).\n" +
+                        "4. XamlReader.Parse(): Permite instanciar árvores de controles WPF dinamicamente a partir de strings XAML em tempo de execução sem recompilar o executável.",
+                    CodeSnippet =
+@"// Registro de uma DependencyProperty com callback de alteração:
+public static readonly DependencyProperty CustomRadiusProperty =
+    DependencyProperty.Register(
+        name: ""CustomRadius"",
+        propertyType: typeof(double),
+        ownerType: typeof(MyCustomControl),
+        typeMetadata: new PropertyMetadata(10.0, OnRadiusChanged));
+
+private static void OnRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+{
+    var ctrl = (MyCustomControl)d;
+    ctrl.InvalidateVisual(); // Solicita redesenho ao subsistema DirectX
+}",
+                    ComplexityAndTips = "• Dica: Para criar interfaces fluidas, use Grid, Viewbox e Canvas de forma combinada e evite tamanhos fixos em pixels rígidos.",
+                    WhereToTest = "Aba 'Laboratório C#/WPF' (aba XAML) e Aba 'Estúdio de Projetos'.",
+                    Quiz = new StudyQuiz
+                    {
+                        Question = "Qual é a principal diferença entre a 'Árvore Lógica' (Logical Tree) e a 'Árvore Visual' (Visual Tree) no WPF?",
+                        Options = new List<string>
+                        {
+                            "A Árvore Lógica contém apenas os elementos definidos na estrutura do XAML, enquanto a Árvore Visual expande todos os elementos gráficos internos (Borders, Brushes, ContentPresenters) criados pelos templates para renderização.",
+                            "A Árvore Lógica roda na GPU e a Árvore Visual roda na CPU.",
+                            "A Árvore Lógica só aceita classes C# e a Árvore Visual só aceita arquivos XML."
+                        },
+                        CorrectOptionIndex = 0,
+                        Explanation = "Correto! A Árvore Lógica descreve a estrutura de dados declarada pelo desenvolvedor, enquanto a Árvore Visual contém cada nó de renderização gerado pelos ControlTemplates e estilos."
+                    },
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Visão geral de XAML (WPF .NET)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/fundamentals/xaml",
+                            Description = "Guia completo de sintaxe XAML, elementos de objeto, propriedades de elemento e markup extensions."
                         },
                         new DocReference
                         {
-                            Title = "Microsoft.CodeAnalysis.CSharp.Scripting Namespace",
-                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/microsoft.codeanalysis.csharp.scripting",
-                            Description = "Documentação oficial da biblioteca de execução e avaliação de scripts C# em tempo de execução."
+                            Title = "Visão geral das propriedades de dependência",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/properties/dependency-properties-overview",
+                            Description = "Como funcionam as Dependency Properties, herança de valores e data binding no WPF."
+                        },
+                        new DocReference
+                        {
+                            Title = "Árvores no WPF (Árvore Visual vs Lógica)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/fundamentals/trees-overview",
+                            Description = "Compreensão detalhada de árvores lógicas e visuais no WPF."
                         }
                     }
                 }

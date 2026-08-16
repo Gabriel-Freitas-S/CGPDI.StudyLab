@@ -7,21 +7,54 @@ hero:
   image:
     file: ../../assets/logo.svg
   actions:
-    - text: Começar do Zero (Guia do Iniciante)
+    - text: Baixar Instalador (.exe)
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Setup.exe
+      icon: download
+      variant: primary
+    - text: Executável Portátil (.exe)
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable.exe
+      icon: rocket
+      variant: secondary
+    - text: Começar Guia Online
       link: /CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/
       icon: right-arrow
-      variant: primary
-    - text: Ver Arquitetura do Código
-      link: /CGPDI.StudyLab/arquitetura/visao-geral/
-      icon: open-book
-      variant: secondary
-    - text: Repositório no GitHub
-      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab
+      variant: minimal
+    - text: Ver Releases no GitHub
+      link: https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases
       icon: external
       variant: minimal
 ---
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Download Oficial do Aplicativo
+
+Baixe a versão mais recente do **CGPDI StudyLab** para Windows 10/11:
+
+<CardGrid>
+  <LinkCard
+    title="Instalador Oficial do Windows (.exe)"
+    description="Instalação recomendada com assistente passo a passo, atalhos na Área de Trabalho e no Menu Iniciar, e suporte ao Auto-Updater."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Setup.exe"
+  />
+  <LinkCard
+    title="Executável Único Portátil (.exe Direto)"
+    description="Arquivo único autônomo sem necessidade de descompactar. Basta baixar e dar dois cliques para rodar imediatamente!"
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable.exe"
+  />
+  <LinkCard
+    title="Pacote Portátil Limpo (.zip)"
+    description="Arquivo compactado contendo apenas o executável e instruções. Ideal para pendrives ou computadores de laboratório sem admin."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest/download/CGPDI-StudyLab-Portable-win-x64.zip"
+  />
+  <LinkCard
+    title="Histórico de Releases e Changelogs"
+    description="Consulte todas as versões lançadas, notas de atualização e código-fonte no GitHub Releases oficial."
+    href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases"
+  />
+</CardGrid>
+
+---
 
 ## Visão Geral dos Módulos
 
@@ -29,42 +62,42 @@ Esta documentação foi elaborada com foco na clareza pedagógica: conceitos mat
 
 <CardGrid>
   <LinkCard
-    title="🎓 Estúdio de Código & Compilador Roslyn"
+    title="Estúdio de Código e Compilador Roslyn"
     description="Escreva código C# e veja a compilação ao vivo atualizar o Canvas e a memória RAM em tempo real. Janela dedicada com Modo Foco e testes unitários."
     href="/CGPDI.StudyLab/iniciantes/modo-interativo-e-playground/"
   />
   <LinkCard
-    title="🚀 1. Guia para Iniciantes (12 Lições C#)"
+    title="1. Guia para Iniciantes (12 Lições C#)"
     description="Trilha de aprendizado cobrindo desde tipos primitivos (byte, uint), ponteiros unsafe, Data Binding reativo até Ray Tracing."
     href="/CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/"
   />
   <LinkCard
-    title="🖼️ 2. Processamento Digital de Imagens (PDI)"
+    title="2. Processamento Digital de Imagens (PDI)"
     description="Espaços de cor (RGB, HSV, YCbCr), convoluções espaciais, detector Canny de 5 etapas, morfologia matemática e Fourier 2D."
     href="/CGPDI.StudyLab/pdi/operacoes-pontuais-e-histogramas/"
   />
   <LinkCard
-    title="✏️ 3. Rasterização 2D (Primeiros Princípios)"
+    title="3. Rasterização 2D (Primeiros Princípios)"
     description="Como as GPUs desenham: reta de Bresenham inteira, suavização Xiaolin Wu, círculo do ponto médio e matrizes afins 3×3."
     href="/CGPDI.StudyLab/cg2d/algebra-linear-e-matrizes/"
   />
   <LinkCard
-    title="📦 4. Computação Gráfica 3D & Pipeline"
+    title="4. Computação Gráfica 3D e Pipeline"
     description="A trajetória do vértice 3D até a tela: matrizes MVP, renderizador em software na CPU com Z-Buffer e Viewport3D DirectX."
     href="/CGPDI.StudyLab/cg3d/matematica-vetorial-e-mvp/"
   />
   <LinkCard
-    title="🤖 5. Modelagem Hierárquica (Cinemática)"
+    title="5. Modelagem Hierárquica (Cinemática)"
     description="Grafos de cena para robôs articulados e sistema solar com propagação matricial em cadeia pai-filho e cinemática direta."
     href="/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/"
   />
   <LinkCard
-    title="🌟 6. Ray Tracing Fotorrealista"
+    title="6. Ray Tracing Fotorrealista"
     description="Simulação física da luz: cálculo analítico de interseção raio-esfera, modelo Phong, sombras nítidas e refração com a Lei de Snell."
     href="/CGPDI.StudyLab/raytracing/fundamentos-e-fisica-da-luz/"
   />
   <LinkCard
-    title="🏛️ 7. Arquitetura do Software & DirectX Tier"
+    title="7. Arquitetura do Software e DirectX Tier"
     description="Desacoplamento de camadas, subsistema milcore, ponteiros não gerenciados e aceleração de hardware Direct3D Tier 2."
     href="/CGPDI.StudyLab/arquitetura/visao-geral/"
   />

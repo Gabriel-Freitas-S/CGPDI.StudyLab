@@ -17,6 +17,9 @@
     <Product>CGPDI StudyLab</Product>
     <Description>Plataforma Interativa de Computação Gráfica e Processamento Digital de Imagens</Description>
     <Copyright>Copyright © 2026</Copyright>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
 
   <ItemGroup>
