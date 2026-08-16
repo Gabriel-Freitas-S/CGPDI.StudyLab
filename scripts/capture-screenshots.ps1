@@ -1,12 +1,12 @@
-<#
+﻿<#
 .SYNOPSIS
-    Captura screenshots automáticas de cada aba do CGPDI StudyLab e gera GIF animado.
+    Captura screenshots automaticas de cada aba do CGPDI StudyLab e gera GIF animado.
 
 .DESCRIPTION
     1. Compila o app em modo Release (self-contained, sem instalar)
-    2. Inicia o executável e aguarda a janela aparecer
-    3. Captura cada aba principal via PrintWindow (GDI32 P/Invoke — sem dependências externas)
-    4. Chama FFmpeg para montar GIF animado a partir dos frames estáticos
+    2. Inicia o executavel e aguarda a janela aparecer
+    3. Captura cada aba principal via PrintWindow (GDI32 P/Invoke - sem dependencias externas)
+    4. Chama FFmpeg para montar GIF animado a partir dos frames estaticos
     5. Salva tudo em docs/public/screenshots/ e docs/public/gifs/
 
 .NOTES
@@ -161,7 +161,7 @@ if (Test-Path $gifOut) {
     $sz = [math]::Round((Get-Item $gifOut).Length / 1MB, 2)
     Write-Host "GIF gerado: $gifOut ($sz MB)" -ForegroundColor Green
 } else {
-    Write-Warning "GIF nao foi gerado — verifique o FFmpeg."
+    Write-Warning "GIF nao foi gerado - verifique o FFmpeg."
 }
 
 Remove-Item $listFile,$palette -ErrorAction SilentlyContinue

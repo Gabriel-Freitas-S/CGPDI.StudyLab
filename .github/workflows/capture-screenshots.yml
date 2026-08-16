@@ -66,7 +66,7 @@ jobs:
         run: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
-          powershell -ExecutionPolicy Bypass -File scripts/capture-screenshots.ps1 `
+          pwsh -File scripts/capture-screenshots.ps1 `
             -StartupWaitSec 15 `
             -TabWaitMs 3000
 
