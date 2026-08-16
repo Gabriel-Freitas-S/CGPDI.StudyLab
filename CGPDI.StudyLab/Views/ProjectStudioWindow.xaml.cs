@@ -3,56 +3,18 @@ using System.Windows.Input;
 
 namespace CGPDI.StudyLab.Views
 {
-    public partial class ProjectStudioWindow : Window
+    public partial class ProjectStudioWindow : BorderlessWindow
     {
         public ProjectStudioWindow()
         {
             InitializeComponent();
             StudioControl.BtnPopoutStudio.Visibility = Visibility.Collapsed;
+            Loaded += ProjectStudioWindow_Loaded;
         }
 
-        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ProjectStudioWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                if (e.ClickCount == 2)
-                {
-                    ToggleMaximize();
-                }
-                else
-                {
-                    DragMove();
-                }
-            }
-        }
-
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleMaximize();
-        }
-
-        private void ToggleMaximize()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                BtnMaximize.Content = "🗖";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                BtnMaximize.Content = "🗗";
-            }
-        }
-
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            CenterOnScreen();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

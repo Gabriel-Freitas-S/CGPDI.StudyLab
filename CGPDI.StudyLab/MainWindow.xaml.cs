@@ -22,7 +22,7 @@ namespace CGPDI.StudyLab
     /// Lógica de interação para MainWindow.xaml
     /// Estúdio Integrado de Processamento Digital de Imagens e Computação Gráfica 2D/3D.
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : BorderlessWindow
     {
         private DirectBitmap _originalImage = null!;
         private DirectBitmap _currentImage = null!;
@@ -59,6 +59,8 @@ namespace CGPDI.StudyLab
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            MaximizeOnOpen();
+
             // 1. Inicializa Imagem de Calibração PDI Padrão
             LoadSampleImage(ImageSampleGenerator.GenerateCalibrationScene(512, 512));
 
@@ -1406,46 +1408,7 @@ public static DirectBitmap Process(DirectBitmap src)
 
         #region Barra de Título Customizada & Menu Contextual
 
-        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                if (e.ClickCount == 2)
-                {
-                    ToggleMaximize();
-                }
-                else
-                {
-                    DragMove();
-                }
-            }
-        }
-
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleMaximize();
-        }
-
-        private void ToggleMaximize()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                BtnMaximize.Content = "🗖";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                BtnMaximize.Content = "🗗";
-            }
-        }
-
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        protected override void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
@@ -1505,7 +1468,7 @@ public static DirectBitmap Process(DirectBitmap src)
                 case 5: // Laboratório
                     AddTopButton("Modo Foco", (s, e) => BtnFocusCode_Click(s, e), true);
                     AddTopButton("Restaurar Painéis", (s, e) => BtnResetColumns_Click(s, e));
-                    AddTopButton("Janela Cheia", (s, e) => BtnOpenPopoutStudio_Click(s, e));
+                    AddTopButton("Janela Separada", (s, e) => BtnOpenPopoutStudio_Click(s, e));
                     break;
 
                 case 6: // Estúdio de Projetos

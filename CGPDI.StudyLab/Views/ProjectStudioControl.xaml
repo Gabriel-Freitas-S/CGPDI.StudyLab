@@ -186,7 +186,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="BtnPopoutStudio" Content="Abrir em Janela Cheia" Click="BtnPopoutStudio_Click" Style="{StaticResource StudioAccentButton}" Padding="8,4" Margin="0,0,4,0" ToolTip="Abre o Estúdio de Projetos em janela independente maximizada"/>
+                    <Button x:Name="BtnPopoutStudio" Content="Abrir em Janela Separada" Click="BtnPopoutStudio_Click" Style="{StaticResource StudioAccentButton}" Padding="8,4" Margin="0,0,4,0" ToolTip="Abre o Estúdio de Projetos em janela independente"/>
                     <Button Content="Salvar Imagem" Click="BtnExportImage_Click" Padding="8,4" Margin="0,0,4,0" ToolTip="Exporta o buffer atual como PNG"/>
                     <Button Content="Limpar Código" Click="BtnClearCode_Click" Padding="7,4" Margin="0,0,4,0"/>
                     <Button Content="Restaurar Template" Click="BtnResetTemplate_Click" Padding="7,4"/>

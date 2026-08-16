@@ -34,8 +34,17 @@ namespace CGPDI.StudyLab.Core
         private const string RepoName = "CGPDI.StudyLab";
         private const string ApiUrl = $"https://api.github.com/repos/{RepoOwner}/{RepoName}/releases/latest";
 
-        public static Version CurrentVersion =>
-            Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0);
+        public static Version CurrentVersion
+        {
+            get
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                string? fileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+                if (!string.IsNullOrEmpty(fileVersion) && Version.TryParse(fileVersion, out Version? version))
+                    return version;
+                return assembly.GetName().Version ?? new Version(1, 0, 0);
+            }
+        }
 
         public static string CurrentVersionString =>
             $"{CurrentVersion.Major}.{CurrentVersion.Minor}.{CurrentVersion.Build}";

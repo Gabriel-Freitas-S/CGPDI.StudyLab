@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using CGPDI.StudyLab.Views;
@@ -73,6 +74,45 @@ namespace CGPDI.StudyLab.Tests.UiTests
             // Select Studio Tab
             window.MainTabControl.SelectedIndex = 6;
             window.PnlContextualTopActions.Children.Count.Should().BeGreaterThan(0);
+
+            window.Close();
+        }
+
+        [UIFact]
+        public void MainWindow_OpensExtended_RespectsWorkArea()
+        {
+            var window = new MainWindow();
+            var maximize = typeof(BorderlessWindow)
+                .GetMethod("MaximizeOnOpen", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?? throw new InvalidOperationException("MaximizeOnOpen not found");
+
+            // Estende a janela sobre a WorkArea (comportamento de abertura)
+            maximize.Invoke(window, null);
+
+            var wa = SystemParameters.WorkArea;
+            window.Left.Should().Be(wa.Left);
+            window.Top.Should().Be(wa.Top);
+            window.Width.Should().Be(wa.Width);
+            window.Height.Should().Be(wa.Height);
+            window.WindowState.Should().Be(WindowState.Normal);
+
+            window.Close();
+        }
+
+        [UIFact]
+        public void MainWindow_MaximizeButton_TogglesFullScreen()
+        {
+            var window = new MainWindow();
+            var toggle = typeof(BorderlessWindow)
+                .GetMethod("ToggleMaximize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?? throw new InvalidOperationException("ToggleMaximize not found");
+
+            window.WindowState = WindowState.Normal;
+            toggle.Invoke(window, null);
+            window.WindowState.Should().Be(WindowState.Maximized);
+
+            toggle.Invoke(window, null);
+            window.WindowState.Should().Be(WindowState.Normal);
 
             window.Close();
         }

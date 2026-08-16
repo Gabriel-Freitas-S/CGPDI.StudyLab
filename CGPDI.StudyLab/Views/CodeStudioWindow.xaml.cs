@@ -11,7 +11,7 @@ using CGPDI.StudyLab.Core;
 
 namespace CGPDI.StudyLab.Views
 {
-    public partial class CodeStudioWindow : Window
+    public partial class CodeStudioWindow : BorderlessWindow
     {
         private DirectBitmap _labBitmap = null!;
         private List<InteractiveLesson> _interactiveLessons = new();
@@ -33,6 +33,7 @@ namespace CGPDI.StudyLab.Views
 
         private void CodeStudioWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            CenterOnScreen();
             _isInitializing = false;
             RtbStudioEditableCode.TextChanged += RtbStudioEditableCode_TextChanged;
             RtbStudioXamlCode.TextChanged += RtbStudioXamlCode_TextChanged;
@@ -52,50 +53,6 @@ namespace CGPDI.StudyLab.Views
                 int idx = Math.Clamp(initialLessonNumber - 1, 0, _interactiveLessons.Count - 1);
                 LstStudioLessons.SelectedIndex = idx;
             }
-        }
-
-        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                if (e.ClickCount == 2)
-                {
-                    ToggleMaximize();
-                }
-                else
-                {
-                    DragMove();
-                }
-            }
-        }
-
-        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void BtnMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleMaximize();
-        }
-
-        private void ToggleMaximize()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                BtnMaximize.Content = "🗖";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                BtnMaximize.Content = "🗗";
-            }
-        }
-
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
