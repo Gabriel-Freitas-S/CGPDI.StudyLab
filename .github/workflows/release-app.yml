@@ -5,6 +5,12 @@ on:
     branches: [main]
     tags:
       - 'v*'
+    paths:
+      - 'CGPDI.StudyLab/**'
+      - 'CGPDI.StudyLab.Tests/**'
+      - 'Directory.Build.props'
+      - 'CGPDI.StudyLab.slnx'
+      - '.github/workflows/release-app.yml'
   workflow_dispatch:
     inputs:
       version:

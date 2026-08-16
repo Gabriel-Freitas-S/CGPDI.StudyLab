@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Captura screenshots automáticas de cada aba do CGPDI StudyLab e gera GIF animado.
 
@@ -83,9 +83,9 @@ function Select-Tab([IntPtr]$hWnd, [int]$idx) {
     return $false
 }
 
-function Find-Window([int]$pid) {
+function Find-Window([int]$procId) {
     for ($i=0; $i -lt 40; $i++) {
-        $p = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $p = Get-Process -Id $procId -ErrorAction SilentlyContinue
         if ($p -and $p.MainWindowHandle -ne [IntPtr]::Zero) { return $p.MainWindowHandle }
         Start-Sleep -Milliseconds 500
     }
@@ -117,7 +117,7 @@ if (-not (Test-Path $ExePath)) { throw "Exe nao encontrado: $ExePath" }
 Write-Host "INICIANDO APP..." -ForegroundColor Cyan
 $proc = Start-Process -FilePath $ExePath -PassThru
 Start-Sleep -Seconds $StartupWaitSec
-$hWnd = Find-Window -pid $proc.Id
+$hWnd = Find-Window -procId $proc.Id
 [WinCapture]::ShowWindow($hWnd, 3) | Out-Null
 Start-Sleep -Milliseconds 800
 
