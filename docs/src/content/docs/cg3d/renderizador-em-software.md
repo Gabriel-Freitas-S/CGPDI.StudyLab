@@ -46,4 +46,4 @@ if (zInterpolado < zBuffer[idx])
 
 ---
 
-👉 **Próximo Passo:** Veja como o WPF acelera isso por hardware em [Viewport3D & Câmera Arcball](/CGPDI.StudyLab/cg3d/viewport3d-hardware-wpf/).
+👉 **Próximo Passo:** Veja como o WPF acelera isso por hardware em [Viewport3D & Câmera Arcball](/cg3d/viewport3d-hardware-wpf/).

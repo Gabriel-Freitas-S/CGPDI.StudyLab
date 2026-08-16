@@ -82,4 +82,4 @@ Se sua instalação do Visual Studio for anterior à disponibilização do .NET 
 
 ---
 
-👉 **Próximo Passo:** Se você prefere trabalhar pelo terminal sem a interface do Visual Studio, consulte o [Guia de Linha de Comando (CLI)](/CGPDI.StudyLab/iniciantes/guia-linha-de-comando/).
+👉 **Próximo Passo:** Se você prefere trabalhar pelo terminal sem a interface do Visual Studio, consulte o [Guia de Linha de Comando (CLI)](/iniciantes/guia-linha-de-comando/).

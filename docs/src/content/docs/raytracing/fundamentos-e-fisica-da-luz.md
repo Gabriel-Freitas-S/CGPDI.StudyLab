@@ -53,4 +53,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja como calcular analiticamente a [Interseção Raio-Esfera e Raio-Plano](/CGPDI.StudyLab/raytracing/intersecao-e-geometria/).
+👉 **Próximo Passo:** Veja como calcular analiticamente a [Interseção Raio-Esfera e Raio-Plano](/raytracing/intersecao-e-geometria/).

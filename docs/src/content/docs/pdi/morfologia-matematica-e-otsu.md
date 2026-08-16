@@ -55,4 +55,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Explore as [Transformações Geométricas & Mapeamento Inverso](/CGPDI.StudyLab/pdi/transformacoes-geometricas/).
+👉 **Próximo Passo:** Explore as [Transformações Geométricas & Mapeamento Inverso](/pdi/transformacoes-geometricas/).

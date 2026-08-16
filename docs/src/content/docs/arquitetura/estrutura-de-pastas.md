@@ -79,4 +79,4 @@ CGPDI.StudyLab/
 
 ---
 
-👉 **Próximo Passo:** Entenda como funcionam o [WPF, XAML e a Renderização em Tempo Real](/CGPDI.StudyLab/arquitetura/wpf-e-xaml-explicados/).
+👉 **Próximo Passo:** Entenda como funcionam o [WPF, XAML e a Renderização em Tempo Real](/arquitetura/wpf-e-xaml-explicados/).

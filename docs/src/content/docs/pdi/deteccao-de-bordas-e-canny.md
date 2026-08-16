@@ -74,4 +74,4 @@ while (edgeQueue.Count > 0)
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Morfologia Matemática e Limiarização de Otsu](/CGPDI.StudyLab/pdi/morfologia-matematica-e-otsu/).
+👉 **Próximo Passo:** Aprenda sobre [Morfologia Matemática e Limiarização de Otsu](/pdi/morfologia-matematica-e-otsu/).

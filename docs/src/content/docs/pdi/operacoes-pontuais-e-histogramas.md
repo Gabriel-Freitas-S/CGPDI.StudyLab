@@ -105,4 +105,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Filtros Espaciais e Convoluções 2D](/CGPDI.StudyLab/pdi/filtros-espaciais-e-convolucoes/).
+👉 **Próximo Passo:** Aprenda sobre [Filtros Espaciais e Convoluções 2D](/pdi/filtros-espaciais-e-convolucoes/).

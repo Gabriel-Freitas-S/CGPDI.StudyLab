@@ -41,4 +41,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja o [Braço Robótico e o Sistema Solar em Execução](/CGPDI.StudyLab/hierarquia/braco-robotico-e-animacoes/).
+👉 **Próximo Passo:** Veja o [Braço Robótico e o Sistema Solar em Execução](/hierarquia/braco-robotico-e-animacoes/).

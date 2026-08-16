@@ -40,4 +40,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Preenchimento Scanline & Recorte Cohen-Sutherland](/CGPDI.StudyLab/cg2d/preenchimento-e-recorte/).
+👉 **Próximo Passo:** Aprenda sobre [Preenchimento Scanline & Recorte Cohen-Sutherland](/cg2d/preenchimento-e-recorte/).

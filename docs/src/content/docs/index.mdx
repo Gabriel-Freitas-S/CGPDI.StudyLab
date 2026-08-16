@@ -16,7 +16,7 @@ hero:
       icon: rocket
       variant: secondary
     - text: Começar Guia Online
-      link: /CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/
+      link: /iniciantes/o-que-e-dotnet-csharp/
       icon: right-arrow
       variant: minimal
     - text: Ver Releases no GitHub
@@ -64,42 +64,42 @@ Esta documentação foi elaborada com foco na clareza pedagógica: conceitos mat
   <LinkCard
     title="Estúdio de Código e Compilador Roslyn"
     description="Escreva código C# e veja a compilação ao vivo atualizar o Canvas e a memória RAM em tempo real. Janela dedicada com Modo Foco e testes unitários."
-    href="/CGPDI.StudyLab/iniciantes/modo-interativo-e-playground/"
+    href="/iniciantes/modo-interativo-e-playground/"
   />
   <LinkCard
     title="1. Guia para Iniciantes (12 Lições C#)"
     description="Trilha de aprendizado cobrindo desde tipos primitivos (byte, uint), ponteiros unsafe, Data Binding reativo até Ray Tracing."
-    href="/CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/"
+    href="/iniciantes/o-que-e-dotnet-csharp/"
   />
   <LinkCard
     title="2. Processamento Digital de Imagens (PDI)"
     description="Espaços de cor (RGB, HSV, YCbCr), convoluções espaciais, detector Canny de 5 etapas, morfologia matemática e Fourier 2D."
-    href="/CGPDI.StudyLab/pdi/operacoes-pontuais-e-histogramas/"
+    href="/pdi/operacoes-pontuais-e-histogramas/"
   />
   <LinkCard
     title="3. Rasterização 2D (Primeiros Princípios)"
     description="Como as GPUs desenham: reta de Bresenham inteira, suavização Xiaolin Wu, círculo do ponto médio e matrizes afins 3×3."
-    href="/CGPDI.StudyLab/cg2d/algebra-linear-e-matrizes/"
+    href="/cg2d/algebra-linear-e-matrizes/"
   />
   <LinkCard
     title="4. Computação Gráfica 3D e Pipeline"
     description="A trajetória do vértice 3D até a tela: matrizes MVP, renderizador em software na CPU com Z-Buffer e Viewport3D DirectX."
-    href="/CGPDI.StudyLab/cg3d/matematica-vetorial-e-mvp/"
+    href="/cg3d/matematica-vetorial-e-mvp/"
   />
   <LinkCard
     title="5. Modelagem Hierárquica (Cinemática)"
     description="Grafos de cena para robôs articulados e sistema solar com propagação matricial em cadeia pai-filho e cinemática direta."
-    href="/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/"
+    href="/hierarquia/grafos-de-cena-e-teoria/"
   />
   <LinkCard
     title="6. Ray Tracing Fotorrealista"
     description="Simulação física da luz: cálculo analítico de interseção raio-esfera, modelo Phong, sombras nítidas e refração com a Lei de Snell."
-    href="/CGPDI.StudyLab/raytracing/fundamentos-e-fisica-da-luz/"
+    href="/raytracing/fundamentos-e-fisica-da-luz/"
   />
   <LinkCard
     title="7. Arquitetura do Software e DirectX Tier"
     description="Desacoplamento de camadas, subsistema milcore, ponteiros não gerenciados e aceleração de hardware Direct3D Tier 2."
-    href="/CGPDI.StudyLab/arquitetura/visao-geral/"
+    href="/arquitetura/visao-geral/"
   />
 </CardGrid>
 
@@ -123,6 +123,24 @@ graph TD
 
 ## Roteiro de Leitura Recomendado
 
-1. **Para quem está começando:** Inicie por [O que é C#, .NET e WPF?](/CGPDI.StudyLab/iniciantes/o-que-e-dotnet-csharp/) e siga para o tutorial de [Instalação do Visual Studio](/CGPDI.StudyLab/iniciantes/instalacao-visual-studio/).
-2. **Para quem deseja entender a engenharia do projeto:** Consulte a [Visão Geral da Arquitetura](/CGPDI.StudyLab/arquitetura/visao-geral/) e os [Fundamentos de Memória & DirectBitmap](/CGPDI.StudyLab/core/fundamentos-de-memoria/).
-3. **Para estudantes universitários:** Consulte o [Mapeamento do Plano de Ensino](/CGPDI.StudyLab/academico/mapeamento-do-plano/) para encontrar os conteúdos correspondentes aos trabalhos práticos (T1, T2 e T3).
+1. **Para quem está começando:** Inicie por [O que é C#, .NET e WPF?](/iniciantes/o-que-e-dotnet-csharp/) e siga para o tutorial de [Instalação do Visual Studio](/iniciantes/instalacao-visual-studio/).
+2. **Para quem deseja entender a engenharia do projeto:** Consulte a [Visão Geral da Arquitetura](/arquitetura/visao-geral/) e os [Fundamentos de Memória & DirectBitmap](/core/fundamentos-de-memoria/).
+3. **Para estudantes universitários:** Consulte o [Mapeamento do Plano de Ensino](/academico/mapeamento-do-plano/) para encontrar os conteúdos correspondentes aos trabalhos práticos (T1, T2 e T3).
+
+---
+
+## Referências Oficiais da Microsoft Learn
+
+Esta documentação substitui a antiga Wiki do projeto, reunindo todo o conteúdo pedagógico e técnico em um único lugar. Aprofunde-se nos temas com a documentação oficial da Microsoft:
+
+<div class="ms-ref-card">
+  <h4>📚 Portais e Referências Recomendadas</h4>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/" target="_blank" rel="noopener">Documentação Oficial do .NET</a> — Guia geral da plataforma, bibliotecas e APIs.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/language-reference/unsafe-code" target="_blank" rel="noopener">Tipos de Ponteiro e Código Não Seguro (unsafe) no C#</a> — Sintaxe de <code>fixed</code>, <code>stackalloc</code> e aritmética de ponteiros.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.imaging.writeablebitmap" target="_blank" rel="noopener">Classe WriteableBitmap e Formatos de Pixel no WPF</a> — Manipulação direta do buffer gráfico da GPU.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview" target="_blank" rel="noopener">Visão Geral de Gráficos 3D e Transformações no WPF</a> — Modelo 3D do WPF, câmeras e iluminação.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/standard/parallel-programming/how-to-write-a-simple-parallel-for-loop" target="_blank" rel="noopener">Paralelismo de Dados com Parallel.For (TPL)</a> — Distribuição de carga em múltiplos núcleos de CPU.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.numerics" target="_blank" rel="noopener">Namespace System.Numerics (SIMD)</a> — Operações vetoriais e matemáticas aceleradas por hardware.</li>
+  </ul>
+</div>

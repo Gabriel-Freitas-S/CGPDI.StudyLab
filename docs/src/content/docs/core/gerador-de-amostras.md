@@ -49,4 +49,4 @@ Na interface do aplicativo:
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Operações Pontuais e Histogramas de PDI](/CGPDI.StudyLab/pdi/operacoes-pontuais-e-histogramas/).
+👉 **Próximo Passo:** Entre no módulo de [Operações Pontuais e Histogramas de PDI](/pdi/operacoes-pontuais-e-histogramas/).

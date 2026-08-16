@@ -47,10 +47,18 @@ O aplicativo possui um sistema inteligente de verificação e atualização auto
 
 ## 🌐 3. Deploy da Documentação no GitHub Pages (`deploy-docs.yml`)
 
-O repositório inclui o workflow [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml) que sincroniza a documentação a cada commit na branch `main`.
+O repositório inclui o workflow [`.github/workflows/deploy-docs.yml`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/.github/workflows/deploy-docs.yml) que sincroniza a documentação a cada commit na branch `main`. O workflow gera o arquivo `CNAME` automaticamente, habilitando o domínio customizado.
 
 A documentação está publicada em:
-👉 **`https://gabriel-freitas-s.github.io/CGPDI.StudyLab/`**
+👉 **`https://cgpdi.gabrielfs.dev`**
+
+Para que o domínio funcione, o DNS do provedor deve apontar para o GitHub Pages:
+
+| Tipo | Nome | Valor |
+| :--- | :--- | :--- |
+| `CNAME` | `cgpdi.gabrielfs.dev` | `gabriel-freitas-s.github.io` |
+
+Além do registro DNS, o domínio `cgpdi.gabrielfs.dev` deve estar cadastrado em **Settings → Pages → Custom domain** do repositório. O `CNAME` embutido no artefato de deploy garante que ele seja recriado a cada publicação.
 
 ---
 

@@ -121,4 +121,4 @@ Com essa técnica combinada com `Parallel.For`, o mesmo cálculo é concluído e
 
 ---
 
-👉 **Próximo Passo:** Analise o código completo da classe [DirectBitmap.cs](/CGPDI.StudyLab/core/directbitmap/).
+👉 **Próximo Passo:** Analise o código completo da classe [DirectBitmap.cs](/core/directbitmap/).

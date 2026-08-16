@@ -80,4 +80,4 @@ dotnet clean
 
 ---
 
-👉 **Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Pontos de Interrupção](/CGPDI.StudyLab/iniciantes/depuracao-e-truques/).
+👉 **Próximo Passo:** Aprenda a [Depurar e Navegar pelo Código com Pontos de Interrupção](/iniciantes/depuracao-e-truques/).

@@ -39,4 +39,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/CGPDI.StudyLab/hierarquia/grafos-de-cena-e-teoria/).
+👉 **Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/hierarquia/grafos-de-cena-e-teoria/).

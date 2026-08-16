@@ -102,4 +102,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Veja como o [Gerador de Amostras Sintéticas](/CGPDI.StudyLab/core/gerador-de-amostras/) cria imagens de calibração.
+👉 **Próximo Passo:** Veja como o [Gerador de Amostras Sintéticas](/core/gerador-de-amostras/) cria imagens de calibração.

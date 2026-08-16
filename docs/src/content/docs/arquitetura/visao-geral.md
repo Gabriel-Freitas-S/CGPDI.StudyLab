@@ -82,4 +82,4 @@ Três decisões de engenharia garantem taxas elevadas de quadros por segundo:
 
 ---
 
-👉 **Próximo Passo:** Explore a [Estrutura Detalhada de Pastas e Arquivos](/CGPDI.StudyLab/arquitetura/estrutura-de-pastas/).
+👉 **Próximo Passo:** Explore a [Estrutura Detalhada de Pastas e Arquivos](/arquitetura/estrutura-de-pastas/).

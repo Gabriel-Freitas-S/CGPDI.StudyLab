@@ -5,8 +5,8 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://gabriel-freitas-s.github.io',
-  base: '/CGPDI.StudyLab',
+  site: 'https://cgpdi.gabrielfs.dev',
+  base: '/',
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],

@@ -86,4 +86,4 @@ Valores Ordenados:                  [12, 12, 13, 13,  14, 14, 15, 15, 255]
 
 ---
 
-👉 **Próximo Passo:** Explore os [Operadores de Gradiente e o Algoritmo Canny de 5 Etapas](/CGPDI.StudyLab/pdi/deteccao-de-bordas-e-canny/).
+👉 **Próximo Passo:** Explore os [Operadores de Gradiente e o Algoritmo Canny de 5 Etapas](/pdi/deteccao-de-bordas-e-canny/).

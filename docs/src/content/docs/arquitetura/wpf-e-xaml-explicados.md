@@ -103,4 +103,4 @@ Para a exibição 3D acelerada por hardware, o WPF fornece o elemento **`<Viewpo
 
 ---
 
-👉 **Próximo Passo:** Entre no [Módulo de Núcleo de Memória & Ponteiros](/CGPDI.StudyLab/core/fundamentos-de-memoria/).
+👉 **Próximo Passo:** Entre no [Módulo de Núcleo de Memória & Ponteiros](/core/fundamentos-de-memoria/).

@@ -92,4 +92,4 @@ Cada lição no aplicativo e nesta documentação está conectada a recursos ofi
 
 ---
 
-👉 **Próximo Passo:** Explore o guia de [Instalação e Compilação no Visual Studio](/CGPDI.StudyLab/iniciantes/instalacao-visual-studio/).
+👉 **Próximo Passo:** Explore o guia de [Instalação e Compilação no Visual Studio](/iniciantes/instalacao-visual-studio/).

@@ -44,4 +44,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino da Disciplina](/CGPDI.StudyLab/academico/mapeamento-do-plano/).
+👉 **Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino da Disciplina](/academico/mapeamento-do-plano/).

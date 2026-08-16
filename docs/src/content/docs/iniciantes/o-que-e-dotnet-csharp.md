@@ -99,4 +99,4 @@ Ao explorar a pasta do código, você verá extensões diferentes:
 
 ---
 
-👉 **Próximo Passo:** Aprenda a [Instalar o Visual Studio Passo a Passo](/CGPDI.StudyLab/iniciantes/instalacao-visual-studio/) para rodar o projeto no seu computador.
+👉 **Próximo Passo:** Aprenda a [Instalar o Visual Studio Passo a Passo](/iniciantes/instalacao-visual-studio/) para rodar o projeto no seu computador.

@@ -78,4 +78,4 @@ O algoritmo de Xiaolin Wu elimina o aspecto serrilhado (*pixelado*) calculando a
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Círculos, Elipses e Curvas de Bézier](/CGPDI.StudyLab/cg2d/circulos-elipses-e-curvas/).
+👉 **Próximo Passo:** Aprenda sobre [Círculos, Elipses e Curvas de Bézier](/cg2d/circulos-elipses-e-curvas/).

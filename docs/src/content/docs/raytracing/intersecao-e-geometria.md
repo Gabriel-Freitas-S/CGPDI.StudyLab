@@ -67,4 +67,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre [Reflexões Especulares & Refração de Snell](/CGPDI.StudyLab/raytracing/reflexao-refracao-snell/).
+👉 **Próximo Passo:** Aprenda sobre [Reflexões Especulares & Refração de Snell](/raytracing/reflexao-refracao-snell/).

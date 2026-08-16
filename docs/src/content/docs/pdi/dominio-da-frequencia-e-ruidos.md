@@ -54,4 +54,4 @@ $$
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Computação Gráfica 2D & Álgebra Linear](/CGPDI.StudyLab/cg2d/algebra-linear-e-matrizes/).
+👉 **Próximo Passo:** Entre no módulo de [Computação Gráfica 2D & Álgebra Linear](/cg2d/algebra-linear-e-matrizes/).

@@ -77,4 +77,4 @@ O .NET 10 permite ajustar valores numéricos ou fórmulas e visualizar o resulta
 
 ---
 
-👉 **Próximo Passo:** Conheça a [Visão Geral da Arquitetura do Software](/CGPDI.StudyLab/arquitetura/visao-geral/).
+👉 **Próximo Passo:** Conheça a [Visão Geral da Arquitetura do Software](/arquitetura/visao-geral/).

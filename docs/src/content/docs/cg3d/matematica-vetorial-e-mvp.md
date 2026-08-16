@@ -49,4 +49,4 @@ graph LR
 
 ---
 
-👉 **Próximo Passo:** Veja como o [Renderizador em Software CPU](/CGPDI.StudyLab/cg3d/renderizador-em-software/) rasteriza esses triângulos com Z-Buffer.
+👉 **Próximo Passo:** Veja como o [Renderizador em Software CPU](/cg3d/renderizador-em-software/) rasteriza esses triângulos com Z-Buffer.

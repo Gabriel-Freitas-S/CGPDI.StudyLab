@@ -57,4 +57,4 @@ Este roteiro organiza os tópicos práticos e teóricos necessários para a prep
 
 ---
 
-👉 **Próximo Passo:** Aprenda a publicar esta documentação no [GitHub Pages & Configurar o CI/CD](/CGPDI.StudyLab/deploy/github-pages-e-ci-cd/).
+👉 **Próximo Passo:** Aprenda a publicar esta documentação no [GitHub Pages & Configurar o CI/CD](/deploy/github-pages-e-ci-cd/).

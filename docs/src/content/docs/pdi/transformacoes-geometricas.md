@@ -53,4 +53,4 @@ Utiliza uma vizinhança de 16 pixels com curvas spline cúbicas para manter os c
 
 ---
 
-👉 **Próximo Passo:** Explore a [Transformada de Fourier 2D & Geração Procedural](/CGPDI.StudyLab/pdi/dominio-da-frequencia-e-ruidos/).
+👉 **Próximo Passo:** Explore a [Transformada de Fourier 2D & Geração Procedural](/pdi/dominio-da-frequencia-e-ruidos/).

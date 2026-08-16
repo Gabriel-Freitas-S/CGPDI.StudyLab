@@ -36,4 +36,4 @@ graph TD
 
 ---
 
-👉 **Próximo Passo:** Entre no módulo de [Ray Tracing & Renderização Realística](/CGPDI.StudyLab/raytracing/fundamentos-e-fisica-da-luz/).
+👉 **Próximo Passo:** Entre no módulo de [Ray Tracing & Renderização Realística](/raytracing/fundamentos-e-fisica-da-luz/).

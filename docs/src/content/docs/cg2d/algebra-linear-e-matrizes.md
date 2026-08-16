@@ -63,4 +63,4 @@ A multiplicação de matrizes **não é comutativa** ($A \times B \neq B \times 
 
 ---
 
-👉 **Próximo Passo:** Aprenda sobre os [Algoritmos de Traçado de Retas (Bresenham e Wu)](/CGPDI.StudyLab/cg2d/algoritmos-de-linhas/).
+👉 **Próximo Passo:** Aprenda sobre os [Algoritmos de Traçado de Retas (Bresenham e Wu)](/cg2d/algoritmos-de-linhas/).

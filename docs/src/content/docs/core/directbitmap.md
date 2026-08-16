@@ -135,4 +135,4 @@ Parallel.For(0, Height, y =>
 
 ---
 
-👉 **Próximo Passo:** Explore os [Modelos de Cores & Percepção Humana](/CGPDI.StudyLab/core/modelos-de-cor/).
+👉 **Próximo Passo:** Explore os [Modelos de Cores & Percepção Humana](/core/modelos-de-cor/).
