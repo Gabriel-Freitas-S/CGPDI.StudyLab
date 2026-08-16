@@ -1,12 +1,13 @@
-﻿name: Capture App Screenshots & GIF
+name: Capture App Screenshots & GIF
 
+# Dispara automaticamente após o release-app terminar com sucesso.
+# Também pode ser acionado manualmente via workflow_dispatch.
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Build & Release Executable and Installer"
+    types: [completed]
     branches: [main]
-    paths:
-      - 'CGPDI.StudyLab/**'
-      - 'scripts/capture-screenshots.ps1'
-      - '.github/workflows/capture-screenshots.yml'
   workflow_dispatch:
 
 permissions:
@@ -21,11 +22,31 @@ jobs:
     name: Capture Screenshots & Generate GIF
     runs-on: windows-latest
 
+    # Só executa se o workflow pai terminou com sucesso,
+    # ou se foi disparado manualmente (workflow_dispatch).
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
     steps:
+      - name: Log do workflow que disparou esta execução
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_run") {
+            Write-Host "Disparado por: ${{ github.event.workflow_run.name }}"
+            Write-Host "Conclusão   : ${{ github.event.workflow_run.conclusion }}"
+            Write-Host "Branch      : ${{ github.event.workflow_run.head_branch }}"
+            Write-Host "Commit      : ${{ github.event.workflow_run.head_sha }}"
+          } else {
+            Write-Host "Disparado manualmente (workflow_dispatch)"
+          }
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # Faz checkout do commit exato que gerou a release
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup .NET 10 SDK
         uses: actions/setup-dotnet@v4
@@ -36,7 +57,6 @@ jobs:
         shell: pwsh
         run: |
           choco install ffmpeg -y --no-progress
-          # Recarrega PATH para que ffmpeg fique disponível
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           ffmpeg -version | Select-Object -First 1
 
@@ -44,7 +64,6 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: |
-          # Garante que ffmpeg está no PATH desta sessão
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
           powershell -ExecutionPolicy Bypass -File scripts/capture-screenshots.ps1 `
@@ -81,5 +100,6 @@ jobs:
             git push
             Write-Host "Screenshots commitados com sucesso."
           } else {
-            Write-Host "Nenhuma mudança nos screenshots — commit pulado."
+            Write-Host "Nenhuma mudanca nos screenshots — commit pulado."
           }
+
