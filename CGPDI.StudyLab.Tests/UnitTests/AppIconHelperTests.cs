@@ -249,5 +249,70 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                 }
             }
         }
+
+        [Fact]
+        public void CreateDibIconData_For16x16_CreatesValidBitmapInfoHeaderAndAndMask()
+        {
+            var rtb = AppIconHelper.RenderVectorIcon(16);
+            byte[] dibData = AppIconHelper.CreateDibIconData(rtb, 16);
+
+            dibData.Should().NotBeNull();
+            dibData.Length.Should().BeGreaterThan(40);
+
+            // BITMAPINFOHEADER: biSize = 40 (bytes 0-3)
+            BitConverter.ToUInt32(dibData, 0).Should().Be(40);
+            // biWidth = 16 (bytes 4-7)
+            BitConverter.ToInt32(dibData, 4).Should().Be(16);
+            // biHeight = 32 (16 * 2) (bytes 8-11)
+            BitConverter.ToInt32(dibData, 8).Should().Be(32);
+            // biPlanes = 1 (bytes 12-13)
+            BitConverter.ToUInt16(dibData, 12).Should().Be(1);
+            // biBitCount = 32 (bytes 14-15)
+            BitConverter.ToUInt16(dibData, 14).Should().Be(32);
+            // biCompression = 0 (BI_RGB) (bytes 16-19)
+            BitConverter.ToUInt32(dibData, 16).Should().Be(0);
+        }
+
+        [Fact]
+        public void GenerateAndSaveIcons_EmbedsDibForSmallSizesAndPngFor256()
+        {
+            string tempDir = Path.Combine(Path.GetTempPath(), "CGPDI_DibIconTests_" + Guid.NewGuid());
+            Directory.CreateDirectory(tempDir);
+            string icoPath = Path.Combine(tempDir, "dib_test.ico");
+            string pngPath = Path.Combine(tempDir, "dib_test.png");
+
+            try
+            {
+                AppIconHelper.GenerateAndSaveIcons(icoPath, pngPath);
+
+                byte[] icoBytes = File.ReadAllBytes(icoPath);
+                icoBytes.Length.Should().BeGreaterThan(1000);
+
+                // Offset da primeira imagem (16x16) = 6 + (16 * 6) = 102
+                int firstImageOffset = BitConverter.ToInt32(icoBytes, 18);
+                firstImageOffset.Should().Be(102);
+
+                // A primeira imagem (16x16) deve começar com BITMAPINFOHEADER (biSize = 40)
+                uint dibHeaderSize = BitConverter.ToUInt32(icoBytes, firstImageOffset);
+                dibHeaderSize.Should().Be(40, "ícones menores ou iguais a 128px devem usar DIB com BITMAPINFOHEADER para compatibilidade e transparência");
+
+                // Offset da última imagem (256x256) - entrada 5
+                int lastEntryOffset = 6 + (16 * 5);
+                int lastImageOffset = BitConverter.ToInt32(icoBytes, lastEntryOffset + 12);
+
+                // A última imagem (256x256) deve começar com a assinatura PNG (0x89 'P' 'N' 'G')
+                icoBytes[lastImageOffset].Should().Be(0x89);
+                icoBytes[lastImageOffset + 1].Should().Be(0x50);
+                icoBytes[lastImageOffset + 2].Should().Be(0x4E);
+                icoBytes[lastImageOffset + 3].Should().Be(0x47);
+            }
+            finally
+            {
+                if (Directory.Exists(tempDir))
+                {
+                    Directory.Delete(tempDir, true);
+                }
+            }
+        }
     }
 }

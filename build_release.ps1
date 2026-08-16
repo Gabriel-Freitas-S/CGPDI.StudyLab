@@ -35,7 +35,8 @@ dotnet publish "$projectDir\CGPDI.StudyLab.csproj" `
     -o "$publishDir" `
     /p:Version=$Version `
     /p:AssemblyVersion="$Version.0" `
-    /p:FileVersion="$Version.0"
+    /p:FileVersion="$Version.0" `
+    /p:InformationalVersion="$Version"
 
 # Remove arquivos de debug
 Get-ChildItem -Path "$publishDir" -Filter "*.pdb" | Remove-Item -Force
@@ -47,33 +48,33 @@ Start-Sleep -Seconds 2
 
 # Executável portátil direto (1 arquivo único)
 Copy-Item "$publishDir\CGPDI.StudyLab.exe" "$distDir\CGPDI-StudyLab-v$Version-Portable.exe" -Force
-Write-Host "✔ Executavel Portatil Direto gerado: $distDir\CGPDI-StudyLab-v$Version-Portable.exe" -ForegroundColor Green
+Write-Host "[OK] Executavel Portatil Direto gerado: $distDir\CGPDI-StudyLab-v$Version-Portable.exe" -ForegroundColor Green
 
-# Arquivo de instruções
-@"
-============================================================
-  CGPDI StudyLab v$Version - Guia de Execução e Instalação
-============================================================
-
-1. Executável Portátil Direto:
-   Basta dar dois cliques em CGPDI.StudyLab.exe para iniciar!
-   Não requer instalação nem direitos de administrador.
-
-2. Instalador Velopack (Setup.exe):
-   Instala na pasta do usuário (%LocalAppData%) e cria atalhos na
-   Área de Trabalho e Menu Iniciar, com atualizações automáticas delta.
-
-3. Instalador Machine-Wide (.msi):
-   Ideal para laboratórios e uso institucional em computadores compartilhados.
-
-Em caso de qualquer falha na inicialização, consulte o log de diagnóstico em:
-%LocalAppData%\CGPDI.StudyLab\logs\crash.log
-"@ | Out-File -FilePath "$publishDir\COMO-USAR.txt" -Encoding utf8
+$comoUsar = @(
+    "============================================================",
+    "  CGPDI StudyLab v$Version - Guia de Execucao e Instalacao",
+    "============================================================",
+    "",
+    "1. Executavel Portatil Direto:",
+    "   Basta dar dois cliques em CGPDI.StudyLab.exe para iniciar!",
+    "   Nao requer instalacao nem direitos de administrador.",
+    "",
+    "2. Instalador Velopack (Setup.exe):",
+    "   Instala na pasta do usuario (%LocalAppData%) e cria atalhos na",
+    "   Area de Trabalho e Menu Iniciar, com atualizacoes automaticas delta.",
+    "",
+    "3. Instalador Machine-Wide (.msi):",
+    "   Ideal para laboratorios e uso institucional em computadores compartilhados.",
+    "",
+    "Em caso de qualquer falha na inicializacao, consulte o log de diagnostico em:",
+    "%LocalAppData%\CGPDI.StudyLab\logs\crash.log"
+) -join "`r`n"
+Set-Content -Path "$publishDir\COMO-USAR.txt" -Value $comoUsar -Encoding utf8
 
 $zipPath = "$distDir\CGPDI-StudyLab-v$Version-Portable-win-x64.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 [System.IO.Compression.ZipFile]::CreateFromDirectory($publishDir, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
-Write-Host "✔ Pacote Portatil ZIP gerado: $zipPath" -ForegroundColor Green
+Write-Host "[OK] Pacote Portatil ZIP gerado: $zipPath" -ForegroundColor Green
 
 # 4. Empacotamento com Velopack (instalador + delta) se o vpk estiver instalado
 Write-Host ""
@@ -113,9 +114,9 @@ if ($vpk) {
         Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDI-StudyLab-v$Version-Setup.exe" -Force
         Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDIStudyLab-win-Setup.exe" -Force
         Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDI-StudyLab-Setup.exe" -Force
-        Write-Host "✔ Instalador Velopack gerado: $distDir\CGPDIStudyLab-win-Setup.exe (e aliases)" -ForegroundColor Green
+        Write-Host "[OK] Instalador Velopack gerado: $distDir\CGPDIStudyLab-win-Setup.exe (e aliases)" -ForegroundColor Green
     } else {
-        Write-Host "ℹ O vpk não gerou o Setup.exe em 'Releases'." -ForegroundColor DarkGray
+        Write-Host "[i] O vpk nao gerou o Setup.exe em 'Releases'." -ForegroundColor DarkGray
     }
 
     $msiArgs = @(
@@ -140,12 +141,12 @@ if ($vpk) {
 
     if (Test-Path "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi") {
         Copy-Item "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi" "$distDir\CGPDI-StudyLab-MachineWide.msi" -Force
-        Write-Host "✔ Instalador Machine-Wide (MSI) gerado: $distDir\CGPDI-StudyLab-MachineWide.msi" -ForegroundColor Green
+        Write-Host "[OK] Instalador Machine-Wide (MSI) gerado: $distDir\CGPDI-StudyLab-MachineWide.msi" -ForegroundColor Green
     }
 } else {
-    Write-Host "ℹ Velopack CLI (vpk) nao detectado localmente. O instalador sera gerado automaticamente via GitHub Actions no CI/CD!" -ForegroundColor DarkGray
+    Write-Host "[i] Velopack CLI (vpk) nao detectado localmente. O instalador sera gerado automaticamente via GitHub Actions no CI/CD!" -ForegroundColor DarkGray
     Write-Host "  Instale com: dotnet tool install -g vpk" -ForegroundColor DarkGray
 }
 
 Write-Host ""
-Write-Host "🎉 Concluido com sucesso! Arquivos prontos na pasta: $distDir" -ForegroundColor Cyan
+Write-Host "[OK] Concluido com sucesso! Arquivos prontos na pasta: $distDir" -ForegroundColor Cyan

@@ -10,7 +10,9 @@
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>Assets\app_icon.ico</ApplicationIcon>
-    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <Company>CGPDI StudyLab</Company>
     <Product>CGPDI StudyLab</Product>
     <Description>Plataforma Interativa de Computação Gráfica e Processamento Digital de Imagens</Description>
@@ -28,10 +30,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.6.0" />
-    <PackageReference Include="MinVer" Version="7.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Velopack" Version="1.2.0" />
   </ItemGroup>
 

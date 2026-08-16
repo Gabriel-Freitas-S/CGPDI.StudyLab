@@ -88,35 +88,109 @@ namespace CGPDI.StudyLab.Core
         public static void GenerateAndSaveIcons(string icoFilePath, string pngFilePath)
         {
             int[] sizes = { 16, 32, 48, 64, 128, 256 };
-            var pngBuffers = GeneratePngBuffers(sizes, pngFilePath);
+            var iconBuffers = GenerateIconBuffers(sizes, pngFilePath);
 
             if (!string.IsNullOrEmpty(icoFilePath))
             {
-                SaveIcoFile(icoFilePath, sizes, pngBuffers);
+                SaveIcoFile(icoFilePath, sizes, iconBuffers);
             }
         }
 
-        private static List<byte[]> GeneratePngBuffers(int[] sizes, string pngFilePath)
+        private static List<byte[]> GenerateIconBuffers(int[] sizes, string pngFilePath)
         {
-            var pngBuffers = new List<byte[]>();
+            var iconBuffers = new List<byte[]>();
 
             foreach (int size in sizes)
             {
                 var rtb = RenderVectorIcon(size);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(rtb));
-                using var ms = new MemoryStream();
-                encoder.Save(ms);
-                byte[] bytes = ms.ToArray();
-                pngBuffers.Add(bytes);
+                byte[] iconData;
+
+                if (size <= 128)
+                {
+                    iconData = CreateDibIconData(rtb, size);
+                }
+                else
+                {
+                    iconData = EncodePng(rtb);
+                }
+
+                iconBuffers.Add(iconData);
 
                 if (size == 256 && !string.IsNullOrEmpty(pngFilePath))
                 {
-                    SavePngFile(pngFilePath, bytes);
+                    byte[] pngBytes = EncodePng(rtb);
+                    SavePngFile(pngFilePath, pngBytes);
                 }
             }
 
-            return pngBuffers;
+            return iconBuffers;
+        }
+
+        private static byte[] EncodePng(RenderTargetBitmap rtb)
+        {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+            using var ms = new MemoryStream();
+            encoder.Save(ms);
+            return ms.ToArray();
+        }
+
+        public static byte[] CreateDibIconData(RenderTargetBitmap rtb, int size)
+        {
+            int stride = size * 4;
+            byte[] bgraPixels = new byte[size * stride];
+            rtb.CopyPixels(bgraPixels, stride, 0);
+
+            // Máscara AND: 1 bit por pixel, alinhada a múltiplos de 32 bits (4 bytes por linha)
+            int andStride = ((size + 31) / 32) * 4;
+            int andMaskSize = andStride * size;
+            byte[] andMask = new byte[andMaskSize];
+
+            for (int y = 0; y < size; y++)
+            {
+                // DIB armazena linhas de baixo para cima (bottom-up)
+                int srcY = size - 1 - y;
+                for (int x = 0; x < size; x++)
+                {
+                    int pixelOffset = (srcY * stride) + (x * 4);
+                    byte alpha = bgraPixels[pixelOffset + 3];
+                    if (alpha == 0)
+                    {
+                        int maskByte = (y * andStride) + (x / 8);
+                        int bit = 7 - (x % 8);
+                        andMask[maskByte] |= (byte)(1 << bit);
+                    }
+                }
+            }
+
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+
+            // BITMAPINFOHEADER (40 bytes)
+            bw.Write((uint)40); // biSize
+            bw.Write(size); // biWidth
+            bw.Write(size * 2); // biHeight (XOR + AND)
+            bw.Write((ushort)1); // biPlanes
+            bw.Write((ushort)32); // biBitCount
+            bw.Write((uint)0); // biCompression (BI_RGB)
+            bw.Write((uint)(bgraPixels.Length + andMaskSize)); // biSizeImage
+            bw.Write(0); // biXPelsPerMeter
+            bw.Write(0); // biYPelsPerMeter
+            bw.Write((uint)0); // biClrUsed
+            bw.Write((uint)0); // biClrImportant
+
+            // Imagem XOR: linhas de pixels BGRA bottom-up
+            for (int y = 0; y < size; y++)
+            {
+                int srcY = size - 1 - y;
+                int rowOffset = srcY * stride;
+                bw.Write(bgraPixels, rowOffset, stride);
+            }
+
+            // Máscara AND: linhas bottom-up
+            bw.Write(andMask);
+
+            return ms.ToArray();
         }
 
         private static void SavePngFile(string pngFilePath, byte[] bytes)
@@ -126,7 +200,7 @@ namespace CGPDI.StudyLab.Core
             File.WriteAllBytes(pngFilePath, bytes);
         }
 
-        private static void SaveIcoFile(string icoFilePath, int[] sizes, List<byte[]> pngBuffers)
+        private static void SaveIcoFile(string icoFilePath, int[] sizes, List<byte[]> iconBuffers)
         {
             string? dir = Path.GetDirectoryName(icoFilePath);
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -145,24 +219,24 @@ namespace CGPDI.StudyLab.Core
             for (int i = 0; i < sizes.Length; i++)
             {
                 int size = sizes[i];
-                byte[] pngData = pngBuffers[i];
+                byte[] data = iconBuffers[i];
 
-                bw.Write((byte)(size == 256 ? 0 : size)); // Width
-                bw.Write((byte)(size == 256 ? 0 : size)); // Height
+                bw.Write((byte)(size >= 256 ? 0 : size)); // Width (0 para 256)
+                bw.Write((byte)(size >= 256 ? 0 : size)); // Height (0 para 256)
                 bw.Write((byte)0); // Color count
                 bw.Write((byte)0); // Reserved
                 bw.Write((short)1); // Color planes
                 bw.Write((short)32); // Bits per pixel
-                bw.Write(pngData.Length); // Size of image data
+                bw.Write(data.Length); // Size of image data
                 bw.Write(offset); // Offset of image data
 
-                offset += pngData.Length;
+                offset += data.Length;
             }
 
-            // Image Data (PNG streams)
+            // Image Data (DIB ou PNG streams)
             for (int i = 0; i < sizes.Length; i++)
             {
-                bw.Write(pngBuffers[i]);
+                bw.Write(iconBuffers[i]);
             }
         }
 

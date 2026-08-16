@@ -23,7 +23,7 @@ A tabela abaixo resume os principais componentes do ecossistema e seu papel espe
 | **SonarQube CE 26.8 (`dotnet-sonarscanner`)** | *Qualidade de Código & Cobertura* | Servidor de análise estática contínua local (`http://localhost:9000`) que inspeciona bugs, vulnerabilidades, code smells, densidade de duplicação e cobertura de testes OpenCover. |
 | **Snyk CLI (Open Source & Snyk Code)** | *Segurança & SAST* | Varredura de segurança contra vulnerabilidades em dependências NuGet/npm e análise estática de segurança do código-fonte (SAST) em conformidade com padrões OWASP. |
 | **Graphify** | *Grafo de Conhecimento AST* | Analisador estático que mapeia toda a arquitetura em um grafo de nós e arestas (`graphify-out/`), permitindo navegação semântica profunda e rastreamento de dependências. |
-| **MinVer 7.0** | *Versionamento Semântico* | Automatiza o versionamento de compilação (`v1.0.x`) a partir das tags Git oficiais do repositório, garantindo rastreabilidade exata. |
+| **SemVer / MSBuild Versioning** | *Versionamento Semântico* | Gerenciamento determinístico de versão (`v1.0.x`) sincronizado entre o compilador BAML do WPF, runtime C# e releases GitHub. |
 | **xUnit + FluentAssertions + Xunit.StaFact** | *Suíte de Testes Automatizados* | Framework de testes unitários e de UI com suporte a threads STA (`[UIFact]` / `[WpfFact]`) para validar algoritmos matemáticos e componentes visuais WPF. |
 | **Astro + Starlight + KaTeX + Mermaid** | *Portal de Documentação* | Motor estático gerador deste portal web (`https://cgpdi.gabrielfs.dev`), com renderização de fórmulas matemáticas KaTeX e diagramas arquiteturais Mermaid. |
 
