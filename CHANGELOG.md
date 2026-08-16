@@ -45,6 +45,7 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - Correção de operações binárias em métodos de teste dinâmico do compilador em tempo de execução.
 - **Responsividade e Contenção de Layout no Astro Docs**: adicionado sistema global de contenção de grid (`min-width: 0`, `overflow-wrap: anywhere`), scroll horizontal seguro para tabelas e quebra responsiva de cards e código inline, evitando colisões com o sumário lateral.
 - **Renderização de Componentes Starlight**: migração de arquivos com imports JSX para extensão `.mdx` e ajuste da configuração do Astro para execução adequada de `<CardGrid>`, `<Steps>` e `<Tabs>`.
+- **Formato de Imagens para o Instalador WiX MSI**: geração dos assets `msi_banner.bmp` (493x58) e `msi_dialog_logo.bmp` (493x312) no formato nativo Windows Bitmap (`.bmp`) exigido pelo WiX Toolset / Velopack, corrigindo a falha de empacotamento no GitHub Actions.
 
 ## [v1.0.5] - 2026-08-16
 

@@ -137,6 +137,8 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                 File.Exists(icoPath).Should().BeTrue();
                 File.Exists(pngPath).Should().BeTrue();
                 File.Exists(Path.Combine(sourceAssets, "installer_splash.png")).Should().BeTrue();
+                File.Exists(Path.Combine(sourceAssets, "msi_banner.bmp")).Should().BeTrue();
+                File.Exists(Path.Combine(sourceAssets, "msi_dialog_logo.bmp")).Should().BeTrue();
                 File.Exists(Path.Combine(sourceAssets, "msi_banner.png")).Should().BeTrue();
                 File.Exists(Path.Combine(sourceAssets, "msi_dialog_logo.png")).Should().BeTrue();
             }
@@ -216,7 +218,7 @@ namespace CGPDI.StudyLab.Tests.UnitTests
         }
 
         [Fact]
-        public void GenerateInstallerVisualAssets_GeneratesAllRequiredInstallerPngFiles()
+        public void GenerateInstallerVisualAssets_GeneratesAllRequiredInstallerFiles()
         {
             string tempDir = Path.Combine(Path.GetTempPath(), "CGPDI_InstallerTests_" + Guid.NewGuid());
             try
@@ -224,16 +226,20 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                 AppIconHelper.GenerateInstallerVisualAssets(tempDir);
 
                 string splashPath = Path.Combine(tempDir, "installer_splash.png");
-                string bannerPath = Path.Combine(tempDir, "msi_banner.png");
-                string logoPath = Path.Combine(tempDir, "msi_dialog_logo.png");
+                string bannerBmpPath = Path.Combine(tempDir, "msi_banner.bmp");
+                string logoBmpPath = Path.Combine(tempDir, "msi_dialog_logo.bmp");
+                string bannerPngPath = Path.Combine(tempDir, "msi_banner.png");
+                string logoPngPath = Path.Combine(tempDir, "msi_dialog_logo.png");
 
                 File.Exists(splashPath).Should().BeTrue();
-                File.Exists(bannerPath).Should().BeTrue();
-                File.Exists(logoPath).Should().BeTrue();
+                File.Exists(bannerBmpPath).Should().BeTrue("WiX exige msi_banner.bmp com formato Bitmap");
+                File.Exists(logoBmpPath).Should().BeTrue("WiX exige msi_dialog_logo.bmp com formato Bitmap");
+                File.Exists(bannerPngPath).Should().BeTrue();
+                File.Exists(logoPngPath).Should().BeTrue();
 
                 new FileInfo(splashPath).Length.Should().BeGreaterThan(1000);
-                new FileInfo(bannerPath).Length.Should().BeGreaterThan(500);
-                new FileInfo(logoPath).Length.Should().BeGreaterThan(1000);
+                new FileInfo(bannerBmpPath).Length.Should().BeGreaterThan(1000);
+                new FileInfo(logoBmpPath).Length.Should().BeGreaterThan(1000);
             }
             finally
             {

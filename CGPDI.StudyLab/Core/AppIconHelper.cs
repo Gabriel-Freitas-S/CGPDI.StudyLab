@@ -412,19 +412,32 @@ namespace CGPDI.StudyLab.Core
         {
             if (!Directory.Exists(assetsDir)) Directory.CreateDirectory(assetsDir);
 
-            // 1. Splash Screen do Velopack Setup
+            // 1. Splash Screen do Velopack Setup (.png)
             SaveBitmapAsPng(RenderInstallerSplash(500, 320), Path.Combine(assetsDir, "installer_splash.png"));
 
-            // 2. Banner do Instalador MSI (493x58)
-            SaveBitmapAsPng(RenderMsiBanner(493, 58), Path.Combine(assetsDir, "msi_banner.png"));
+            // 2. Banner do Instalador MSI (493x58) - WiX exige extensão e formato .bmp
+            var bannerRtb = RenderMsiBanner(493, 58);
+            SaveBitmapAsBmp(bannerRtb, Path.Combine(assetsDir, "msi_banner.bmp"));
+            SaveBitmapAsPng(bannerRtb, Path.Combine(assetsDir, "msi_banner.png"));
 
-            // 3. Logo Dialog do Instalador MSI (493x312)
-            SaveBitmapAsPng(RenderMsiLogo(493, 312), Path.Combine(assetsDir, "msi_dialog_logo.png"));
+            // 3. Logo Dialog do Instalador MSI (493x312) - WiX exige extensão e formato .bmp
+            var logoRtb = RenderMsiLogo(493, 312);
+            SaveBitmapAsBmp(logoRtb, Path.Combine(assetsDir, "msi_dialog_logo.bmp"));
+            SaveBitmapAsPng(logoRtb, Path.Combine(assetsDir, "msi_dialog_logo.png"));
         }
 
         private static void SaveBitmapAsPng(RenderTargetBitmap rtb, string filePath)
         {
             var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+            using var ms = new MemoryStream();
+            encoder.Save(ms);
+            File.WriteAllBytes(filePath, ms.ToArray());
+        }
+
+        private static void SaveBitmapAsBmp(RenderTargetBitmap rtb, string filePath)
+        {
+            var encoder = new BmpBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(rtb));
             using var ms = new MemoryStream();
             encoder.Save(ms);

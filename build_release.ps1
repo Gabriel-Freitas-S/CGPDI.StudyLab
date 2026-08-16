@@ -128,11 +128,11 @@ if ($vpk) {
         "--icon", "$assetsPath\app_icon.ico",
         "--msi", "true"
     )
-    if (Test-Path "$assetsPath\msi_banner.png") {
-        $msiArgs += @("--msiBanner", "$assetsPath\msi_banner.png")
+    if (Test-Path "$assetsPath\msi_banner.bmp") {
+        $msiArgs += @("--msiBanner", "$assetsPath\msi_banner.bmp")
     }
-    if (Test-Path "$assetsPath\msi_dialog_logo.png") {
-        $msiArgs += @("--msiLogo", "$assetsPath\msi_dialog_logo.png")
+    if (Test-Path "$assetsPath\msi_dialog_logo.bmp") {
+        $msiArgs += @("--msiLogo", "$assetsPath\msi_dialog_logo.bmp")
     }
     $msiArgs += @("-o", "$PSScriptRoot\Releases-msi")
 

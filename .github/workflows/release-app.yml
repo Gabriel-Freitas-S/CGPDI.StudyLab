@@ -244,13 +244,14 @@ jobs:
             "--releaseNotes", "release-notes.md",
             "-o", "Releases-msi"
           )
-          if (Test-Path "$assetsPath/msi_banner.png") {
-            $msiArgs += @("--msiBanner", "$assetsPath/msi_banner.png")
+          if (Test-Path "$assetsPath/msi_banner.bmp") {
+            $msiArgs += @("--msiBanner", "$assetsPath/msi_banner.bmp")
           }
-          if (Test-Path "$assetsPath/msi_dialog_logo.png") {
-            $msiArgs += @("--msiLogo", "$assetsPath/msi_dialog_logo.png")
+          if (Test-Path "$assetsPath/msi_dialog_logo.bmp") {
+            $msiArgs += @("--msiLogo", "$assetsPath/msi_dialog_logo.bmp")
           }
           & vpk @msiArgs
+          if ($LASTEXITCODE -ne 0) { throw "vpk pack MSI failed with exit code $LASTEXITCODE" }
 
           Copy-Item "Releases-msi/CGPDIStudyLab-win.msi" "CGPDI-StudyLab-MachineWide.msi" -Force
           Write-Host "Machine-wide MSI created: CGPDI-StudyLab-MachineWide.msi"
