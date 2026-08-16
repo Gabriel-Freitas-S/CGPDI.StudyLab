@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Captura screenshots automaticas de cada aba do CGPDI StudyLab e gera GIF animado.
 
@@ -37,48 +37,118 @@ New-Item -ItemType Directory -Force -Path $GifsDir        | Out-Null
 
 Add-Type -TypeDefinition @"
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
+
 public static class WinCapture {
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int n);
     [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h, IntPtr dc, uint f);
+    [DllImport("user32.dll")] public static extern IntPtr GetDC(IntPtr hWnd);
+    [DllImport("user32.dll")] public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+    [DllImport("gdi32.dll")] public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+    [DllImport("gdi32.dll")] public static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth, int nHeight);
+    [DllImport("gdi32.dll")] public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+    [DllImport("gdi32.dll")] public static extern bool DeleteDC(IntPtr hdc);
+    [DllImport("gdi32.dll")] public static extern bool DeleteObject(IntPtr hObject);
+
+    [DllImport("gdiplus.dll")] public static extern int GdiplusStartup(out IntPtr token, ref StartupInput input, out StartupOutput output);
+    [DllImport("gdiplus.dll")] public static extern int GdiplusShutdown(IntPtr token);
+    [DllImport("gdiplus.dll")] public static extern int GdipCreateBitmapFromHBITMAP(IntPtr hbm, IntPtr hpal, out IntPtr bitmap);
+    [DllImport("gdiplus.dll")] public static extern int GdipSaveImageToFile(IntPtr image, [MarshalAs(UnmanagedType.LPWStr)] string filename, ref Guid clsidEncoder, IntPtr encoderParams);
+    [DllImport("gdiplus.dll")] public static extern int GdipDisposeImage(IntPtr image);
+
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT { public int L,T,R,B; public int W{get{return R-L;}} public int H{get{return B-T;}} }
+    public struct RECT { public int L, T, R, B; public int W { get { return R - L; } } public int H { get { return B - T; } } }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct StartupInput {
+        public uint GdiplusVersion;
+        public IntPtr DebugEventCallback;
+        public bool SuppressBackgroundThread;
+        public bool SuppressExternalCodecs;
+        public static StartupInput Default() { return new StartupInput { GdiplusVersion = 1 }; }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct StartupOutput {
+        public IntPtr NotificationHook;
+        public IntPtr NotificationUnhook;
+    }
+
+    private static readonly Guid PngClsid = new Guid("557cf406-1a04-11d3-9a73-0000f81ef32e");
+
     public static void Capture(IntPtr hWnd, string path) {
-        RECT rc; GetWindowRect(hWnd, out rc);
-        var bmp = new Bitmap(rc.W, rc.H, PixelFormat.Format32bppArgb);
-        using (var g = Graphics.FromImage(bmp)) {
-            IntPtr dc = g.GetHdc();
-            PrintWindow(hWnd, dc, 2);
-            g.ReleaseHdc(dc);
-        }
-        bmp.Save(path, ImageFormat.Png);
-        bmp.Dispose();
+        RECT rc;
+        GetWindowRect(hWnd, out rc);
+        int w = Math.Max(1, rc.W);
+        int h = Math.Max(1, rc.H);
+
+        IntPtr hdcScreen = GetDC(IntPtr.Zero);
+        IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
+        IntPtr hBitmap = CreateCompatibleBitmap(hdcScreen, w, h);
+        IntPtr hOld = SelectObject(hdcMem, hBitmap);
+
+        // PW_RENDERFULLCONTENT = 2
+        PrintWindow(hWnd, hdcMem, 2);
+
+        SelectObject(hdcMem, hOld);
+        DeleteDC(hdcMem);
+        ReleaseDC(IntPtr.Zero, hdcScreen);
+
+        IntPtr token;
+        StartupInput input = StartupInput.Default();
+        StartupOutput output;
+        GdiplusStartup(out token, ref input, out output);
+
+        IntPtr gpBmp;
+        GdipCreateBitmapFromHBITMAP(hBitmap, IntPtr.Zero, out gpBmp);
+        Guid png = PngClsid;
+        GdipSaveImageToFile(gpBmp, path, ref png, IntPtr.Zero);
+        GdipDisposeImage(gpBmp);
+        GdiplusShutdown(token);
+
+        DeleteObject(hBitmap);
     }
 }
-"@ -ReferencedAssemblies System.Drawing
+"@
 
 function Select-Tab([IntPtr]$hWnd, [int]$idx) {
-    Add-Type -AssemblyName UIAutomationClient
-    Add-Type -AssemblyName UIAutomationTypes
-    $root = [System.Windows.Automation.AutomationElement]::FromHandle($hWnd)
-    $cond = New-Object System.Windows.Automation.PropertyCondition(
-        [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
-        [System.Windows.Automation.ControlType]::Tab)
-    $tc = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $cond)
-    if ($tc) {
-        $items = $tc.FindAll([System.Windows.Automation.TreeScope]::Children,
-                             [System.Windows.Automation.Condition]::TrueCondition)
-        if ($idx -lt $items.Count) {
-            $pat = $items[$idx].GetCurrentPattern(
-                [System.Windows.Automation.SelectionItemPattern]::Pattern)
-            $pat.Select()
-            Start-Sleep -Milliseconds $TabWaitMs
-            return $true
+    if (-not ('System.Windows.Automation.AutomationElement' -as [type])) {
+        try {
+            Add-Type -AssemblyName UIAutomationClient -ErrorAction Stop
+            Add-Type -AssemblyName UIAutomationTypes  -ErrorAction Stop
+        } catch {
+            $wpfDir = "$env:windir\Microsoft.NET\Framework64\v4.0.30319\WPF"
+            if (-not (Test-Path $wpfDir)) { $wpfDir = "$env:windir\Microsoft.NET\Framework\v4.0.30319\WPF" }
+            if (Test-Path "$wpfDir\UIAutomationClient.dll") {
+                Add-Type -Path "$wpfDir\UIAutomationClient.dll" -ErrorAction SilentlyContinue
+                Add-Type -Path "$wpfDir\UIAutomationTypes.dll"  -ErrorAction SilentlyContinue
+            }
         }
+    }
+    try {
+        $root = [System.Windows.Automation.AutomationElement]::FromHandle($hWnd)
+        if (-not $root) { return $false }
+        $cond = New-Object System.Windows.Automation.PropertyCondition(
+            [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
+            [System.Windows.Automation.ControlType]::Tab)
+        $tc = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $cond)
+        if ($tc) {
+            $items = $tc.FindAll([System.Windows.Automation.TreeScope]::Children,
+                                 [System.Windows.Automation.Condition]::TrueCondition)
+            if ($idx -lt $items.Count) {
+                $pat = $items[$idx].GetCurrentPattern(
+                    [System.Windows.Automation.SelectionItemPattern]::Pattern)
+                $pat.Select()
+                Start-Sleep -Milliseconds $TabWaitMs
+                return $true
+            }
+        }
+    } catch {
+        Write-Warning "Falha ao selecionar aba via UIAutomation: $_"
     }
     return $false
 }
