@@ -143,11 +143,26 @@ foreach ($f in $captured) { $lines += "file '$f'"; $lines += "duration 2" }
 $lines += "file '$($captured[-1])'"
 $lines | Set-Content $listFile -Encoding utf8
 
-& $FfmpegPath -y -f concat -safe 0 -i $listFile `
-    -vf "scale=1280:-2:flags=lanczos,palettegen=stats_mode=diff" $palette 2>&1 | Out-Null
-& $FfmpegPath -y -f concat -safe 0 -i $listFile -i $palette `
+$eap = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+
+& $FfmpegPath -y -loglevel error `
+    -f concat -safe 0 -i $listFile `
+    -vf "scale=1280:-2:flags=lanczos,palettegen=stats_mode=diff" $palette
+
+& $FfmpegPath -y -loglevel error `
+    -f concat -safe 0 -i $listFile -i $palette `
     -lavfi "scale=1280:-2:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" `
-    $gifOut 2>&1 | Write-Host
+    $gifOut
+
+$ErrorActionPreference = $eap
+
+if (Test-Path $gifOut) {
+    $sz = [math]::Round((Get-Item $gifOut).Length / 1MB, 2)
+    Write-Host "GIF gerado: $gifOut ($sz MB)" -ForegroundColor Green
+} else {
+    Write-Warning "GIF nao foi gerado — verifique o FFmpeg."
+}
 
 Remove-Item $listFile,$palette -ErrorAction SilentlyContinue
 
