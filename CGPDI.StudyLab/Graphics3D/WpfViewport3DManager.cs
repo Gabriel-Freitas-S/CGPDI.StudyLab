@@ -15,9 +15,10 @@ namespace CGPDI.StudyLab.Graphics3D
     {
         private readonly Viewport3D _viewport;
         private readonly Model3DGroup _modelGroup;
-        private PerspectiveCamera _perspectiveCamera;
-        private OrthographicCamera _orthographicCamera;
+        private readonly PerspectiveCamera _perspectiveCamera;
+        private readonly OrthographicCamera _orthographicCamera;
         private bool _isPerspective = true;
+        public bool IsPerspective => _isPerspective;
         private GeometryModel3D _currentGeometryModel;
         private Model3DGroup? _hierarchicalGroup;
 
@@ -29,9 +30,9 @@ namespace CGPDI.StudyLab.Graphics3D
         private bool _isMouseDragging;
 
         // Luzes
-        private DirectionalLight _directionalLight;
-        private System.Windows.Media.Media3D.PointLight _pointLight;
-        private AmbientLight _ambientLight;
+        private readonly DirectionalLight _directionalLight;
+        private readonly System.Windows.Media.Media3D.PointLight _pointLight;
+        private readonly AmbientLight _ambientLight;
 
         public WpfViewport3DManager(Viewport3D viewport)
         {
@@ -282,7 +283,7 @@ namespace CGPDI.StudyLab.Graphics3D
             UpdateMaterial(c, 40.0, true);
         }
 
-        private MeshGeometry3D BuildCubeMesh(double size)
+        private static MeshGeometry3D BuildCubeMesh(double size)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
             double h = size / 2.0;
@@ -323,7 +324,7 @@ namespace CGPDI.StudyLab.Graphics3D
             return mesh;
         }
 
-        private MeshGeometry3D BuildSphereMesh(double radius, int latBands, int lonBands)
+        private static MeshGeometry3D BuildSphereMesh(double radius, int latBands, int lonBands)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
 
@@ -369,7 +370,7 @@ namespace CGPDI.StudyLab.Graphics3D
             return mesh;
         }
 
-        private MeshGeometry3D BuildTorusMesh(double rMajor, double rMinor, int majorSegments, int minorSegments)
+        private static MeshGeometry3D BuildTorusMesh(double rMajor, double rMinor, int majorSegments, int minorSegments)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
 
@@ -419,7 +420,7 @@ namespace CGPDI.StudyLab.Graphics3D
             return mesh;
         }
 
-        private MeshGeometry3D BuildCylinderMesh(double radius, double height, int segments)
+        private static MeshGeometry3D BuildCylinderMesh(double radius, double height, int segments)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
             double halfH = height / 2.0;
@@ -454,7 +455,7 @@ namespace CGPDI.StudyLab.Graphics3D
             return mesh;
         }
 
-        private MeshGeometry3D BuildConeMesh(double radius, double height, int segments)
+        private static MeshGeometry3D BuildConeMesh(double radius, double height, int segments)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
             double halfH = height / 2.0;
@@ -493,7 +494,7 @@ namespace CGPDI.StudyLab.Graphics3D
         /// y(u,v) = (v/2)*sin(u/2)
         /// z(u,v) = (1 + (v/2)*cos(u/2)) * sin(u)
         /// </summary>
-        private MeshGeometry3D BuildMobiusStripMesh(double radius, double width, int uSegments, int vSegments)
+        private static MeshGeometry3D BuildMobiusStripMesh(double radius, double width, int uSegments, int vSegments)
         {
             MeshGeometry3D mesh = new MeshGeometry3D();
 

@@ -25,6 +25,17 @@ namespace CGPDI.StudyLab.Tests.UiTests
             window.BtnStudioQuizOpt0.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             window.BrdStudioQuizFeedback.Visibility.Should().Be(Visibility.Visible);
 
+            // Testa botões de alternância de painéis
+            window.BtnStudioToggleTrack.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            window.BtnStudioToggleTrack.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+            window.BtnStudioToggleCanvas.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            window.BtnStudioToggleCanvas.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+            // Testa mudança de lição
+            window.LstStudioLessons.SelectedIndex = 1;
+            window.TxtStudioLessonTitle.Text.Should().NotBeNullOrEmpty();
+
             window.Close();
         }
     }

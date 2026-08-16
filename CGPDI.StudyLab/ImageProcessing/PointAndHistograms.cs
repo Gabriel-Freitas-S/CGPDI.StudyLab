@@ -450,9 +450,12 @@ namespace CGPDI.StudyLab.ImageProcessing
                         byte g = row[x * 4 + 1];
                         byte r = row[x * 4 + 2];
 
-                        if (r < minR) minR = r; if (r > maxR) maxR = r;
-                        if (g < minG) minG = g; if (g > maxG) maxG = g;
-                        if (b < minB) minB = b; if (b > maxB) maxB = b;
+                        if (r < minR) minR = r;
+                        if (r > maxR) maxR = r;
+                        if (g < minG) minG = g;
+                        if (g > maxG) maxG = g;
+                        if (b < minB) minB = b;
+                        if (b > maxB) maxB = b;
                     }
                 }
 

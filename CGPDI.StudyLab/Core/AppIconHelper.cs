@@ -74,9 +74,15 @@ namespace CGPDI.StudyLab.Core
                         }
                     }
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // Ignora falhas de escrita na pasta do repositório em tempo de execução
+                }
             }
-            catch { }
+            catch (Exception)
+            {
+                // Fallback seguro se não houver permissão de escrita no diretório do executável
+            }
         }
 
         public static void GenerateAndSaveIcons(string icoFilePath, string pngFilePath)
@@ -128,8 +134,8 @@ namespace CGPDI.StudyLab.Core
                     bw.Write((byte)0); // Reserved
                     bw.Write((short)1); // Color planes
                     bw.Write((short)32); // Bits per pixel
-                    bw.Write((int)pngData.Length); // Size of image data
-                    bw.Write((int)offset); // Offset of image data
+                    bw.Write(pngData.Length); // Size of image data
+                    bw.Write(offset); // Offset of image data
 
                     offset += pngData.Length;
                 }

@@ -526,9 +526,9 @@ namespace CGPDI.StudyLab.Core
                 long totalRead = 0;
                 int read;
 
-                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length, ct)) > 0)
+                while ((read = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), ct)) > 0)
                 {
-                    await fs.WriteAsync(buffer, 0, read, ct);
+                    await fs.WriteAsync(buffer.AsMemory(0, read), ct);
                     totalRead += read;
 
                     if (totalBytes.HasValue && totalBytes.Value > 0)
@@ -567,7 +567,7 @@ namespace CGPDI.StudyLab.Core
                 }
 
                 string targetExe = Path.Combine(targetDir, "CGPDI.StudyLab.exe");
-                int currentPid = Process.GetCurrentProcess().Id;
+                int currentPid = Environment.ProcessId;
 
                 string batchPath = Path.Combine(tempFolder, "apply_update.bat");
                 string batchScript = $@"@echo off
@@ -582,9 +582,10 @@ echo Reiniciando CGPDI StudyLab...
 start """" ""{targetExe}""
 del ""%~f0""
 ";
-                File.WriteAllText(batchPath, batchScript);
+                await File.WriteAllTextAsync(batchPath, batchScript, ct);
 
-                var psi = new ProcessStartInfo("cmd.exe", $"/c \"{batchPath}\"")
+                string cmdPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmd.exe");
+                var psi = new ProcessStartInfo(cmdPath, $"/c \"{batchPath}\"")
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false
@@ -620,7 +621,7 @@ del ""%~f0""
                 }
                 return true;
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }

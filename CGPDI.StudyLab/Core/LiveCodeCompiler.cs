@@ -1,9 +1,11 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -47,7 +49,7 @@ namespace CGPDI.StudyLab.Core
         }
     }
 
-    public static class LiveCodeCompiler
+    public static partial class LiveCodeCompiler
     {
         private static readonly ScriptOptions DefaultOptions = ScriptOptions.Default
             .WithReferences(
@@ -91,51 +93,51 @@ namespace CGPDI.StudyLab.Core
                 switch (lesson.Type)
                 {
                     case LessonType.BgraMemoryLayout:
-                        await RunBgraTestsAsync(userCode, report, logs);
+                        await RunBgraTestsAsync(userCode, report);
                         break;
 
                     case LessonType.CSharpPropertiesAndNotify:
-                        await RunPropertiesAndNotifyTestsAsync(userCode, report, logs);
+                        await RunPropertiesAndNotifyTestsAsync(userCode, report);
                         break;
 
                     case LessonType.PointerStrideOffset:
-                        await RunPointersAndStrideTestsAsync(userCode, report, logs);
+                        await RunPointersAndStrideTestsAsync(userCode, report);
                         break;
 
                     case LessonType.WpfXamlAndDependencyProps:
-                        await RunXamlLayoutTestsAsync(userCode, report, logs);
+                        await RunXamlLayoutTestsAsync(userCode, report);
                         break;
 
                     case LessonType.WriteableBitmapLifecycle:
-                        await RunWriteableBitmapTestsAsync(userCode, report, logs);
+                        await RunWriteableBitmapTestsAsync(userCode, report);
                         break;
 
                     case LessonType.ConvolutionStepByStep:
-                        await RunBoxBlurTestsAsync(userCode, report, logs);
+                        await RunBoxBlurTestsAsync(userCode, report);
                         break;
 
                     case LessonType.OtsuThresholdSearch:
-                        await RunOtsuTestsAsync(userCode, report, logs);
+                        await RunOtsuTestsAsync(userCode, report);
                         break;
 
                     case LessonType.BresenhamStepByStep:
-                        await RunBresenhamTestsAsync(userCode, report, logs);
+                        await RunBresenhamTestsAsync(userCode, report);
                         break;
 
                     case LessonType.MatrixTransform2D:
-                        await RunAffineTransformTestsAsync(userCode, report, logs);
+                        await RunAffineTransformTestsAsync(userCode, report);
                         break;
 
                     case LessonType.PipelineMVP3D:
-                        await RunPerspectiveTestsAsync(userCode, report, logs);
+                        await RunPerspectiveTestsAsync(userCode, report);
                         break;
 
                     case LessonType.HierarchicalSceneGraph:
-                        await RunRobotArmTestsAsync(userCode, report, logs);
+                        await RunRobotArmTestsAsync(userCode, report);
                         break;
 
                     case LessonType.RayTracingIntersection:
-                        await RunRaySphereTestsAsync(userCode, report, logs);
+                        await RunRaySphereTestsAsync(userCode, report);
                         break;
 
                     default:
@@ -762,7 +764,7 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
         #region Baterias de Testes Automatizados por Lição
 
         // 1. Bytes & Formato BGRA32
-        private static async Task RunBgraTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunBgraTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -775,8 +777,8 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
 ";
             var (val1, val2, val3) = await CSharpScript.EvaluateAsync<(uint, uint, uint)>(script, DefaultOptions);
 
-            uint exp1 = ((uint)255 | ((uint)0 << 8) | ((uint)0 << 16) | ((uint)255 << 24));
-            bool pass1 = (val1 == exp1) || (val1 == 0xFF0000FF);
+            uint exp1 = 0xFF0000FFu;
+            bool pass1 = (val1 == exp1);
             report.Tests.Add(new TestResult
             {
                 Name = "Teste 1: Empacotamento de Azul Puro (B=255, G=0, R=0, A=255)",
@@ -786,7 +788,7 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
                 Details = pass1 ? "Byte B posicionado corretamente no byte 0." : "Bit shifts incorretos para os canais."
             });
 
-            uint exp2 = ((uint)0 | ((uint)255 << 8) | ((uint)0 << 16) | ((uint)255 << 24));
+            uint exp2 = 0xFF00FF00u;
             bool pass2 = (val2 == exp2);
             report.Tests.Add(new TestResult
             {
@@ -797,7 +799,7 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
                 Details = pass2 ? "Canal Verde corretamente deslocado por << 8." : "Erro de deslocamento no canal Green."
             });
 
-            uint exp3 = ((uint)10 | ((uint)20 << 8) | ((uint)30 << 16) | ((uint)40 << 24));
+            uint exp3 = (10u | (20u << 8) | (30u << 16) | (40u << 24));
             bool pass3 = (val3 == exp3);
             report.Tests.Add(new TestResult
             {
@@ -810,7 +812,7 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
         }
 
         // 2. C# Propriedades, Delegates & INotifyPropertyChanged
-        private static async Task RunPropertiesAndNotifyTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunPropertiesAndNotifyTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -852,7 +854,7 @@ tupleFunc()
         }
 
         // 3. Ponteiros & Stride
-        private static async Task RunPointersAndStrideTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunPointersAndStrideTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -896,7 +898,7 @@ tupleFunc()
         }
 
         // 4. WPF XAML, Dependency Properties & Layout
-        private static async Task RunXamlLayoutTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunXamlLayoutTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -930,7 +932,7 @@ tupleFunc()
         }
 
         // 5. Ciclo de Vida do WriteableBitmap
-        private static async Task RunWriteableBitmapTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunWriteableBitmapTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -950,7 +952,7 @@ GetLifecycleSequence()
         }
 
         // 6. Convolução 2D Passo a Passo (Box Blur 3x3)
-        private static async Task RunBoxBlurTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunBoxBlurTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -983,7 +985,7 @@ GetLifecycleSequence()
         }
 
         // 7. Binarização de Otsu
-        private static async Task RunOtsuTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunOtsuTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1003,7 +1005,7 @@ CalculateOtsuThreshold(new int[] {{ 50, 50, 50, 50, 200, 200, 200, 200 }})
         }
 
         // 8. Reta de Bresenham
-        private static async Task RunBresenhamTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunBresenhamTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1035,7 +1037,7 @@ CalculateOtsuThreshold(new int[] {{ 50, 50, 50, 50, 200, 200, 200, 200 }})
         }
 
         // 9. Álgebra Linear 2D & Coordenadas Homogêneas
-        private static async Task RunAffineTransformTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunAffineTransformTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1070,7 +1072,7 @@ CalculateOtsuThreshold(new int[] {{ 50, 50, 50, 50, 200, 200, 200, 200 }})
         }
 
         // 10. Pipeline MVP 3D & Divisão Perspectiva
-        private static async Task RunPerspectiveTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunPerspectiveTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1091,7 +1093,7 @@ ProjectPerspectiveX(10.0, 2.0, 100.0)
         }
 
         // 11. Cinemática Direta do Robô
-        private static async Task RunRobotArmTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunRobotArmTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1112,7 +1114,7 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
         }
 
         // 12. Ray Tracing & Interseção Raio-Esfera
-        private static async Task RunRaySphereTestsAsync(string userCode, EvaluationReport report, StringBuilder logs)
+        private static async Task RunRaySphereTestsAsync(string userCode, EvaluationReport report)
         {
             string script = $@"
 {userCode}
@@ -1250,6 +1252,26 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
             return result;
         }
 
+        [GeneratedRegex(@"\s+x:Class(Modifier)?=""[^""]*""")]
+        private static partial Regex XamlClassRegex();
+
+        [GeneratedRegex(@"\s+mc:Ignorable=""[^""]*""")]
+        private static partial Regex XamlIgnorableRegex();
+
+        [GeneratedRegex(@"\s+xmlns:mc=""[^""]*""")]
+        private static partial Regex XamlXmlnsMcRegex();
+
+        [GeneratedRegex(@"\s+xmlns:d=""[^""]*""")]
+        private static partial Regex XamlXmlnsDRegex();
+
+        [GeneratedRegex(@"\s+d:[A-Za-z0-9]+=""[^""]*""")]
+        private static partial Regex XamlDAttrRegex();
+
+        [GeneratedRegex(@"\s+WindowStartupLocation=""[^""]*""")]
+        private static partial Regex XamlWindowStartupRegex();
+
+        private static readonly SearchValues<char> XamlTagDelimiters = SearchValues.Create(" >\r\n\t");
+
         public static XamlEvaluationResult EvaluateXaml(string xamlCode)
         {
             var result = new XamlEvaluationResult();
@@ -1267,19 +1289,19 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
                 string fullXaml = xamlCode.Trim();
 
                 // 1. Remove x:Class, x:ClassModifier, mc:Ignorable e namespaces de design para compatibilidade direta com XamlReader
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+x:Class(Modifier)?=""[^""]*""", "");
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+mc:Ignorable=""[^""]*""", "");
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+xmlns:mc=""[^""]*""", "");
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+xmlns:d=""[^""]*""", "");
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+d:[A-Za-z0-9]+=""[^""]*""", "");
-                fullXaml = System.Text.RegularExpressions.Regex.Replace(fullXaml, @"\s+WindowStartupLocation=""[^""]*""", "");
+                fullXaml = XamlClassRegex().Replace(fullXaml, "");
+                fullXaml = XamlIgnorableRegex().Replace(fullXaml, "");
+                fullXaml = XamlXmlnsMcRegex().Replace(fullXaml, "");
+                fullXaml = XamlXmlnsDRegex().Replace(fullXaml, "");
+                fullXaml = XamlDAttrRegex().Replace(fullXaml, "");
+                fullXaml = XamlWindowStartupRegex().Replace(fullXaml, "");
 
                 // 2. Se o usuário não incluiu os namespaces raiz do WPF, injeta automaticamente para conveniência
                 if (!fullXaml.Contains("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"") &&
                     !fullXaml.Contains("xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'"))
                 {
-                    int firstSpace = fullXaml.IndexOfAny(new[] { ' ', '>', '\r', '\n', '\t' });
-                    if (firstSpace > 1 && fullXaml.StartsWith("<"))
+                    int firstSpace = fullXaml.AsSpan().IndexOfAny(XamlTagDelimiters);
+                    if (firstSpace > 1 && fullXaml.StartsWith('<'))
                     {
                         string tag = fullXaml.Substring(1, firstSpace - 1);
                         string rest = fullXaml.Substring(firstSpace);

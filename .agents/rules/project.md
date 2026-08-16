@@ -13,6 +13,18 @@ Aplicativo WPF (.NET 10) de Computação Gráfica e Processamento Digital de Ima
 - Após qualquer mudança de código, rode **build + testes** antes de concluir.
 - Após modificar código-fonte, rode `graphify update .` para manter o grafo atual.
 
+## Regra de qualidade (obrigatória — SonarQube)
+- Após mudanças em código (`*.cs`, `*.xaml`, `*.csproj`), rode `powershell -ExecutionPolicy Bypass -File sonar-scan.ps1` (begin → build → testes com cobertura → end).
+- Servidor local `http://localhost:9000` (CE 26.8, JDK 21), dashboard `id=cgpdi-studylab`, token em `.sonar-token`/`SONAR_TOKEN`.
+- Não conclua com novos bugs/vulnerabilidades. Code smells/duplicação: reduza ao tocar no arquivo. Cobertura exige testes.
+- Servidor offline: iniciar `StartSonar.bat` em `C:\tools\sonarqube\sonarqube-26.8.0.126808\bin\windows-x86-64` e aguardar `UP`.
+
+## Regra de segurança (obrigatória)
+- Após mudanças em dependências (`*.csproj`, `package.json`) ou código (`*.cs`, `*.xaml`), rode **`snyk test --all-projects`** (dependências) e **`snyk code test`** (análise estática) antes de concluir.
+- Não conclua tarefa com achados `high/critical` não resolvidos — corrija ou documente exceção no `.snyk`. Achados `low/medium` são pendências.
+- Falhas de auth → `snyk auth` ou `SNYK_TOKEN`/`SNYK_CFG_ORG`.
+- Servidor MCP do Snyk configurado em `.opencode/opencode.json` (servidor `snyk`).
+
 ## Regra de testes (obrigatória)
 - Toda funcionalidade nova ou bug corrigido DEVE ter um teste em `CGPDI.StudyLab.Tests` (unitário em `UnitTests/` e/ou de UI em `UiTests/`).
 - Não conclua tarefa com teste faltando. Regressão sem teste = tarefa incompleta.

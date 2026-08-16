@@ -118,10 +118,12 @@ namespace CGPDI.StudyLab.Core
             _ => MutedColor
         };
 
-        private static Brush FromHex(string hex)
+        private static SolidColorBrush FromHex(string hex)
         {
             Color color = (Color)ColorConverter.ConvertFromString(hex);
-            return new SolidColorBrush(color);
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
         }
     }
 }

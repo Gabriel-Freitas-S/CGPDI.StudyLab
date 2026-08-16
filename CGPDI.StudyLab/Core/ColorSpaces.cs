@@ -87,19 +87,19 @@ namespace CGPDI.StudyLab.Core
 
             v = max; // Value é o valor máximo entre os 3 canais
 
-            s = max == 0 ? 0 : delta / max; // Saturação
+            s = Math.Abs(max) < 1e-9 ? 0 : delta / max; // Saturação
 
-            if (delta == 0)
+            if (Math.Abs(delta) < 1e-9)
             {
                 h = 0; // Matiz indefinida para escala de cinza
             }
             else
             {
-                if (max == rf)
+                if (Math.Abs(max - rf) < 1e-9)
                 {
                     h = 60.0 * (((gf - bf) / delta) % 6);
                 }
-                else if (max == gf)
+                else if (Math.Abs(max - gf) < 1e-9)
                 {
                     h = 60.0 * (((bf - rf) / delta) + 2);
                 }

@@ -38,10 +38,16 @@ namespace CGPDI.StudyLab.Core
     /// <summary>
     /// Parser leve de markdown para notas de release (cabeçalhos, listas, negrito e código inline).
     /// </summary>
-    public static class ChangelogParser
+    public static partial class ChangelogParser
     {
-        private const string HeadingPattern = @"^(#{1,3})\s+(.+)$";
-        private const string BulletPattern = @"^\s*(?:[-*•])\s+(.+)$";
+        [GeneratedRegex(@"^(#{1,3})\s+(.+)$")]
+        private static partial Regex HeadingRegex();
+
+        [GeneratedRegex(@"^\s*(?:[-*•])\s+(.+)$")]
+        private static partial Regex BulletRegex();
+
+        [GeneratedRegex(@"(\*\*[^*]+\*\*|`[^`]+`)")]
+        private static partial Regex InlineRegex();
 
         public static List<ChangelogBlock> Parse(string markdown)
         {
@@ -53,7 +59,7 @@ namespace CGPDI.StudyLab.Core
             {
                 string line = rawLine.TrimEnd('\r');
 
-                Match heading = Regex.Match(line, HeadingPattern);
+                Match heading = HeadingRegex().Match(line);
                 if (heading.Success)
                 {
                     current = new ChangelogBlock
@@ -65,7 +71,7 @@ namespace CGPDI.StudyLab.Core
                     continue;
                 }
 
-                Match bullet = Regex.Match(line, BulletPattern);
+                Match bullet = BulletRegex().Match(line);
                 if (bullet.Success)
                 {
                     current ??= NewIntroBlock(blocks);
@@ -88,9 +94,8 @@ namespace CGPDI.StudyLab.Core
             var segments = new List<ChangelogInlineSegment>();
             if (string.IsNullOrEmpty(text)) return segments;
 
-            const string inlinePattern = @"(\*\*[^*]+\*\*|`[^`]+`)";
             int index = 0;
-            foreach (Match match in Regex.Matches(text, inlinePattern))
+            foreach (Match match in InlineRegex().Matches(text))
             {
                 if (match.Index > index)
                 {

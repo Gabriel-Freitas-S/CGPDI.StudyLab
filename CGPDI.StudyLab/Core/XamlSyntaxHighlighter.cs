@@ -9,7 +9,7 @@ namespace CGPDI.StudyLab.Core
     /// <summary>
     /// Motor de Syntax Highlighting de alta performance para marcação WPF / XAML / XML.
     /// </summary>
-    public static class XamlSyntaxHighlighter
+    public static partial class XamlSyntaxHighlighter
     {
         // Paleta Visual Studio / VS Code Dark para XAML
         private static readonly SolidColorBrush BrushDefault = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0"));
@@ -29,7 +29,7 @@ namespace CGPDI.StudyLab.Core
             BrushNamespace.Freeze();
         }
 
-        private static readonly Regex XamlTokenRegex = new Regex(
+        [GeneratedRegex(
             @"(?<Comment><!--.*?-->)|" +
             @"(?<String>""(?:\\.|[^""\\])*"")|" +
             @"(?<TagClose></[a-zA-Z0-9_\.:]+>)|" +
@@ -37,13 +37,16 @@ namespace CGPDI.StudyLab.Core
             @"(?<TagEnd>/?>)|" +
             @"(?<Attribute>[a-zA-Z0-9_\.:]+)(?=\s*=)|" +
             @"(?<Symbol>[=])",
-            RegexOptions.Multiline | RegexOptions.Compiled);
+            RegexOptions.Multiline)]
+        private static partial Regex XamlTokenRegex();
 
         /// <summary>
         /// Aplica Syntax Highlighting de XAML no FlowDocument de um RichTextBox.
         /// </summary>
         public static void Highlight(RichTextBox rtb, string xamlCode)
         {
+            if (rtb == null) return;
+
             var doc = new FlowDocument
             {
                 PagePadding = new System.Windows.Thickness(8),
@@ -53,13 +56,11 @@ namespace CGPDI.StudyLab.Core
             };
 
             var paragraph = new Paragraph { Margin = new System.Windows.Thickness(0) };
-
-            string[] lines = xamlCode.Replace("\r\n", "\n").Split('\n');
+            string[] lines = (xamlCode ?? string.Empty).Replace("\r\n", "\n").Split('\n');
 
             for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 string line = lines[lineIndex];
-
                 if (string.IsNullOrEmpty(line))
                 {
                     paragraph.Inlines.Add(new Run("\n"));
@@ -67,9 +68,7 @@ namespace CGPDI.StudyLab.Core
                 }
 
                 int lastIndex = 0;
-                var matches = XamlTokenRegex.Matches(line);
-
-                foreach (Match match in matches)
+                foreach (Match match in XamlTokenRegex().Matches(line))
                 {
                     if (match.Index > lastIndex)
                     {
@@ -77,32 +76,7 @@ namespace CGPDI.StudyLab.Core
                         paragraph.Inlines.Add(new Run(ws) { Foreground = BrushDefault });
                     }
 
-                    string text = match.Value;
-
-                    if (match.Groups["Comment"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushComment });
-                    }
-                    else if (match.Groups["String"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushString });
-                    }
-                    else if (match.Groups["TagOpen"].Success || match.Groups["TagClose"].Success || match.Groups["TagEnd"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushTag, FontWeight = System.Windows.FontWeights.SemiBold });
-                    }
-                    else if (match.Groups["Attribute"].Success)
-                    {
-                        var brush = text.StartsWith("xmlns", StringComparison.OrdinalIgnoreCase) || text.StartsWith("x:", StringComparison.OrdinalIgnoreCase)
-                            ? BrushNamespace
-                            : BrushAttribute;
-                        paragraph.Inlines.Add(new Run(text) { Foreground = brush });
-                    }
-                    else
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushDefault });
-                    }
-
+                    paragraph.Inlines.Add(CreateRunForXamlMatch(match));
                     lastIndex = match.Index + match.Length;
                 }
 
@@ -119,6 +93,33 @@ namespace CGPDI.StudyLab.Core
 
             doc.Blocks.Add(paragraph);
             rtb.Document = doc;
+        }
+
+        private static Run CreateRunForXamlMatch(Match match)
+        {
+            string text = match.Value;
+
+            if (match.Groups["Comment"].Success)
+            {
+                return new Run(text) { Foreground = BrushComment };
+            }
+            if (match.Groups["String"].Success)
+            {
+                return new Run(text) { Foreground = BrushString };
+            }
+            if (match.Groups["TagOpen"].Success || match.Groups["TagClose"].Success || match.Groups["TagEnd"].Success)
+            {
+                return new Run(text) { Foreground = BrushTag, FontWeight = System.Windows.FontWeights.SemiBold };
+            }
+            if (match.Groups["Attribute"].Success)
+            {
+                var brush = text.StartsWith("xmlns", StringComparison.OrdinalIgnoreCase) || text.StartsWith("x:", StringComparison.OrdinalIgnoreCase)
+                    ? BrushNamespace
+                    : BrushAttribute;
+                return new Run(text) { Foreground = brush };
+            }
+
+            return new Run(text) { Foreground = BrushDefault };
         }
 
         public static string GetPlainText(RichTextBox rtb)

@@ -49,9 +49,9 @@ namespace CGPDI.StudyLab.Views
             LoadDefaultXamlSnippet();
 
             RtbFreeCode.TextChanged += RtbFreeCode_TextChanged;
-            RtbFreeXamlCode.TextChanged += RtbFreeXamlCode_TextChanged;
+            RtbFreeXamlCode.TextChanged += RtbFreeCode_TextChanged;
 
-            ExecuteFreeScript();
+            _ = ExecuteFreeScript();
         }
 
         private void InitStudio()
@@ -118,7 +118,7 @@ namespace CGPDI.StudyLab.Views
 
             if (!_isInitializing)
             {
-                ExecuteFreeScript();
+                _ = ExecuteFreeScript();
             }
         }
 
@@ -173,20 +173,16 @@ namespace CGPDI.StudyLab.Views
             _sliderDebounceTimer.Start();
         }
 
+        private static readonly SolidColorBrush ConsoleCyanBrush = new((Color)ColorConverter.ConvertFromString("#38BDF8"));
+        private static readonly SolidColorBrush ConsoleRedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
+
         private void SliderDebounceTimer_Tick(object? sender, EventArgs e)
         {
             _sliderDebounceTimer.Stop();
-            ExecuteFreeScript();
+            _ = ExecuteFreeScript();
         }
 
         private void RtbFreeCode_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_isHighlighting || _isInitializing) return;
-            _highlightDebounceTimer.Stop();
-            _highlightDebounceTimer.Start();
-        }
-
-        private void RtbFreeXamlCode_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_isHighlighting || _isInitializing) return;
             _highlightDebounceTimer.Stop();
@@ -217,7 +213,7 @@ namespace CGPDI.StudyLab.Views
                     CSharpSyntaxHighlighter.SetCaretCharIndex(RtbFreeCode, offset);
                 }
             }
-            catch
+            catch (Exception)
             {
                 // Fallback seguro durante digitação rápida
             }
@@ -229,18 +225,16 @@ namespace CGPDI.StudyLab.Views
 
         private void CbResolution_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbResolution.SelectedItem is ComboBoxItem item && int.TryParse(item.Tag?.ToString(), out int res))
+            if (CbResolution.SelectedItem is ComboBoxItem item && int.TryParse(item.Tag?.ToString(), out int res)
+                && _freeBitmap != null && (_freeBitmap.Width != res || _freeBitmap.Height != res))
             {
-                if (_freeBitmap != null && (_freeBitmap.Width != res || _freeBitmap.Height != res))
-                {
-                    _freeBitmap = new DirectBitmap(res, res);
-                    ImgFreeSimulation.Source = _freeBitmap.Bitmap;
-                    if (!_isInitializing) ExecuteFreeScript();
-                }
+                _freeBitmap = new DirectBitmap(res, res);
+                ImgFreeSimulation.Source = _freeBitmap.Bitmap;
+                if (!_isInitializing) _ = ExecuteFreeScript();
             }
         }
 
-        public async void ExecuteFreeScript()
+        public async Task ExecuteFreeScript()
         {
             if (_freeBitmap == null) return;
 
@@ -271,7 +265,7 @@ namespace CGPDI.StudyLab.Views
                     TxtFreeConsole.Text = string.IsNullOrEmpty(result.Logs)
                         ? $"[Compilação com Êxito] Script C# executado em {result.ExecutionTimeMs:F1} ms."
                         : $"[Logs de Execução]:\n{result.Logs}\n\nTempo: {result.ExecutionTimeMs:F1} ms.";
-                    TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#38BDF8"));
+                    TxtFreeConsole.Foreground = ConsoleCyanBrush;
                     TxtStudioStatus.Text = $"Pronto. Executado em {result.ExecutionTimeMs:F1} ms.";
                     TabStudioVisualizer.SelectedIndex = 0;
                 }
@@ -279,14 +273,14 @@ namespace CGPDI.StudyLab.Views
                 {
                     TxtFreeStats.Text = $"Erro de Compilação • Resolução: {_freeBitmap.Width}×{_freeBitmap.Height}";
                     TxtFreeConsole.Text = $"[Falha na Execução Roslyn]:\n{result.ErrorMessage}";
-                    TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                    TxtFreeConsole.Foreground = ConsoleRedBrush;
                     TxtStudioStatus.Text = "Erro detectado no código. Verifique os diagnósticos no console.";
                 }
             }
             catch (Exception ex)
             {
                 TxtFreeConsole.Text = $"[Erro de Execução]:\n{ex.Message}";
-                TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                TxtFreeConsole.Foreground = ConsoleRedBrush;
                 TxtStudioStatus.Text = "Erro durante a execução do script.";
             }
             finally
@@ -295,7 +289,7 @@ namespace CGPDI.StudyLab.Views
                 if (_pendingScriptExecution)
                 {
                     _pendingScriptExecution = false;
-                    ExecuteFreeScript();
+                    _ = ExecuteFreeScript();
                 }
             }
         }
@@ -328,7 +322,7 @@ namespace CGPDI.StudyLab.Views
             catch (Exception ex)
             {
                 TxtFreeConsole.Text = $"[Erro de Execução XAML]:\n{ex.Message}";
-                TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                TxtFreeConsole.Foreground = ConsoleRedBrush;
                 TxtStudioStatus.Text = "Erro ao renderizar árvore visual XAML.";
             }
         }
@@ -342,7 +336,7 @@ namespace CGPDI.StudyLab.Views
             else
             {
                 LiveCodeCompiler.ClearCustomScriptCache();
-                ExecuteFreeScript();
+                _ = ExecuteFreeScript();
             }
         }
 
@@ -382,7 +376,7 @@ namespace CGPDI.StudyLab.Views
                 CSharpSyntaxHighlighter.SetCode(RtbFreeCode, tpl.InitialCode);
                 _isHighlighting = false;
                 ConfigureSliders(tpl);
-                ExecuteFreeScript();
+                _ = ExecuteFreeScript();
             }
         }
 

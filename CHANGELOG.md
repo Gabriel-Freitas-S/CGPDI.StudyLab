@@ -10,6 +10,15 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 
 ## [Unreleased]
 
+### Alterado
+- Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]`, eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
+- Refatoração de comparadores de ponto flutuante em conversões de espaços de cores para tolerâncias seguras com epsilon (`1e-9`).
+- Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
+
+### Corrigido
+- Tratamento explícito de cancelamento e descarte seguro de `CancellationTokenSource` no diálogo de atualizações.
+- Correção de operações binárias em métodos de teste dinâmico do compilador em tempo de execução.
+
 ## [v1.0.5] - 2026-08-16
 
 ### Adicionado

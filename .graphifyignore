@@ -30,3 +30,8 @@ graphify-out/
 # Inno Setup installer output
 dist-installer/
 publish/
+
+# SonarQube local analysis
+TestResults/
+.sonar-token
+.sonarqube/

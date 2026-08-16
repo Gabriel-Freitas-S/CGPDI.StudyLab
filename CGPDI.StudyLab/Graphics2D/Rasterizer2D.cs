@@ -349,7 +349,7 @@ namespace CGPDI.StudyLab.Graphics2D
 
         #region Preenchimento de Polígonos por Varredura (Scanline Fill)
 
-        private class Edge
+        private sealed class Edge
         {
             public int YMax;
             public double XCurrent;
@@ -459,7 +459,7 @@ namespace CGPDI.StudyLab.Graphics2D
         #region Recorte de Linhas Cohen-Sutherland (Line Clipping)
 
         [Flags]
-        public enum OutCode
+        public enum OutCodes
         {
             Inside = 0,
             Left = 1,
@@ -468,13 +468,13 @@ namespace CGPDI.StudyLab.Graphics2D
             Top = 8
         }
 
-        private static OutCode ComputeOutCode(double x, double y, Rect clip)
+        private static OutCodes ComputeOutCode(double x, double y, Rect clip)
         {
-            OutCode code = OutCode.Inside;
-            if (x < clip.Left) code |= OutCode.Left;
-            else if (x > clip.Right) code |= OutCode.Right;
-            if (y < clip.Top) code |= OutCode.Top;
-            else if (y > clip.Bottom) code |= OutCode.Bottom;
+            OutCodes code = OutCodes.Inside;
+            if (x < clip.Left) code |= OutCodes.Left;
+            else if (x > clip.Right) code |= OutCodes.Right;
+            if (y < clip.Top) code |= OutCodes.Top;
+            else if (y > clip.Bottom) code |= OutCodes.Bottom;
             return code;
         }
 
@@ -490,14 +490,14 @@ namespace CGPDI.StudyLab.Graphics2D
             double x0 = p0.X, y0 = p0.Y;
             double x1 = p1.X, y1 = p1.Y;
 
-            OutCode code0 = ComputeOutCode(x0, y0, clip);
-            OutCode code1 = ComputeOutCode(x1, y1, clip);
+            OutCodes code0 = ComputeOutCode(x0, y0, clip);
+            OutCodes code1 = ComputeOutCode(x1, y1, clip);
 
             bool accept = false;
 
             while (true)
             {
-                if ((code0 | code1) == OutCode.Inside)
+                if ((code0 | code1) == OutCodes.Inside)
                 {
                     accept = true;
                     break;
@@ -510,25 +510,25 @@ namespace CGPDI.StudyLab.Graphics2D
                 else
                 {
                     // Pelo menos um ponto está fora: calcula interseção
-                    OutCode outcodeOut = code0 != OutCode.Inside ? code0 : code1;
+                    OutCodes outcodeOut = code0 != OutCodes.Inside ? code0 : code1;
                     double x = 0, y = 0;
 
-                    if (outcodeOut.HasFlag(OutCode.Top))
+                    if (outcodeOut.HasFlag(OutCodes.Top))
                     {
                         x = x0 + (x1 - x0) * (clip.Top - y0) / (y1 - y0);
                         y = clip.Top;
                     }
-                    else if (outcodeOut.HasFlag(OutCode.Bottom))
+                    else if (outcodeOut.HasFlag(OutCodes.Bottom))
                     {
                         x = x0 + (x1 - x0) * (clip.Bottom - y0) / (y1 - y0);
                         y = clip.Bottom;
                     }
-                    else if (outcodeOut.HasFlag(OutCode.Right))
+                    else if (outcodeOut.HasFlag(OutCodes.Right))
                     {
-                        y = y0 + (y1 - y0) * (clip.Right - x0) / (x1 - x0);
-                        x = clip.Right;
+                        x = x0 + (x1 - x0) * (clip.Right - x0) / (x1 - x0);
+                        y = clip.Right;
                     }
-                    else if (outcodeOut.HasFlag(OutCode.Left))
+                    else if (outcodeOut.HasFlag(OutCodes.Left))
                     {
                         y = y0 + (y1 - y0) * (clip.Left - x0) / (x1 - x0);
                         x = clip.Left;

@@ -2,5 +2,18 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     ".opencode/plugins/graphify.js"
-  ]
+  ],
+  "mcp": {
+    "snyk": {
+      "type": "local",
+      "command": [
+        "C:\\tools\\snyk\\snyk.exe",
+        "mcp",
+        "-t",
+        "stdio",
+        "--disable-trust"
+      ],
+      "enabled": true
+    }
+  }
 }

@@ -10,7 +10,7 @@ namespace CGPDI.StudyLab.Core
     /// <summary>
     /// Formatador e motor de Syntax Highlighting de alta performance para código C# em temas escuros.
     /// </summary>
-    public static class CSharpSyntaxHighlighter
+    public static partial class CSharpSyntaxHighlighter
     {
         // Paleta Visual Studio / VS Code Dark Moderna
         private static readonly SolidColorBrush BrushDefault = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0"));
@@ -58,14 +58,15 @@ namespace CGPDI.StudyLab.Core
             "DiffuseMaterial", "SpecularMaterial", "Raytracer3D", "SphereObject", "Ray3D", "Vec3"
         };
 
-        private static readonly Regex TokenRegex = new Regex(
+        [GeneratedRegex(
             @"(?<Comment>//.*?$|/\*.*?\*/)|" +
             @"(?<String>@""(?:""""|[^""])*""|\$""(?:\\.|[^""\\])*""|""(?:\\.|[^""\\])*""|'\\.'|'[^'\\]')|" +
             @"(?<Directive>^\s*#\w+.*?$)|" +
             @"(?<Number>\b0x[0-9a-fA-F]+\b|\b\d+(?:\.\d+)?(?:f|d|m|u|l|ul)?\b)|" +
             @"(?<Identifier>[a-zA-Z_]\w*)|" +
             @"(?<Symbol>[^\s\w])",
-            RegexOptions.Multiline | RegexOptions.Compiled);
+            RegexOptions.Multiline)]
+        private static partial Regex TokenRegex();
 
         /// <summary>
         /// Aplica Syntax Highlighting completo gerando blocos formatados no FlowDocument de um RichTextBox.
@@ -83,13 +84,11 @@ namespace CGPDI.StudyLab.Core
             };
 
             var paragraph = new Paragraph { Margin = new System.Windows.Thickness(0) };
-
             string[] lines = (code ?? string.Empty).Replace("\r\n", "\n").Split('\n');
 
             for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 string line = lines[lineIndex];
-
                 if (string.IsNullOrEmpty(line))
                 {
                     paragraph.Inlines.Add(new Run("\n"));
@@ -97,9 +96,7 @@ namespace CGPDI.StudyLab.Core
                 }
 
                 int lastIndex = 0;
-                var matches = TokenRegex.Matches(line);
-
-                foreach (Match match in matches)
+                foreach (Match match in TokenRegex().Matches(line))
                 {
                     if (match.Index > lastIndex)
                     {
@@ -107,46 +104,7 @@ namespace CGPDI.StudyLab.Core
                         paragraph.Inlines.Add(new Run(ws) { Foreground = BrushDefault });
                     }
 
-                    string text = match.Value;
-
-                    if (match.Groups["Comment"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushComment });
-                    }
-                    else if (match.Groups["String"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushString });
-                    }
-                    else if (match.Groups["Directive"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushDirective });
-                    }
-                    else if (match.Groups["Number"].Success)
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushNumber });
-                    }
-                    else if (match.Groups["Identifier"].Success)
-                    {
-                        if (Keywords.Contains(text))
-                        {
-                            paragraph.Inlines.Add(new Run(text) { Foreground = BrushKeyword, FontWeight = System.Windows.FontWeights.SemiBold });
-                        }
-                        else if (KnownTypes.Contains(text) || (text.Length > 0 && char.IsUpper(text[0])))
-                        {
-                            paragraph.Inlines.Add(new Run(text) { Foreground = BrushType, FontWeight = System.Windows.FontWeights.SemiBold });
-                        }
-                        else
-                        {
-                            int nextPos = match.Index + match.Length;
-                            bool isMethod = nextPos < line.Length && line[nextPos] == '(';
-                            paragraph.Inlines.Add(new Run(text) { Foreground = isMethod ? BrushMethod : BrushDefault });
-                        }
-                    }
-                    else
-                    {
-                        paragraph.Inlines.Add(new Run(text) { Foreground = BrushDefault });
-                    }
-
+                    paragraph.Inlines.Add(CreateRunForMatch(match, line));
                     lastIndex = match.Index + match.Length;
                 }
 
@@ -163,6 +121,45 @@ namespace CGPDI.StudyLab.Core
 
             doc.Blocks.Add(paragraph);
             rtb.Document = doc;
+        }
+
+        private static Run CreateRunForMatch(Match match, string line)
+        {
+            string text = match.Value;
+
+            if (match.Groups["Comment"].Success)
+            {
+                return new Run(text) { Foreground = BrushComment };
+            }
+            if (match.Groups["String"].Success)
+            {
+                return new Run(text) { Foreground = BrushString };
+            }
+            if (match.Groups["Directive"].Success)
+            {
+                return new Run(text) { Foreground = BrushDirective };
+            }
+            if (match.Groups["Number"].Success)
+            {
+                return new Run(text) { Foreground = BrushNumber };
+            }
+            if (match.Groups["Identifier"].Success)
+            {
+                if (Keywords.Contains(text))
+                {
+                    return new Run(text) { Foreground = BrushKeyword, FontWeight = System.Windows.FontWeights.SemiBold };
+                }
+                if (KnownTypes.Contains(text) || (text.Length > 0 && char.IsUpper(text[0])))
+                {
+                    return new Run(text) { Foreground = BrushType, FontWeight = System.Windows.FontWeights.SemiBold };
+                }
+
+                int nextPos = match.Index + match.Length;
+                bool isMethod = nextPos < line.Length && line[nextPos] == '(';
+                return new Run(text) { Foreground = isMethod ? BrushMethod : BrushDefault };
+            }
+
+            return new Run(text) { Foreground = BrushDefault };
         }
 
         /// <summary>

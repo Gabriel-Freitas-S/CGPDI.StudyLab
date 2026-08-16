@@ -312,8 +312,6 @@ namespace CGPDI.StudyLab.Graphics3D
                     Vec3 halfVec = (lightDir + viewDir).Normalized;
                     double specular = Math.Pow(Math.Max(0.0, Vec3.Dot(faceNormal, halfVec)), 32.0) * 0.6;
 
-                    double lightIntensity = ambient + diffuse * 0.7 + specular;
-
                     byte r = (byte)Math.Clamp(mesh.BaseColor.R * (ambient + diffuse * 0.7) + specular * 255.0, 0, 255);
                     byte g = (byte)Math.Clamp(mesh.BaseColor.G * (ambient + diffuse * 0.7) + specular * 255.0, 0, 255);
                     byte b = (byte)Math.Clamp(mesh.BaseColor.B * (ambient + diffuse * 0.7) + specular * 255.0, 0, 255);

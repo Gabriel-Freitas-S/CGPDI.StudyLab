@@ -13,6 +13,24 @@ namespace CGPDI.StudyLab.Views
 {
     public partial class CodeStudioWindow : BorderlessWindow
     {
+        private const string NotUsedText = "(Não utilizado):";
+        private const string AutoText = "(Automático):";
+        private const string ShowTrackText = "Exibir Trilha";
+        private const string HideTrackText = "Ocultar Trilha";
+        private const string ShowCanvasText = "Exibir Visualizador";
+        private const string HideCanvasText = "Ocultar Visualizador";
+
+        private static readonly SolidColorBrush QuizBtnBg = new((Color)ColorConverter.ConvertFromString("#1E1E2C"));
+        private static readonly SolidColorBrush QuizBtnBorder = new((Color)ColorConverter.ConvertFromString("#33334A"));
+        private static readonly SolidColorBrush QuizBtnFg = new((Color)ColorConverter.ConvertFromString("#F8FAFC"));
+
+        static CodeStudioWindow()
+        {
+            QuizBtnBg.Freeze();
+            QuizBtnBorder.Freeze();
+            QuizBtnFg.Freeze();
+        }
+
         private DirectBitmap _labBitmap = null!;
         private List<InteractiveLesson> _interactiveLessons = new();
         private int _simulationStepIndex = 0;
@@ -163,6 +181,27 @@ namespace CGPDI.StudyLab.Views
             SliderStudio2.ValueChanged -= SliderStudio_ValueChanged;
             SliderStudio3.ValueChanged -= SliderStudio_ValueChanged;
 
+            SetupParametersForLesson(lesson);
+
+            TxtStudioVal1.Text = $"[ {SliderStudio1.Value:F0} ]";
+            TxtStudioVal2.Text = $"[ {SliderStudio2.Value:F0} ]";
+            TxtStudioVal3.Text = $"[ {SliderStudio3.Value:F0} ]";
+
+            SliderStudio1.ValueChanged += SliderStudio_ValueChanged;
+            SliderStudio2.ValueChanged += SliderStudio_ValueChanged;
+            SliderStudio3.ValueChanged += SliderStudio_ValueChanged;
+        }
+
+        private void SetupParametersForLesson(InteractiveLesson lesson)
+        {
+            TxtStudioParam1.Text = "Parâmetro 1:";
+            TxtStudioParam2.Text = "Parâmetro 2:";
+            TxtStudioParam3.Text = "Parâmetro 3:";
+
+            SliderStudio1.Minimum = 0; SliderStudio1.Maximum = 255; SliderStudio1.Value = 128;
+            SliderStudio2.Minimum = 0; SliderStudio2.Maximum = 255; SliderStudio2.Value = 128;
+            SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 255; SliderStudio3.Value = 128;
+
             switch (lesson.Type)
             {
                 case LessonType.BgraMemoryLayout:
@@ -179,7 +218,7 @@ namespace CGPDI.StudyLab.Views
                     SliderStudio1.Minimum = 0; SliderStudio1.Maximum = 255; SliderStudio1.Value = 140;
                     TxtStudioParam2.Text = "(Data Binding Reativo):";
                     SliderStudio2.Minimum = 0; SliderStudio2.Maximum = 1; SliderStudio2.Value = 1;
-                    TxtStudioParam3.Text = "(Não utilizado):";
+                    TxtStudioParam3.Text = NotUsedText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -188,7 +227,7 @@ namespace CGPDI.StudyLab.Views
                     SliderStudio1.Minimum = 0; SliderStudio1.Maximum = 7; SliderStudio1.Value = 3;
                     TxtStudioParam2.Text = "Linha Y (0 a 7):";
                     SliderStudio2.Minimum = 0; SliderStudio2.Maximum = 7; SliderStudio2.Value = 2;
-                    TxtStudioParam3.Text = "(Não utilizado):";
+                    TxtStudioParam3.Text = NotUsedText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -197,7 +236,7 @@ namespace CGPDI.StudyLab.Views
                     SliderStudio1.Minimum = 20; SliderStudio1.Maximum = 200; SliderStudio1.Value = 100;
                     TxtStudioParam2.Text = "Espaço Disponível:";
                     SliderStudio2.Minimum = 100; SliderStudio2.Maximum = 450; SliderStudio2.Value = 300;
-                    TxtStudioParam3.Text = "(Não utilizado):";
+                    TxtStudioParam3.Text = NotUsedText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -206,7 +245,7 @@ namespace CGPDI.StudyLab.Views
                     SliderStudio1.Minimum = 1; SliderStudio1.Maximum = 4; SliderStudio1.Value = 1;
                     TxtStudioParam2.Text = "(Buffer Traseiro GPU):";
                     SliderStudio2.Minimum = 0; SliderStudio2.Maximum = 1; SliderStudio2.Value = 1;
-                    TxtStudioParam3.Text = "(Não utilizado):";
+                    TxtStudioParam3.Text = NotUsedText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -222,9 +261,9 @@ namespace CGPDI.StudyLab.Views
                 case LessonType.OtsuThresholdSearch:
                     TxtStudioParam1.Text = "Limiar de Corte T (0-255):";
                     SliderStudio1.Minimum = 0; SliderStudio1.Maximum = 255; SliderStudio1.Value = 118;
-                    TxtStudioParam2.Text = "(Automático):";
+                    TxtStudioParam2.Text = AutoText;
                     SliderStudio2.Minimum = 0; SliderStudio2.Maximum = 1; SliderStudio2.Value = 0;
-                    TxtStudioParam3.Text = "(Automático):";
+                    TxtStudioParam3.Text = AutoText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -233,7 +272,7 @@ namespace CGPDI.StudyLab.Views
                     SliderStudio1.Minimum = 3; SliderStudio1.Maximum = 15; SliderStudio1.Value = 12;
                     TxtStudioParam2.Text = "Destino Y1 (2 a 12):";
                     SliderStudio2.Minimum = 2; SliderStudio2.Maximum = 12; SliderStudio2.Value = 8;
-                    TxtStudioParam3.Text = "(Automático):";
+                    TxtStudioParam3.Text = AutoText;
                     SliderStudio3.Minimum = 0; SliderStudio3.Maximum = 1; SliderStudio3.Value = 0;
                     break;
 
@@ -323,11 +362,11 @@ namespace CGPDI.StudyLab.Views
             else BtnStudioQuizOpt2.Visibility = Visibility.Collapsed;
         }
 
-        private void ResetQuizButton(Button btn)
+        private static void ResetQuizButton(Button btn)
         {
-            btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E1E2C"));
-            btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#33334A"));
-            btn.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F8FAFC"));
+            btn.Background = QuizBtnBg;
+            btn.BorderBrush = QuizBtnBorder;
+            btn.Foreground = QuizBtnFg;
         }
 
         private void BtnStudioQuizOption_Click(object sender, RoutedEventArgs e)
@@ -539,13 +578,13 @@ namespace CGPDI.StudyLab.Views
             {
                 ColStudioTrack.Width = new GridLength(0);
                 ColStudioSplitter1.Width = new GridLength(0);
-                BtnStudioToggleTrack.Content = "Exibir Trilha";
+                BtnStudioToggleTrack.Content = ShowTrackText;
             }
             else
             {
                 ColStudioTrack.Width = new GridLength(380);
                 ColStudioSplitter1.Width = new GridLength(5);
-                BtnStudioToggleTrack.Content = "Ocultar Trilha";
+                BtnStudioToggleTrack.Content = HideTrackText;
             }
         }
 
@@ -555,13 +594,13 @@ namespace CGPDI.StudyLab.Views
             {
                 ColStudioCanvas.Width = new GridLength(0);
                 ColStudioSplitter2.Width = new GridLength(0);
-                BtnStudioToggleCanvas.Content = "Exibir Visualizador";
+                BtnStudioToggleCanvas.Content = ShowCanvasText;
             }
             else
             {
                 ColStudioCanvas.Width = new GridLength(420);
                 ColStudioSplitter2.Width = new GridLength(5);
-                BtnStudioToggleCanvas.Content = "Ocultar Visualizador";
+                BtnStudioToggleCanvas.Content = HideCanvasText;
             }
         }
 
@@ -571,8 +610,8 @@ namespace CGPDI.StudyLab.Views
             ColStudioSplitter1.Width = new GridLength(0);
             ColStudioCanvas.Width = new GridLength(0);
             ColStudioSplitter2.Width = new GridLength(0);
-            BtnStudioToggleTrack.Content = "Exibir Trilha";
-            BtnStudioToggleCanvas.Content = "Exibir Visualizador";
+            BtnStudioToggleTrack.Content = ShowTrackText;
+            BtnStudioToggleCanvas.Content = ShowCanvasText;
         }
 
         private void BtnStudioResetPanels_Click(object sender, RoutedEventArgs e)
@@ -581,8 +620,8 @@ namespace CGPDI.StudyLab.Views
             ColStudioSplitter1.Width = new GridLength(5);
             ColStudioCanvas.Width = new GridLength(420);
             ColStudioSplitter2.Width = new GridLength(5);
-            BtnStudioToggleTrack.Content = "Ocultar Trilha";
-            BtnStudioToggleCanvas.Content = "Ocultar Visualizador";
+            BtnStudioToggleTrack.Content = HideTrackText;
+            BtnStudioToggleCanvas.Content = HideCanvasText;
         }
 
         private void BtnOpenMsRef_Click(object sender, RoutedEventArgs e)
@@ -593,7 +632,10 @@ namespace CGPDI.StudyLab.Views
                 {
                     Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
                 }
-                catch { }
+                catch (Exception)
+                {
+                    // Ignora falhas ao iniciar o navegador padrão do sistema
+                }
             }
         }
     }

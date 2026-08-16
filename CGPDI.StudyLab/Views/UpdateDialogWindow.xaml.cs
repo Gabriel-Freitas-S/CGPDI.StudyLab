@@ -69,23 +69,36 @@ namespace CGPDI.StudyLab.Views
             }
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
+            base.OnClosed(e);
+        }
+
         private void BtnWeb_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 Process.Start(new ProcessStartInfo(_release.HtmlUrl) { UseShellExecute = true });
             }
-            catch { }
+            catch (Exception)
+            {
+                // Ignorar erro ao abrir navegador externo
+            }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
+            _cts?.Cancel();
             Snooze();
             Close();
         }
 
         private void BtnSkip_Click(object sender, RoutedEventArgs e)
         {
+            _cts?.Cancel();
             if (_settings != null)
             {
                 _settings.Skip(_release.Version);
@@ -114,6 +127,7 @@ namespace CGPDI.StudyLab.Views
             RbPortable.IsEnabled = false;
 
             PanelProgress.Visibility = Visibility.Visible;
+            _cts?.Dispose();
             _cts = new CancellationTokenSource();
 
             var progress = new Progress<double>(percent =>
@@ -128,7 +142,8 @@ namespace CGPDI.StudyLab.Views
             try
             {
                 bool preferInstaller = RbInstaller.IsChecked == true;
-                await Task.Run(() => UpdateManager.DownloadAndApplyUpdateAsync(_release, preferInstaller, progress, _cts.Token));
+                CancellationToken token = _cts.Token;
+                await Task.Run(() => UpdateManager.DownloadAndApplyUpdateAsync(_release, preferInstaller, progress, token), token);
             }
             catch (Exception ex)
             {

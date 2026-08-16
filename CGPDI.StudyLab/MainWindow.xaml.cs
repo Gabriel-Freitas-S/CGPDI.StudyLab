@@ -32,7 +32,6 @@ namespace CGPDI.StudyLab
 
         // Estado para transformações 2D homogêneas
         private System.Windows.Point[] _poly2DVertices = Array.Empty<System.Windows.Point>();
-        private Matrix3x3 _current2DMatrix = Matrix3x3.Identity;
 
         // Base de dados pedagógica de estudos
         private List<StudyTopic> _allStudyTopics = new List<StudyTopic>();
@@ -244,7 +243,7 @@ namespace CGPDI.StudyLab
             }
         }
 
-        private string GetDefaultPdiSnippet(string title)
+        private static string GetDefaultPdiSnippet(string title)
         {
             string lower = title.ToLowerInvariant();
             if (lower.Contains("cinza") || lower.Contains("grayscale")) return AlgorithmCodeSnippets.GrayscaleCode;
@@ -916,7 +915,6 @@ public static DirectBitmap Process(DirectBitmap src)
                 new System.Windows.Point(260, 340),
                 new System.Windows.Point(160, 260)
             };
-            _current2DMatrix = Matrix3x3.Identity;
         }
 
         private void Clear2DCanvas()
@@ -1388,7 +1386,10 @@ public static DirectBitmap Process(DirectBitmap src)
                 AlgorithmCodeSnippets.Pipeline3DMVPCode);
         }
 
-        private void SliderRay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { }
+        private void SliderRay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // Evento de alteração de parâmetros do ray tracer em software (atualizado sob demanda via botão)
+        }
 
         private void BtnRayTrace_Click(object sender, RoutedEventArgs e)
         {
@@ -1670,7 +1671,7 @@ public static DirectBitmap Process(DirectBitmap src)
         {
             if (_allStudyTopics == null || LstStudyTopics == null) return;
 
-            string query = (TxtSearchStudy?.Text ?? "").Trim().ToLower();
+            string query = (TxtSearchStudy?.Text ?? "").Trim();
             if (string.IsNullOrEmpty(query))
             {
                 LstStudyTopics.ItemsSource = _allStudyTopics;
@@ -1678,10 +1679,10 @@ public static DirectBitmap Process(DirectBitmap src)
             else
             {
                 List<StudyTopic> filtered = _allStudyTopics.FindAll(t =>
-                    t.Title.ToLower().Contains(query) ||
-                    t.Category.ToLower().Contains(query) ||
-                    t.Summary.ToLower().Contains(query) ||
-                    t.MathFormulas.ToLower().Contains(query));
+                    t.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    t.Category.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    t.Summary.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    t.MathFormulas.Contains(query, StringComparison.OrdinalIgnoreCase));
                 LstStudyTopics.ItemsSource = filtered;
             }
 
@@ -1704,7 +1705,7 @@ public static DirectBitmap Process(DirectBitmap src)
             }
         }
 
-        private void OpenBrowserUrl(string url)
+        private static void OpenBrowserUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url)) return;
             try
@@ -1969,11 +1970,15 @@ public static DirectBitmap Process(DirectBitmap src)
             else BtnQuizOpt2.Visibility = Visibility.Collapsed;
         }
 
-        private void ResetQuizButton(Button btn)
+        private static readonly SolidColorBrush MainQuizBtnBg = new((Color)ColorConverter.ConvertFromString("#1E1E2A"));
+        private static readonly SolidColorBrush MainQuizBtnBorder = new((Color)ColorConverter.ConvertFromString("#323246"));
+        private static readonly SolidColorBrush MainQuizBtnFg = new((Color)ColorConverter.ConvertFromString("#E0E0EC"));
+
+        private static void ResetQuizButton(Button btn)
         {
-            btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E1E2A"));
-            btn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323246"));
-            btn.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0E0EC"));
+            btn.Background = MainQuizBtnBg;
+            btn.BorderBrush = MainQuizBtnBorder;
+            btn.Foreground = MainQuizBtnFg;
         }
 
         private void BtnQuizOption_Click(object sender, RoutedEventArgs e)

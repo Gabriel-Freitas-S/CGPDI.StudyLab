@@ -9,6 +9,18 @@ Arquitetura: `MainWindow` (7 abas) + janelas/controles separados de Estúdio e L
 - Após qualquer mudança de código, rode **build + testes** antes de concluir.
 - Após modificar código-fonte, rode `graphify update .` para manter o grafo atual (AST-only, sem custo de API).
 
+## Regra de qualidade (obrigatória — SonarQube)
+- **Após mudanças em código (`*.cs`, `*.xaml`, `*.csproj`), rode a análise do SonarQube** antes de concluir: `powershell -ExecutionPolicy Bypass -File sonar-scan.ps1` (begin → build → testes com cobertura → end).
+- Servidor local: `http://localhost:9000` (SonarQube CE 26.8, JDK 21 em `C:\Program Files\Eclipse Adoptium`), dashboard em `id=cgpdi-studylab`. Token em `.sonar-token` (não versionado) ou `SONAR_TOKEN`.
+- Não conclua tarefa que introduza **novos bugs ou vulnerabilidades**. Code smells/duplicação são dívida técnica: reduza ao tocar no arquivo. Cobertura exige testes.
+- Para iniciar o servidor se offline: `C:\tools\sonarqube\sonarqube-26.8.0.126808\bin\windows-x86-64\StartSonar.bat` e aguardar `status: UP` em `/api/system/status`.
+
+## Regra de segurança (obrigatória)
+- **Após mudanças em dependências (`*.csproj`, `package.json`) ou código (`*.cs`, `*.xaml`), rode os scans do Snyk** antes de concluir: `snyk test --all-projects` (dependências) e `snyk code test` (análise estática).
+- Não conclua tarefa com achados `high/critical` não resolvidos — corrija (ex.: `dotnet add package`, `npm audit fix`) ou documente a exceção no `.snyk`.
+- Achados `low/medium` são pendências, não bloqueiam. Falhas de auth → `snyk auth` ou `SNYK_TOKEN`/`SNYK_CFG_ORG`.
+- O servidor MCP do Snyk está configurado em `.opencode/opencode.json` (servidor `snyk`).
+
 ## Regra de testes (obrigatória)
 - **Toda funcionalidade nova ou bug corrigido DEVE ter um teste** em `CGPDI.StudyLab.Tests` (unitário em `UnitTests/` e/ou de UI em `UiTests/`).
 - Não conclua uma tarefa com teste faltando. Regressão sem teste = tarefa incompleta.

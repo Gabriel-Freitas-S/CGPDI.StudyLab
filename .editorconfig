@@ -1,0 +1,39 @@
+root = true
+
+# All files
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# C# files
+[*.cs]
+# Standard rules
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# SonarQube & Roslyn Analyzers configuration for Computer Graphics & Digital Image Processing
+# S6640: Unsafe code blocks are required for direct pointer manipulation on DirectBitmap BackBuffer
+dotnet_diagnostic.S6640.severity = none
+
+# S1075: Hardcoded URIs used in educational reference documentation models (StudyGuideData, InteractiveLabManager)
+dotnet_diagnostic.S1075.severity = none
+
+# S1104: Mathematical and graphics struct fields (Matrix3x3, Mat4x4, Vec3) are public for zero-overhead arithmetic
+dotnet_diagnostic.S1104.severity = none
+
+# S101: Graphics matrix struct naming conventions (Matrix3x3, Mat4x4)
+dotnet_diagnostic.S101.severity = none
+
+# S107: Mathematical matrix/rasterizer constructors with > 7 parameters
+dotnet_diagnostic.S107.severity = none
+
+# S2368: 2D convolution kernel matrices (double[,]) in spatial filtering
+dotnet_diagnostic.S2368.severity = none
+
+# S2245 / CA5394: Non-cryptographic pseudo-random number generator for procedural noise / jitter
+dotnet_diagnostic.S2245.severity = none
+dotnet_diagnostic.CA5394.severity = none

@@ -20,7 +20,7 @@ namespace CGPDI.StudyLab.Graphics3D
     /// </summary>
     public class SceneNode3D
     {
-        public string Name { get; set; } = "Node";
+        public string Name { get; set; }
         public Model3DGroup ModelGroup { get; } = new Model3DGroup();
         public Transform3DGroup TransformGroup { get; } = new Transform3DGroup();
         public List<SceneNode3D> Children { get; } = new List<SceneNode3D>();
@@ -51,10 +51,10 @@ namespace CGPDI.StudyLab.Graphics3D
         public SceneNode3D RootNode { get; }
 
         // Rotações das articulações (Cinemática Direta)
-        private RotateTransform3D _baseRotation;
-        private RotateTransform3D _shoulderRotation;
-        private RotateTransform3D _elbowRotation;
-        private RotateTransform3D _wristRotation;
+        private readonly RotateTransform3D _baseRotation;
+        private readonly RotateTransform3D _shoulderRotation;
+        private readonly RotateTransform3D _elbowRotation;
+        private readonly RotateTransform3D _wristRotation;
 
         public HierarchicalRobotArm()
         {

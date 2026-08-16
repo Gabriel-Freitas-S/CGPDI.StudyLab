@@ -30,20 +30,26 @@ namespace CGPDI.StudyLab
                 // Processo elevado/SYSTEM acionado pela atualização: aplica tudo em
                 // segundo plano, sem janelas, e reinicia o app normalmente.
                 StartupUri = null;
-                RunSilentUpdateAsync();
+                _ = RunSilentUpdateAsync();
                 return;
             }
 
             AppIconHelper.EnsureIconFilesExist();
         }
 
-        private async void RunSilentUpdateAsync()
+        private async Task RunSilentUpdateAsync()
         {
             bool applied = await UpdateManager.ApplyPendingUpdateSilentlyAsync();
             if (!applied)
             {
-                try { Shutdown(); }
-                catch { }
+                try
+                {
+                    Shutdown();
+                }
+                catch (Exception)
+                {
+                    // Ignorar falha no encerramento silencioso
+                }
             }
         }
     }

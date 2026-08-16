@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,7 +14,7 @@ namespace CGPDI.StudyLab.Core
     /// Motor de renderização e formatação visual de alta qualidade para fórmulas matemáticas e teoria científica no WPF.
     /// Converte notações LaTeX, subscritos, sobrescritos, símbolos gregos e equações em elementos visuais ricos e tipografia elegante.
     /// </summary>
-    public static class MathFormulaRenderer
+    public static partial class MathFormulaRenderer
     {
         // Paleta de Cores Matemáticas Modernas
         private static readonly SolidColorBrush BrushBullet = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#38BDF8"));
@@ -24,6 +25,8 @@ namespace CGPDI.StudyLab.Core
         private static readonly SolidColorBrush BrushMathGreek = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F472B6"));
         private static readonly SolidColorBrush BrushMathNumber = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
         private static readonly SolidColorBrush BrushSubSuper = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C084FC"));
+
+        private static readonly SearchValues<char> BulletSearchChars = SearchValues.Create("•-");
 
         static MathFormulaRenderer()
         {
@@ -98,6 +101,18 @@ namespace CGPDI.StudyLab.Core
             { 'v', 'ᵥ' }, { 'x', 'ₓ' }
         };
 
+        [GeneratedRegex(@"\\frac\{([^}]+)\}\{([^}]+)\}")]
+        private static partial Regex FracRegex();
+
+        [GeneratedRegex(@"_\{([^}]+)\}")]
+        private static partial Regex SubRegex();
+
+        [GeneratedRegex(@"\^\{([^}]+)\}")]
+        private static partial Regex SuperRegex();
+
+        [GeneratedRegex(@"(?<Sub>_[a-zA-Z0-9α-ωΑ-Ω]+)|(?<Super>\^[a-zA-Z0-9α-ωΑ-Ω\-+]+)|(?<Greek>[α-ωΑ-ΩΔΣΩΦ])|(?<Op>[+\-*/=×·≈≠≤≥∞√⊖⊕○●∑∫∈±∇∂])|(?<Number>\b\d+(\.\d+)?\b)|(?<Ident>[a-zA-Z_]\w*)|(?<Other>[^\s])")]
+        private static partial Regex MathTokensRegex();
+
         /// <summary>
         /// Sanitiza e traduz texto com notações LaTeX para caracteres tipográficos matemáticos Unicode.
         /// </summary>
@@ -108,7 +123,7 @@ namespace CGPDI.StudyLab.Core
             string result = input;
 
             // Substituição de frações LaTeX \frac{A}{B} -> (A / B)
-            result = Regex.Replace(result, @"\\frac\{([^}]+)\}\{([^}]+)\}", "($1 / $2)");
+            result = FracRegex().Replace(result, "($1 / $2)");
 
             // Substituição de símbolos gregos e operadores
             foreach (var kv in GreekAndSymbols)
@@ -117,9 +132,9 @@ namespace CGPDI.StudyLab.Core
             }
 
             // Converte subscritos simples como _{proj} -> _proj, _{clip} -> _clip
-            result = Regex.Replace(result, @"_\{([^}]+)\}", "_$1");
+            result = SubRegex().Replace(result, "_$1");
             // Converte sobrescritos simples como ^{2} -> ^2, ^{\alpha} -> ^α
-            result = Regex.Replace(result, @"\^\{([^}]+)\}", "^$1");
+            result = SuperRegex().Replace(result, "^$1");
 
             return result;
         }
@@ -161,9 +176,9 @@ namespace CGPDI.StudyLab.Core
             // Detecta tópicos com marcadores (ex: • Fórmula: ou 1. Passo)
             int mathStartIndex = 0;
 
-            if (line.TrimStart().StartsWith("•") || line.TrimStart().StartsWith("-"))
+            if (line.TrimStart().StartsWith('•') || line.TrimStart().StartsWith('-'))
             {
-                int bulletPos = line.IndexOfAny(new[] { '•', '-' });
+                int bulletPos = line.AsSpan().IndexOfAny(BulletSearchChars);
                 if (bulletPos > 0)
                 {
                     inlines.Add(new Run(line.Substring(0, bulletPos)));
@@ -194,18 +209,8 @@ namespace CGPDI.StudyLab.Core
 
         private static void ParseMathExpression(InlineCollection inlines, string math, double baseFontSize)
         {
-            // Tokeniza elementos: Subscritos (_var), Sobrescritos (^exp), Letras Gregas, Operadores, Números, Identificadores
-            var regex = new Regex(@"(?<Sub>_[a-zA-Z0-9α-ωΑ-Ω]+)|" +
-                                  @"(?<Super>\^[a-zA-Z0-9α-ωΑ-Ω\-+]+)|" +
-                                  @"(?<Greek>[α-ωΑ-ΩΔΣΩΦ])|" +
-                                  @"(?<Op>[+\-*/=×·≈≠≤≥∞√⊖⊕○●∑∫∈±∇∂])|" +
-                                  @"(?<Number>\b\d+(\.\d+)?\b)|" +
-                                  @"(?<Ident>[a-zA-Z_]\w*)|" +
-                                  @"(?<Other>[^\s])",
-                                  RegexOptions.Compiled);
-
             int lastIdx = 0;
-            var matches = regex.Matches(math);
+            var matches = MathTokensRegex().Matches(math);
 
             foreach (Match match in matches)
             {
@@ -215,98 +220,7 @@ namespace CGPDI.StudyLab.Core
                     inlines.Add(new Run(ws) { Foreground = BrushText, FontSize = baseFontSize });
                 }
 
-                if (match.Groups["Sub"].Success)
-                {
-                    string subVal = match.Value.Substring(1); // Remove '_'
-                    string converted = TryConvertSubscript(subVal);
-                    if (!string.IsNullOrEmpty(converted))
-                    {
-                        inlines.Add(new Run(converted)
-                        {
-                            Foreground = BrushSubSuper,
-                            FontWeight = FontWeights.SemiBold,
-                            FontSize = baseFontSize
-                        });
-                    }
-                    else
-                    {
-                        inlines.Add(new Run(subVal)
-                        {
-                            BaselineAlignment = BaselineAlignment.Subscript,
-                            FontSize = baseFontSize * 0.8,
-                            Foreground = BrushSubSuper,
-                            FontWeight = FontWeights.SemiBold
-                        });
-                    }
-                }
-                else if (match.Groups["Super"].Success)
-                {
-                    string supVal = match.Value.Substring(1); // Remove '^'
-                    string converted = TryConvertSuperscript(supVal);
-                    if (!string.IsNullOrEmpty(converted))
-                    {
-                        inlines.Add(new Run(converted)
-                        {
-                            Foreground = BrushSubSuper,
-                            FontWeight = FontWeights.Bold,
-                            FontSize = baseFontSize
-                        });
-                    }
-                    else
-                    {
-                        inlines.Add(new Run(supVal)
-                        {
-                            BaselineAlignment = BaselineAlignment.Superscript,
-                            FontSize = baseFontSize * 0.8,
-                            Foreground = BrushSubSuper,
-                            FontWeight = FontWeights.Bold
-                        });
-                    }
-                }
-                else if (match.Groups["Greek"].Success)
-                {
-                    inlines.Add(new Run(match.Value)
-                    {
-                        Foreground = BrushMathGreek,
-                        FontWeight = FontWeights.Bold,
-                        FontSize = baseFontSize * 1.05
-                    });
-                }
-                else if (match.Groups["Op"].Success)
-                {
-                    inlines.Add(new Run(match.Value)
-                    {
-                        Foreground = BrushMathOperator,
-                        FontWeight = FontWeights.SemiBold,
-                        FontSize = baseFontSize
-                    });
-                }
-                else if (match.Groups["Number"].Success)
-                {
-                    inlines.Add(new Run(match.Value)
-                    {
-                        Foreground = BrushMathNumber,
-                        FontSize = baseFontSize
-                    });
-                }
-                else if (match.Groups["Ident"].Success)
-                {
-                    inlines.Add(new Run(match.Value)
-                    {
-                        Foreground = BrushMathVariable,
-                        FontWeight = FontWeights.SemiBold,
-                        FontSize = baseFontSize
-                    });
-                }
-                else
-                {
-                    inlines.Add(new Run(match.Value)
-                    {
-                        Foreground = BrushText,
-                        FontSize = baseFontSize
-                    });
-                }
-
+                inlines.Add(CreateRunForMathToken(match, baseFontSize));
                 lastIdx = match.Index + match.Length;
             }
 
@@ -314,6 +228,49 @@ namespace CGPDI.StudyLab.Core
             {
                 inlines.Add(new Run(math.Substring(lastIdx)) { Foreground = BrushText, FontSize = baseFontSize });
             }
+        }
+
+        private static Run CreateRunForMathToken(Match match, double baseFontSize)
+        {
+            if (match.Groups["Sub"].Success)
+            {
+                string subVal = match.Value.Substring(1);
+                string converted = TryConvertSubscript(subVal);
+                return !string.IsNullOrEmpty(converted)
+                    ? new Run(converted) { Foreground = BrushSubSuper, FontWeight = FontWeights.SemiBold, FontSize = baseFontSize }
+                    : new Run(subVal) { BaselineAlignment = BaselineAlignment.Subscript, FontSize = baseFontSize * 0.8, Foreground = BrushSubSuper, FontWeight = FontWeights.SemiBold };
+            }
+
+            if (match.Groups["Super"].Success)
+            {
+                string supVal = match.Value.Substring(1);
+                string converted = TryConvertSuperscript(supVal);
+                return !string.IsNullOrEmpty(converted)
+                    ? new Run(converted) { Foreground = BrushSubSuper, FontWeight = FontWeights.Bold, FontSize = baseFontSize }
+                    : new Run(supVal) { BaselineAlignment = BaselineAlignment.Superscript, FontSize = baseFontSize * 0.8, Foreground = BrushSubSuper, FontWeight = FontWeights.Bold };
+            }
+
+            if (match.Groups["Greek"].Success)
+            {
+                return new Run(match.Value) { Foreground = BrushMathGreek, FontWeight = FontWeights.Bold, FontSize = baseFontSize * 1.05 };
+            }
+
+            if (match.Groups["Op"].Success)
+            {
+                return new Run(match.Value) { Foreground = BrushMathOperator, FontWeight = FontWeights.SemiBold, FontSize = baseFontSize };
+            }
+
+            if (match.Groups["Number"].Success)
+            {
+                return new Run(match.Value) { Foreground = BrushMathNumber, FontSize = baseFontSize };
+            }
+
+            if (match.Groups["Ident"].Success)
+            {
+                return new Run(match.Value) { Foreground = BrushMathVariable, FontWeight = FontWeights.SemiBold, FontSize = baseFontSize };
+            }
+
+            return new Run(match.Value) { Foreground = BrushText, FontSize = baseFontSize };
         }
 
         private static string TryConvertSuperscript(string val)

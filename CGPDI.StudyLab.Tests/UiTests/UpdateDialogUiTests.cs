@@ -120,5 +120,23 @@ namespace CGPDI.StudyLab.Tests.UiTests
 
             dialog.Close();
         }
+
+        [UIFact]
+        public void Dialog_Cancel_SnoozesUpdate()
+        {
+            var settings = new UpdateSettings();
+            var dialog = new UpdateDialogWindow(CreateRelease(), settings);
+            dialog.BtnCancel.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            settings.SnoozedVersion.Should().Be("2.0.0");
+        }
+
+        [UIFact]
+        public void Dialog_Skip_SkipsUpdateVersion()
+        {
+            var settings = new UpdateSettings();
+            var dialog = new UpdateDialogWindow(CreateRelease(), settings);
+            dialog.BtnSkip.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            settings.SkippedVersions.Should().Contain("2.0.0");
+        }
     }
 }

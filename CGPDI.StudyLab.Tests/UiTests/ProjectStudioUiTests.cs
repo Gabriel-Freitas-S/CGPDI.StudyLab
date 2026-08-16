@@ -23,6 +23,17 @@ namespace CGPDI.StudyLab.Tests.UiTests
 
             studio.PnlFreeLiveXamlContainer.Child.Should().NotBeNull();
             studio.TabStudioVisualizer.SelectedItem.Should().Be(studio.TabItemFreeLiveXaml);
+
+            // Testa troca de templates
+            if (studio.LstProjectTemplates.Items.Count > 1)
+            {
+                studio.LstProjectTemplates.SelectedIndex = 1;
+                studio.TxtStudioCurrentProject.Text.Should().NotBeNullOrEmpty();
+            }
+
+            // Testa alteração de sliders
+            studio.SliderFree1.Value += 5;
+            studio.SliderFree2.Value += 5;
         }
 
         [UIFact]

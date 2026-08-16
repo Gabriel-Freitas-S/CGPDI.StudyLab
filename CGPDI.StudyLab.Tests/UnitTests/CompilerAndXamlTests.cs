@@ -60,6 +60,23 @@ Output.Clear(0xFF0000);
         }
 
         [Fact]
+        public async Task RunTestsAndEvaluateAsync_AllLessonsSolutions_ShouldPassPedagogicalTests()
+        {
+            var lessons = InteractiveLabManager.GetLessons();
+            lessons.Should().NotBeEmpty();
+
+            foreach (var lesson in lessons)
+            {
+                using var bmp = new DirectBitmap(32, 32);
+                var report = await LiveCodeCompiler.RunTestsAndEvaluateAsync(lesson, lesson.SolutionCode, bmp, 128, 128, 128);
+                report.Success.Should().BeTrue($"Lição {lesson.Number} ({lesson.Title}) deve passar com a solução oficial.");
+                report.Tests.Should().NotBeEmpty();
+                report.Tests.TrueForAll(t => t.Passed).Should().BeTrue();
+                report.FeedbackReport.Should().NotBeNullOrEmpty();
+            }
+        }
+
+        [Fact]
         public async Task ExecuteCustomScriptAsync_SyntaxError_ReturnsCompilationError()
         {
             using var bmp = new DirectBitmap(16, 16);

@@ -19,6 +19,10 @@
     </PackageReference>
     <PackageReference Include="Xunit.StaFact" Version="1.2.69" />
     <PackageReference Include="FluentAssertions" Version="8.0.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

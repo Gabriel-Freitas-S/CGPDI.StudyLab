@@ -54,6 +54,42 @@ I = I_a·k_a + I_d·k_d·(N·L) + I_s·k_s·(N·H)^\alpha";
             newCaret.Should().BeGreaterThanOrEqualTo(0);
         }
 
+        [WpfFact]
+        public void XamlSyntaxHighlighter_ShouldHighlightXamlMarkup()
+        {
+            var rtb = new RichTextBox();
+            string xaml = @"<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+    <!-- Test comment -->
+    <Button Content=""Click me"" Width=""100"" />
+</Grid>";
+
+            XamlSyntaxHighlighter.Highlight(rtb, xaml);
+
+            rtb.Document.Blocks.Count.Should().BeGreaterThan(0);
+            string extracted = XamlSyntaxHighlighter.GetPlainText(rtb);
+            extracted.Should().Contain("Button");
+            extracted.Should().Contain("Click me");
+
+            int caret = XamlSyntaxHighlighter.GetCaretCharIndex(rtb);
+            caret.Should().BeGreaterThanOrEqualTo(0);
+            XamlSyntaxHighlighter.SetCaretCharIndex(rtb, 4);
+            XamlSyntaxHighlighter.GetCaretCharIndex(rtb).Should().BeGreaterThanOrEqualTo(0);
+        }
+
+        [WpfFact]
+        public void ChangelogDocumentBuilder_ShouldBuildStyledFlowDocument()
+        {
+            string md = @"## [v1.5.0] - 2026-08-16
+### Adicionado
+- Nova ferramenta de **Transformações 3D** com suporte a `Viewport3D`.
+### Corrigido
+- Correção de cálculo em `ColorSpaces.HsvToRgb`.";
+
+            var doc = ChangelogDocumentBuilder.Build(md);
+            doc.Should().NotBeNull();
+            doc.Blocks.Count.Should().BeGreaterThan(0);
+        }
+
         [Fact]
         public void AlgorithmCodeSnippets_ShouldContainValidCSharpSnippets()
         {

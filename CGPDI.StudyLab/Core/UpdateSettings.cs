@@ -61,6 +61,8 @@ namespace CGPDI.StudyLab.Core
     /// </summary>
     public static class UpdateSettingsStore
     {
+        private static readonly JsonSerializerOptions IndentedJsonOptions = new() { WriteIndented = true };
+
         public static string DefaultFilePath { get; } = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "CGPDI.StudyLab",
@@ -94,7 +96,7 @@ namespace CGPDI.StudyLab.Core
                 string dir = Path.GetDirectoryName(file) ?? "";
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                string json = JsonSerializer.Serialize(settings, IndentedJsonOptions);
                 File.WriteAllText(file, json);
             }
             catch (Exception ex)

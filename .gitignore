@@ -22,6 +22,11 @@ docs/dist/
 Releases/
 packages/
 
+# SonarQube local analysis secrets
+.sonar-token
+TestResults/
+.sonarqube/
+
 # System & OS
 Thumbs.db
 ehthumbs.db

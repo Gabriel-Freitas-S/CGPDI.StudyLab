@@ -19,14 +19,9 @@ namespace CGPDI.StudyLab.Views
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            if ((e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) || e.Key == Key.F5)
             {
-                StudioControl.ExecuteFreeScript();
-                e.Handled = true;
-            }
-            else if (e.Key == Key.F5)
-            {
-                StudioControl.ExecuteFreeScript();
+                _ = StudioControl.ExecuteFreeScript();
                 e.Handled = true;
             }
         }

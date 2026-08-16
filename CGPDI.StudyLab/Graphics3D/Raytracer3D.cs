@@ -107,8 +107,8 @@ namespace CGPDI.StudyLab.Graphics3D
     public class PointLight
     {
         public Vec3 Position { get; set; }
-        public Vec3 Color { get; set; } = new Vec3(1, 1, 1);
-        public double Intensity { get; set; } = 1.0;
+        public Vec3 Color { get; set; }
+        public double Intensity { get; set; }
 
         public PointLight(Vec3 pos, Vec3 color, double intensity = 1.0)
         {
@@ -266,14 +266,11 @@ namespace CGPDI.StudyLab.Graphics3D
 
             foreach (var obj in objects)
             {
-                if (obj.Intersect(ray, out double t, out Vec3 normal))
+                if (obj.Intersect(ray, out double t, out Vec3 normal) && t < closestT)
                 {
-                    if (t < closestT)
-                    {
-                        closestT = t;
-                        hitObject = obj;
-                        hitNormal = normal;
-                    }
+                    closestT = t;
+                    hitObject = obj;
+                    hitNormal = normal;
                 }
             }
 
