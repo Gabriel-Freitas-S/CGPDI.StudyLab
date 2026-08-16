@@ -1,0 +1,85 @@
+﻿name: Capture App Screenshots & GIF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CGPDI.StudyLab/**'
+      - 'scripts/capture-screenshots.ps1'
+      - '.github/workflows/capture-screenshots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-screenshots
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: Capture Screenshots & Generate GIF
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install FFmpeg
+        shell: pwsh
+        run: |
+          choco install ffmpeg -y --no-progress
+          # Recarrega PATH para que ffmpeg fique disponível
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          ffmpeg -version | Select-Object -First 1
+
+      - name: Capture Screenshots and GIF
+        shell: pwsh
+        timeout-minutes: 15
+        run: |
+          # Garante que ffmpeg está no PATH desta sessão
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+          powershell -ExecutionPolicy Bypass -File scripts/capture-screenshots.ps1 `
+            -StartupWaitSec 15 `
+            -TabWaitMs 3000
+
+      - name: Verify output files
+        shell: pwsh
+        run: |
+          $screenshots = Get-ChildItem docs/public/screenshots/*.png -ErrorAction SilentlyContinue
+          $gif = Get-Item docs/public/gifs/demo.gif -ErrorAction SilentlyContinue
+          Write-Host "Screenshots capturados: $($screenshots.Count)"
+          $screenshots | ForEach-Object { Write-Host "  $($_.Name) ($([math]::Round($_.Length/1KB,1)) KB)" }
+          if ($gif) {
+            Write-Host "GIF: $($gif.Name) ($([math]::Round($gif.Length/1MB,2)) MB)"
+          } else {
+            Write-Warning "GIF nao encontrado - verifique o log do FFmpeg."
+          }
+          if ($screenshots.Count -eq 0) {
+            throw "Nenhum screenshot capturado. O pipeline falhou."
+          }
+
+      - name: Commit updated screenshots and GIF
+        shell: pwsh
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/public/screenshots/ docs/public/gifs/
+
+          $changed = git status --porcelain
+          if ($changed) {
+            git commit -m "chore(docs): atualizar screenshots e GIF automaticamente [skip ci]"
+            git push
+            Write-Host "Screenshots commitados com sucesso."
+          } else {
+            Write-Host "Nenhuma mudança nos screenshots — commit pulado."
+          }

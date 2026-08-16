@@ -24,6 +24,37 @@ Os arquivos vetoriais oficiais do projeto estão localizados em `CGPDI.StudyLab/
 
 ---
 
+## 📸 Interface
+
+> Screenshots e GIF atualizados automaticamente via GitHub Actions a cada push.
+
+<div align="center">
+  <img src="https://cgpdi.gabrielfs.dev/gifs/demo.gif" alt="Demonstração animada do CGPDI StudyLab" width="900" />
+</div>
+
+<details>
+<summary><b>🖼️ Ver screenshots de cada módulo</b></summary>
+
+| Laboratório PDI | Computação Gráfica 2D |
+|:-:|:-:|
+| ![PDI](https://cgpdi.gabrielfs.dev/screenshots/pdi.png) | ![2D](https://cgpdi.gabrielfs.dev/screenshots/cg2d.png) |
+
+| Computação Gráfica 3D | Ray Tracing |
+|:-:|:-:|
+| ![3D](https://cgpdi.gabrielfs.dev/screenshots/cg3d.png) | ![Ray Tracing](https://cgpdi.gabrielfs.dev/screenshots/ray-tracing.png) |
+
+| Central de Estudos | Laboratório de Código |
+|:-:|:-:|
+| ![Central de Estudos](https://cgpdi.gabrielfs.dev/screenshots/central-estudos.png) | ![Laboratório](https://cgpdi.gabrielfs.dev/screenshots/laboratorio.png) |
+
+| Estúdio de Projetos | |
+|:-:|:-:|
+| ![Estúdio](https://cgpdi.gabrielfs.dev/screenshots/estudio.png) | |
+
+</details>
+
+---
+
 ## 🏗️ Arquitetura do Software
 
 ```mermaid

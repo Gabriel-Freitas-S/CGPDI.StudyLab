@@ -17,6 +17,7 @@
     <Product>CGPDI StudyLab</Product>
     <Description>Plataforma Interativa de Computação Gráfica e Processamento Digital de Imagens</Description>
     <Copyright>Copyright © 2026</Copyright>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
     <PublishSingleFile>true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
@@ -30,6 +31,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.6.0" />
+    <PackageReference Include="MinVer" Version="7.0.0" PrivateAssets="all" />
     <PackageReference Include="Velopack" Version="1.2.0" />
   </ItemGroup>
 

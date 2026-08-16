@@ -11,6 +11,13 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 ## [Unreleased]
 
 ### Adicionado
+- **Screenshots e GIF Animado Automatizados na Documentação**:
+  - Novo script PowerShell `scripts/capture-screenshots.ps1` que compila o app, o inicia, navega por todas as 7 abas via UIAutomation e captura cada uma com `PrintWindow` (GDI32 P/Invoke), salvando em `docs/public/screenshots/`.
+  - GIF animado `docs/public/gifs/demo.gif` gerado automaticamente via FFmpeg a partir dos frames de cada aba (slideshow 2 s/frame, paleta otimizada, escala 1280px).
+  - Novo workflow GitHub Actions `capture-screenshots.yml` que dispara a cada push em `main` (alterações em `CGPDI.StudyLab/**`), instala FFmpeg via Chocolatey e commita os assets atualizados com `[skip ci]`.
+  - Galeria visual interativa na homepage da documentação Astro (`index.mdx`) com abas (`Tabs`) mostrando screenshot de cada módulo.
+  - Seção "📸 Interface" no `README.md` com o GIF animado e tabela de screenshots em `<details>`, servidos pelo GitHub Pages em `cgpdi.gabrielfs.dev`.
+- **Versionamento automático no desenvolvimento com MinVer**: builds locais agora derivam a versão do histórico git (tags `v*` + altura de commits), eliminando a parametrização manual de versão para pacotes de desenvolvimento. O GitHub Actions continua usando versão explícita (`MinVerSkip=true`), sem impacto nos instaladores publicados.
 - **Personalização Visual dos Instaladores**:
   - Tela Splash temática Dark Slate (`#0D0E18`) com barra de progresso em Ciano Elétrico (`#38BDF8`) e logotipo 3D cristalino para o instalador Velopack (`Setup.exe`).
   - Banner superior personalizado (`493x58 px`) e tela de diálogo com logotipo (`493x312 px`) no padrão WiX para o instalador corporativo MSI (`.msi`).
@@ -38,6 +45,7 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
 
 ### Corrigido
+- **Falha de empacotamento MSI no GitHub Actions** (`There is a release in channel win which is equal or greater to the current version`): o diretório `Releases-msi/` (com `releases.win.json` obsoleto) foi removido do controle de versão — o Velopack agora empacota sempre em canal limpo no runner, permitindo republicar a mesma versão sem conflito de canal.
 - **Compatibilidade e Transparência dos Ícones Multi-Resolução**: Refatorada a estrutura interna do arquivo `app_icon.ico` para a especificação DIB 32bpp nativa do Windows com cabeçalho `BITMAPINFOHEADER` e máscara AND de transparência nas resoluções 16x16 a 128x128 e stream PNG em 256x256, eliminando definitivamente o fundo preto nos atalhos da Área de Trabalho, Menu Iniciar, barra de tarefas e instaladores Velopack/MSI.
 - **Resolução de Conflito de Versão BAML/Assembly na Inicialização**: Removido o MinVer do build de publicação e unificada a parametrização de versão via MSBuild (`Version`, `AssemblyVersion`, `FileVersion`, `InformationalVersion`), garantindo que o compilador BAML do WPF e a compilação C# usem exatamente o mesmo `AssemblyVersion`, eliminando a falha fatal (`FileNotFoundException` no `App.InitializeComponent`) na abertura do aplicativo após a instalação via EXE ou MSI.
 - Ícones da aplicação com fundo transparente no gerador vetorial `AppIconHelper` e nos assets SVG/PNG/ICO.

@@ -25,7 +25,7 @@ hero:
       variant: minimal
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Download Oficial do Aplicativo
 
@@ -53,6 +53,80 @@ Baixe a versão mais recente do **CGPDI StudyLab** para Windows 10/11:
     href="https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/releases/latest"
   />
 </CardGrid>
+
+---
+
+## Interface do Aplicativo
+
+Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, capturados automaticamente a cada atualização via GitHub Actions.
+
+<div style="text-align: center; margin: 1.5rem 0;">
+  <img
+    src="/gifs/demo.gif"
+    alt="Demonstração animada do CGPDI StudyLab percorrendo todas as abas"
+    style="max-width: 100%; border-radius: 12px; border: 1px solid #252F46; box-shadow: 0 8px 32px rgba(0,0,0,0.5);"
+  />
+  <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 0.5rem;">⬆️ GIF atualizado automaticamente pelo CI a cada push</p>
+</div>
+
+<Tabs>
+  <TabItem label="🖼️ PDI">
+    <img
+      src="/screenshots/pdi.png"
+      alt="Laboratório de Processamento Digital de Imagens — filtros, histogramas e detecção de bordas"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Laboratório PDI** — Mais de 20 filtros espaciais (Sobel, Canny, Laplace), equalização de histograma, morfologia matemática e transformações geométricas. Resultados em tempo real com `DirectBitmap`.
+  </TabItem>
+  <TabItem label="✏️ 2D">
+    <img
+      src="/screenshots/cg2d.png"
+      alt="Computação Gráfica 2D — algoritmos de rasterização, Bresenham e transformações homogêneas"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Computação Gráfica 2D** — Algoritmos de reta (DDA, Bresenham, Wu), círculos, curvas de Bézier e transformações afins 3×3 em coordenadas homogêneas.
+  </TabItem>
+  <TabItem label="🧊 3D">
+    <img
+      src="/screenshots/cg3d.png"
+      alt="Computação Gráfica 3D — pipeline MVP, renderizador em software e Viewport3D com DirectX"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Computação Gráfica 3D** — Pipeline MVP completo, renderizador em software (CPU + Z-Buffer) e Viewport3D acelerado por DirectX. Modelagem hierárquica de robôs articulados.
+  </TabItem>
+  <TabItem label="💡 Ray Tracing">
+    <img
+      src="/screenshots/ray-tracing.png"
+      alt="Ray Tracing fotorrealista — interseção raio-esfera, modelo Phong e reflexões especulares"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Ray Tracing** — Simulação física da luz: interseção analítica raio-esfera/plano, sombreamento Phong, sombras nítidas e refração pela Lei de Snell.
+  </TabItem>
+  <TabItem label="📚 Central de Estudos">
+    <img
+      src="/screenshots/central-estudos.png"
+      alt="Central de Estudos — teoria, fórmulas matemáticas, quizzes e referências"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Central de Estudos** — Teoria completa com fórmulas renderizadas por LaTeX, quizzes de fixação, código C# comentado e complexidade computacional por algoritmo.
+  </TabItem>
+  <TabItem label="⚗️ Laboratório">
+    <img
+      src="/screenshots/laboratorio.png"
+      alt="Laboratório de Código — editor C# ao vivo com compilação Roslyn e testes unitários"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Laboratório de Código** — Editor C# ao vivo com compilação Roslyn em tempo real, testes unitários automatizados e gabarito oficial com 1 clique.
+  </TabItem>
+  <TabItem label="🎨 Estúdio">
+    <img
+      src="/screenshots/estudio.png"
+      alt="Estúdio de Projetos — janela dedicada maximizável com layout retrátil"
+      style="width:100%; border-radius:8px; border:1px solid #252F46;"
+    />
+    **Estúdio de Projetos** — Janela independente maximizável com suporte a múltiplos monitores, layout retrátil (trilha, editor e canvas) e modo foco.
+  </TabItem>
+</Tabs>
 
 ---
 

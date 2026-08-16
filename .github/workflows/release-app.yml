@@ -128,7 +128,8 @@ jobs:
             /p:Version=${{ steps.get_version.outputs.VERSION }} `
             /p:AssemblyVersion=${{ steps.get_version.outputs.VERSION }}.0 `
             /p:FileVersion=${{ steps.get_version.outputs.VERSION }}.0 `
-            /p:InformationalVersion=${{ steps.get_version.outputs.VERSION }}
+            /p:InformationalVersion=${{ steps.get_version.outputs.VERSION }} `
+            /p:MinVerSkip=true
 
       - name: Run Unit & UI Tests (gate)
         shell: pwsh
@@ -154,7 +155,8 @@ jobs:
             /p:Version=${{ steps.get_version.outputs.VERSION }} `
             /p:AssemblyVersion=${{ steps.get_version.outputs.VERSION }}.0 `
             /p:FileVersion=${{ steps.get_version.outputs.VERSION }}.0 `
-            /p:InformationalVersion=${{ steps.get_version.outputs.VERSION }}
+            /p:InformationalVersion=${{ steps.get_version.outputs.VERSION }} `
+            /p:MinVerSkip=true
           
           # Remove arquivos de debug (.pdb) da pasta de distribuição
           Get-ChildItem -Path "publish/win-x64" -Filter "*.pdb" | Remove-Item -Force
