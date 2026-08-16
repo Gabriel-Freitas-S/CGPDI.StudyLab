@@ -18,6 +18,10 @@ docs/dist/
 .env
 .env.*
 
+# Velopack packaging output (local releases)
+Releases/
+packages/
+
 # System & OS
 Thumbs.db
 ehthumbs.db

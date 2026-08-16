@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build-and-release:
-    name: Build Portable ZIP & Installer Setup
+    name: Build & Publish Velopack Release
     runs-on: windows-latest
 
     steps:
@@ -59,6 +59,32 @@ jobs:
           echo "VERSION=$ver" >> $env:GITHUB_OUTPUT
           echo "TAG_NAME=$tag" >> $env:GITHUB_OUTPUT
 
+      - name: Extract Changelog for Release Notes
+        shell: pwsh
+        run: |
+          $ver = "${{ steps.get_version.outputs.VERSION }}"
+          $changelogPath = "CHANGELOG.md"
+          if (!(Test-Path $changelogPath)) {
+            throw "CHANGELOG.md não encontrado. Toda release precisa de uma seção no changelog."
+          }
+          $pattern = "^##\s*\[\s*v?$([regex]::Escape($ver))\s*\]"
+          $lines = Get-Content $changelogPath
+          $inSection = $false
+          $notes = @()
+          foreach ($line in $lines) {
+            if ($line -match "^##\s*\[") {
+              if ($inSection) { break }
+              if ($line -match $pattern) { $inSection = $true }
+              continue
+            }
+            if ($inSection) { $notes += $line }
+          }
+          if ($notes.Count -eq 0) {
+            throw "Nenhuma seção '## [$ver]' encontrada em CHANGELOG.md. Atualize o changelog antes de liberar a release."
+          }
+          $notes | Set-Content -Path "release-notes.md" -Encoding utf8
+          Write-Host "Notas de release extraídas do CHANGELOG.md ($($notes.Count) linhas)."
+
       - name: Build Application & Verify
         run: |
           dotnet build CGPDI.StudyLab/CGPDI.StudyLab.csproj -c Release `
@@ -93,57 +119,80 @@ jobs:
           # Remove arquivos de debug (.pdb) da pasta de distribuição
           Get-ChildItem -Path "publish/win-x64" -Filter "*.pdb" | Remove-Item -Force
 
-      - name: Create Portable Single Executable and Clean ZIP
+      - name: Create Portable ZIP (manual download)
         shell: pwsh
         run: |
-          # 1. Copia o executável único direto para download
-          Copy-Item "publish/win-x64/CGPDI.StudyLab.exe" "CGPDI-StudyLab-Portable.exe" -Force
-
-          # 2. Cria arquivo de instruções amigável
           "CGPDI StudyLab v${{ steps.get_version.outputs.VERSION }} - Executavel Unico Portatil`r`n`r`nBasta dar dois cliques em CGPDI.StudyLab.exe para iniciar!`r`nNao requer instalacao nem direitos de administrador." | Out-File -FilePath "publish/win-x64/COMO-USAR.txt" -Encoding utf8
-
-          # 3. Compacta o ZIP portátil limpo (apenas o .exe e o .txt)
           Compress-Archive -Path "publish/win-x64/*" -DestinationPath "CGPDI-StudyLab-Portable-win-x64.zip" -CompressionLevel Optimal
-          Write-Host "Portable Single-File and ZIP created successfully."
+          Write-Host "Portable ZIP created successfully."
 
-      - name: Install Inno Setup
+      - name: Install Velopack CLI
+        shell: pwsh
+        run: dotnet tool install -g vpk
+
+      - name: Download Previous Release (delta base)
         shell: pwsh
         run: |
-          choco install innosetup --no-progress -y
-
-      - name: Compile Windows Installer (.exe)
-        shell: pwsh
-        run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=${{ steps.get_version.outputs.VERSION }} installer/setup_script.iss
-          if (Test-Path "dist-installer/CGPDI-StudyLab-Setup.exe") {
-            Move-Item -Path "dist-installer/CGPDI-StudyLab-Setup.exe" -Destination "CGPDI-StudyLab-Setup.exe" -Force
-            Write-Host "Installer created successfully: CGPDI-StudyLab-Setup.exe"
-          } else {
-            throw "Installer binary was not generated."
+          vpk download github --repoUrl "https://github.com/${{ github.repository }}" --token "${{ secrets.GITHUB_TOKEN }}"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Nenhuma release Velopack anterior encontrada — pacote completo (sem delta) para a primeira versão."
           }
 
-      - name: Upload Binaries to GitHub Actions Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: CGPDI-StudyLab-v${{ steps.get_version.outputs.VERSION }}-Binaries
-          path: |
-            CGPDI-StudyLab-Setup.exe
-            CGPDI-StudyLab-Portable.exe
-            CGPDI-StudyLab-Portable-win-x64.zip
-          retention-days: 30
+      - name: Pack with Velopack (installer + deltas + release notes)
+        shell: pwsh
+        run: |
+          vpk pack `
+            -u CGPDIStudyLab `
+            -v ${{ steps.get_version.outputs.VERSION }} `
+            -p publish/win-x64 `
+            -e CGPDI.StudyLab.exe `
+            --packTitle "CGPDI StudyLab" `
+            --icon "CGPDI.StudyLab/Assets/app_icon.ico" `
+            --shortcuts Desktop,StartMenu `
+            --instLocation Either `
+            --releaseNotes release-notes.md
 
-      - name: Create or Update GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.get_version.outputs.TAG_NAME }}
-          name: "CGPDI StudyLab ${{ steps.get_version.outputs.TAG_NAME }}"
-          draft: false
-          prerelease: false
-          make_latest: true
-          generate_release_notes: true
-          files: |
-            CGPDI-StudyLab-Setup.exe
-            CGPDI-StudyLab-Portable.exe
-            CGPDI-StudyLab-Portable-win-x64.zip
+      - name: Pack Machine-Wide MSI (IT / labs deployment)
+        shell: pwsh
+        run: |
+          vpk pack `
+            -u CGPDIStudyLab `
+            -v ${{ steps.get_version.outputs.VERSION }} `
+            -p publish/win-x64 `
+            -e CGPDI.StudyLab.exe `
+            --packTitle "CGPDI StudyLab" `
+            --icon "CGPDI.StudyLab/Assets/app_icon.ico" `
+            --msi true `
+            --releaseNotes release-notes.md `
+            -o Releases-msi
+          Copy-Item "Releases-msi/CGPDIStudyLab-win.msi" "CGPDI-StudyLab-MachineWide.msi" -Force
+          Write-Host "Machine-wide MSI created: CGPDI-StudyLab-MachineWide.msi"
+
+      - name: Upload to GitHub Releases
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          vpk upload github `
+            --repoUrl "https://github.com/${{ github.repository }}" `
+            --token "${{ secrets.GITHUB_TOKEN }}" `
+            --publish `
+            --releaseName "CGPDI StudyLab v${{ steps.get_version.outputs.VERSION }}" `
+            --tag "v${{ steps.get_version.outputs.VERSION }}"
+
+      - name: Set Release Notes Body
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit "v${{ steps.get_version.outputs.VERSION }}" --notes-file release-notes.md
+
+      - name: Upload Extra Assets (Portable ZIP + Machine-Wide MSI)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "v${{ steps.get_version.outputs.VERSION }}" `
+            "CGPDI-StudyLab-Portable-win-x64.zip" `
+            "CGPDI-StudyLab-MachineWide.msi" `
+            --clobber

@@ -148,14 +148,17 @@ namespace CGPDI.StudyLab
             {
                 await Task.Delay(3000);
                 var release = await UpdateManager.CheckForUpdatesAsync();
-                if (release != null)
+                if (release == null) return;
+
+                // Respeita "lembrar mais tarde" (7 dias) e versões ignoradas pelo usuário
+                var settings = UpdateSettingsStore.Load();
+                if (!settings.ShouldNotifyFor(release.Version)) return;
+
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    await Dispatcher.InvokeAsync(() =>
-                    {
-                        var dlg = new UpdateDialogWindow(release) { Owner = this };
-                        dlg.ShowDialog();
-                    });
-                }
+                    var dlg = new UpdateDialogWindow(release, settings) { Owner = this };
+                    dlg.ShowDialog();
+                });
             });
         }
 
@@ -2354,7 +2357,8 @@ public static DirectBitmap Process(DirectBitmap src)
             var release = await UpdateManager.CheckForUpdatesAsync();
             if (release != null)
             {
-                var dlg = new UpdateDialogWindow(release) { Owner = this };
+                // Verificação manual: sempre mostra, mesmo que a versão esteja adiada/ignorada
+                var dlg = new UpdateDialogWindow(release, UpdateSettingsStore.Load()) { Owner = this };
                 dlg.ShowDialog();
             }
             else

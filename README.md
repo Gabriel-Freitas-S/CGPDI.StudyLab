@@ -85,7 +85,8 @@ graph TD
 ## ⚡ Principais Recursos
 
 - **🎓 Estúdio de Código em Janela Dedicada**: Janela independente maximizável com suporte a múltiplos monitores e layout retrátil (Trilha, Editor de Código C# e Canvas Gráfico).
-- **🚀 Compilação ao Vivo com Roslyn**: Escreva ou altere qualquer valor no código e veja a renderização gráfica responder na hora.
+- **🚀 Compilação ao Vivo com Roslyn**: Escreva ou altere qualquer valor no código e veja a renderização gráfica responder na hora (sem precisar de Visual Studio instalado na máquina do laboratório).
+- **🛡️ Atualização Zero-Admin para Laboratórios**: Desenvolvido para faculdades e laboratórios de informática — permite implantação em massa pela TI via MSI e atualização inteligente em 1 clique por alunos e professores sem necessidade de privilégios de administrador ou senhas de UAC.
 - **🧪 Testes Unitários Automatizados**: Bateria de validação pedagógica com diagnóstico detalhado (esperado vs. obtido).
 - **💡 Gabaritos 100% Funcionais**: Solução oficial de referência pronta para carregar e testar com 1 clique.
 - **❓ Quizzes com Quebra Automática de Linha**: Avaliações conceituais com formatação fluida para qualquer tamanho de texto.

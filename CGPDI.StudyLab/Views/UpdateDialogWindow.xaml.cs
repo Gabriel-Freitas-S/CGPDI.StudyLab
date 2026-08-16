@@ -10,22 +10,63 @@ namespace CGPDI.StudyLab.Views
     public partial class UpdateDialogWindow : Window
     {
         private readonly ReleaseInfo _release;
+        private readonly UpdateSettings? _settings;
         private CancellationTokenSource? _cts;
+        private static readonly TimeSpan SnoozeDuration = TimeSpan.FromDays(7);
 
-        public UpdateDialogWindow(ReleaseInfo release)
+        public UpdateDialogWindow(ReleaseInfo release, UpdateSettings? settings = null)
         {
             InitializeComponent();
             Icon = AppIconHelper.GetAppIcon();
             _release = release;
+            _settings = settings;
 
             TxtVersionCompare.Text = $"v{UpdateManager.CurrentVersionString} ➔ {release.TagName}";
             TxtReleaseDate.Text = !string.IsNullOrEmpty(release.PublishedAt)
-                ? $"Publicado em: {release.PublishedAt.Replace("T", " às ").Replace("Z", "")}"
+                ? $"Publicado em: {FormatPublishedAt(release.PublishedAt)}"
                 : "Nova versão publicada no GitHub Releases";
 
-            TxtChangelog.Text = !string.IsNullOrEmpty(release.ReleaseNotes)
-                ? release.ReleaseNotes
-                : $"{release.Name}\n\nAtualização recomendada para todos os usuários.";
+            ChangelogViewer.Document = !string.IsNullOrEmpty(release.ReleaseNotes)
+                ? ChangelogDocumentBuilder.Build(release.ReleaseNotes)
+                : ChangelogDocumentBuilder.Build($"{release.Name}\n\nAtualização recomendada para todos os usuários.");
+
+            if (release.IsVelopack)
+            {
+                // Velopack: download delta automático, sem escolha de formato
+                PanelFormat.Visibility = Visibility.Collapsed;
+                TxtDeltaInfo.Visibility = Visibility.Visible;
+                if (release.DeltaSizeBytes > 0)
+                {
+                    TxtDeltaInfo.Text = $"Atualização delta: baixa apenas as alterações (~{FormatSize(release.DeltaSizeBytes)}).";
+                }
+            }
+            else
+            {
+                if (release.SetupSizeBytes > 0)
+                {
+                    RbInstaller.Content = $"Instalador Automático (.exe) — {FormatSize(release.SetupSizeBytes)}";
+                }
+
+                if (release.PortableSizeBytes > 0)
+                {
+                    RbPortable.Content = $"Versão Portátil (.zip) — {FormatSize(release.PortableSizeBytes)}";
+                }
+            }
+
+            // Exibe o badge informativo do ambiente de instalação
+            BadgeEnvironment.Visibility = Visibility.Visible;
+            if (UpdateManager.IsMachineWideInstall)
+            {
+                TxtEnvironmentBadge.Text = "Instalação da TI (Zero-Admin)";
+            }
+            else if (UpdateManager.IsVelopackInstalled)
+            {
+                TxtEnvironmentBadge.Text = "Instalação por Usuário (Zero-Admin)";
+            }
+            else
+            {
+                TxtEnvironmentBadge.Text = "Modo Portátil";
+            }
         }
 
         private void BtnWeb_Click(object sender, RoutedEventArgs e)
@@ -39,14 +80,35 @@ namespace CGPDI.StudyLab.Views
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            _cts?.Cancel();
+            Snooze();
             Close();
+        }
+
+        private void BtnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            if (_settings != null)
+            {
+                _settings.Skip(_release.Version);
+                UpdateSettingsStore.Save(_settings);
+            }
+
+            Close();
+        }
+
+        private void Snooze()
+        {
+            if (_settings != null)
+            {
+                _settings.Snooze(_release.Version, SnoozeDuration);
+                UpdateSettingsStore.Save(_settings);
+            }
         }
 
         private async void BtnApply_Click(object sender, RoutedEventArgs e)
         {
             BtnApply.IsEnabled = false;
             BtnCancel.IsEnabled = false;
+            BtnSkip.IsEnabled = false;
             BtnWeb.IsEnabled = false;
             RbInstaller.IsEnabled = false;
             RbPortable.IsEnabled = false;
@@ -73,6 +135,7 @@ namespace CGPDI.StudyLab.Views
                 PanelProgress.Visibility = Visibility.Collapsed;
                 BtnApply.IsEnabled = true;
                 BtnCancel.IsEnabled = true;
+                BtnSkip.IsEnabled = true;
                 BtnWeb.IsEnabled = true;
                 RbInstaller.IsEnabled = true;
                 RbPortable.IsEnabled = true;
@@ -80,6 +143,32 @@ namespace CGPDI.StudyLab.Views
                 MessageBox.Show($"Não foi possível concluir o download da atualização:\n{ex.Message}\n\nVocê pode baixar manualmente pelo GitHub.",
                     "Erro na Atualização", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private static string FormatPublishedAt(string publishedAt)
+        {
+            string s = publishedAt;
+            int idx = s.IndexOf('T');
+            if (idx >= 0)
+            {
+                string date = s.Substring(0, idx);
+                string time = s.Substring(idx + 1).Replace("Z", "").TrimEnd('.', '0');
+                if (time.Length > 5) time = time.Substring(0, 5);
+                return $"{date} às {time}";
+            }
+
+            return s;
+        }
+
+        private static string FormatSize(long bytes)
+        {
+            if (bytes >= 1024 * 1024 * 1024)
+                return $"{bytes / (1024.0 * 1024.0 * 1024.0):F1} GB";
+            if (bytes >= 1024 * 1024)
+                return $"{bytes / (1024.0 * 1024.0):F1} MB";
+            if (bytes >= 1024)
+                return $"{bytes / 1024.0:F0} KB";
+            return $"{bytes} B";
         }
     }
 }

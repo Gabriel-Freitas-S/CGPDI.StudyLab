@@ -22,3 +22,11 @@ as específicas deste agente.
 - Toda mudança precisa passar por `dotnet build` + `dotnet test` antes de concluir.
 - Toda feature nova ou bug corrigido precisa de teste em `CGPDI.StudyLab.Tests`.
 - Após alterar código, rode `graphify update .`.
+
+## Regra do Changelog (obrigatória)
+- Toda mudança visível ao usuário DEVE entrar no `CHANGELOG.md` em `## [Unreleased]`
+  (seções `### Adicionado`, `### Corrigido`, `### Alterado`, `### Removido`, `### Segurança`,
+  em português). A seção vira o corpo da release no GitHub e é exibida no diálogo de
+  atualização do app — o workflow `release-app.yml` falha se a seção da versão não existir.
+- Ao criar release, renomeie `## [Unreleased]` para `## [vX.Y.Z] - AAAA-MM-DD`.
+- Mudanças internas (refatoração sem efeito visível, docs de código) não precisam de entrada.

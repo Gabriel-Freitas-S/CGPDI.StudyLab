@@ -57,19 +57,36 @@ if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 [System.IO.Compression.ZipFile]::CreateFromDirectory($publishDir, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
 Write-Host "✔ Pacote Portatil ZIP gerado: $zipPath" -ForegroundColor Green
 
-# 4. Compilacao do Instalador (se o Inno Setup estiver instalado)
+# 4. Empacotamento com Velopack (instalador + delta) se o vpk estiver instalado
 Write-Host ""
-Write-Host "[4/4] Verificando Inno Setup para compilar instalador (.exe)..." -ForegroundColor Yellow
-$isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-if (Test-Path $isccPath) {
-    & $isccPath "/DMyAppVersion=$Version" "$PSScriptRoot\installer\setup_script.iss"
-    if (Test-Path "$PSScriptRoot\dist-installer\CGPDI-StudyLab-Setup.exe") {
-        Move-Item "$PSScriptRoot\dist-installer\CGPDI-StudyLab-Setup.exe" "$distDir\CGPDI-StudyLab-v$Version-Setup.exe" -Force
-        if (Test-Path "$PSScriptRoot\dist-installer") { Remove-Item "$PSScriptRoot\dist-installer" -Recurse -Force }
-        Write-Host "✔ Instalador gerado: $distDir\CGPDI-StudyLab-v$Version-Setup.exe" -ForegroundColor Green
+Write-Host "[4/4] Verificando Velopack CLI (vpk) para empacotar instalador..." -ForegroundColor Yellow
+$vpk = Get-Command vpk -ErrorAction SilentlyContinue
+if ($vpk) {
+    & vpk pack -u CGPDIStudyLab -v $Version -p "$publishDir" -e CGPDI.StudyLab.exe `
+        --packTitle "CGPDI StudyLab" `
+        --icon "$PSScriptRoot\CGPDI.StudyLab\Assets\app_icon.ico" `
+        --shortcuts Desktop,StartMenu `
+        --instLocation Either `
+        -o "$PSScriptRoot\Releases"
+    if (Test-Path "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe") {
+        Copy-Item "$PSScriptRoot\Releases\CGPDIStudyLab-win-Setup.exe" "$distDir\CGPDI-StudyLab-v$Version-Setup.exe" -Force
+        Write-Host "✔ Instalador Velopack gerado: $distDir\CGPDI-StudyLab-v$Version-Setup.exe" -ForegroundColor Green
+    } else {
+        Write-Host "ℹ O vpk não gerou o Setup.exe em 'Releases'." -ForegroundColor DarkGray
+    }
+
+    & vpk pack -u CGPDIStudyLab -v $Version -p "$publishDir" -e CGPDI.StudyLab.exe `
+        --packTitle "CGPDI StudyLab" `
+        --icon "$PSScriptRoot\CGPDI.StudyLab\Assets\app_icon.ico" `
+        --msi true `
+        -o "$PSScriptRoot\Releases-msi"
+    if (Test-Path "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi") {
+        Copy-Item "$PSScriptRoot\Releases-msi\CGPDIStudyLab-win.msi" "$distDir\CGPDI-StudyLab-MachineWide.msi" -Force
+        Write-Host "✔ Instalador Machine-Wide (MSI) gerado: $distDir\CGPDI-StudyLab-MachineWide.msi" -ForegroundColor Green
     }
 } else {
-    Write-Host "ℹ Inno Setup nao detectado localmente. O instalador sera compilado automaticamente via GitHub Actions no CI/CD!" -ForegroundColor DarkGray
+    Write-Host "ℹ Velopack CLI (vpk) nao detectado localmente. O instalador sera gerado automaticamente via GitHub Actions no CI/CD!" -ForegroundColor DarkGray
+    Write-Host "  Instale com: dotnet tool install -g vpk" -ForegroundColor DarkGray
 }
 
 Write-Host ""

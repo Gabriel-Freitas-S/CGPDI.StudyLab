@@ -165,9 +165,10 @@ export default defineConfig({
             { label: 'Visão Geral e Boas-Vindas', link: '/' },
             { label: '1. O que é C#, .NET e WPF?', link: '/iniciantes/o-que-e-dotnet-csharp/' },
             { label: '2. Modo Interativo & Playground Guiado', link: '/iniciantes/modo-interativo-e-playground/' },
-            { label: '3. Instalando o Visual Studio', link: '/iniciantes/instalacao-visual-studio/' },
-            { label: '4. Executando pelo Terminal (CLI)', link: '/iniciantes/guia-linha-de-comando/' },
-            { label: '5. Depuração e Truques (Debug)', link: '/iniciantes/depuracao-e-truques/' },
+            { label: '3. Cenário Universitário & Zero-Admin', link: '/iniciantes/cenario-universitario-sem-admin/' },
+            { label: '4. Instalando o Visual Studio', link: '/iniciantes/instalacao-visual-studio/' },
+            { label: '5. Executando pelo Terminal (CLI)', link: '/iniciantes/guia-linha-de-comando/' },
+            { label: '6. Depuração e Truques (Debug)', link: '/iniciantes/depuracao-e-truques/' },
           ],
         },
         {

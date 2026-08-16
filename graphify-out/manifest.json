@@ -1,662 +1,710 @@
 {
   ".opencode/opencode.json": {
     "mtime": 1786851147.5323963,
-    "seen": 1786898368.9095247,
+    "seen": 1786905623.0157115,
     "ast_hash": "1efe24ecf938911d4f23e4b1c6ec91f7",
     "semantic_hash": "1efe24ecf938911d4f23e4b1c6ec91f7"
   },
   ".opencode/plugins/graphify.js": {
     "mtime": 1786846289.3642185,
-    "seen": 1786898368.9095304,
+    "seen": 1786905623.0157168,
     "ast_hash": "b33d000860642c6f4907a877e0387a21",
     "semantic_hash": "b33d000860642c6f4907a877e0387a21"
   },
   "CGPDI.StudyLab.slnx": {
     "mtime": 1786849406.1220827,
-    "seen": 1786898368.9095476,
+    "seen": 1786905623.0157392,
     "ast_hash": "fc05b4a428cc1e92b913f12a88fff258",
     "semantic_hash": "fc05b4a428cc1e92b913f12a88fff258"
   },
   "CGPDI.StudyLab/App.xaml": {
     "mtime": 1786840831.071101,
-    "seen": 1786898368.9095483,
+    "seen": 1786905623.0157406,
     "ast_hash": "7c90a81c3017f613d777e943d9dea6b7",
     "semantic_hash": "7c90a81c3017f613d777e943d9dea6b7"
   },
   "CGPDI.StudyLab/App.xaml.cs": {
-    "mtime": 1786849606.7740424,
-    "seen": 1786898368.9095492,
-    "ast_hash": "0870fb9d5af707ae911130f2f33681d3",
-    "semantic_hash": "0870fb9d5af707ae911130f2f33681d3"
+    "mtime": 1786903227.8037522,
+    "seen": 1786905623.0157416,
+    "ast_hash": "479adc945a659b8c8175475404f9cba5",
+    "semantic_hash": ""
   },
   "CGPDI.StudyLab/AssemblyInfo.cs": {
     "mtime": 1786817971.6758325,
-    "seen": 1786898368.9095507,
+    "seen": 1786905623.0157428,
     "ast_hash": "ab620c0dcb1ef4bc35ed75d4e2bfef89",
     "semantic_hash": "ab620c0dcb1ef4bc35ed75d4e2bfef89"
   },
   "CGPDI.StudyLab/CGPDI.StudyLab.csproj": {
-    "mtime": 1786859285.1452162,
-    "seen": 1786898368.9095516,
-    "ast_hash": "5ae5f40ee329a2706613d827f1887526",
+    "mtime": 1786901452.1977763,
+    "seen": 1786905623.015744,
+    "ast_hash": "70401e968104d239b0b04c0b3b087ee2",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Core/AppIconHelper.cs": {
     "mtime": 1786833069.7424242,
-    "seen": 1786898368.909553,
+    "seen": 1786905623.015746,
     "ast_hash": "f4846ab02f1fb80aedc61773485d7f62",
     "semantic_hash": "f4846ab02f1fb80aedc61773485d7f62"
   },
   "CGPDI.StudyLab/Core/CSharpSyntaxHighlighter.cs": {
     "mtime": 1786850358.2542331,
-    "seen": 1786898368.9095542,
+    "seen": 1786905623.0157475,
     "ast_hash": "b585a8f75bf6fad262724b89e62dcfe7",
     "semantic_hash": "b585a8f75bf6fad262724b89e62dcfe7"
   },
   "CGPDI.StudyLab/Core/ColorSpaces.cs": {
     "mtime": 1786838154.3846643,
-    "seen": 1786898368.9095552,
+    "seen": 1786905623.015751,
     "ast_hash": "505ef4867e91d6b548cdd33b4e894cad",
     "semantic_hash": "505ef4867e91d6b548cdd33b4e894cad"
   },
   "CGPDI.StudyLab/Core/DirectBitmap.cs": {
     "mtime": 1786837115.6670823,
-    "seen": 1786898368.9095562,
+    "seen": 1786905623.0157516,
     "ast_hash": "5e9a260a3000e0ebf68d274586cd78df",
     "semantic_hash": "5e9a260a3000e0ebf68d274586cd78df"
   },
   "CGPDI.StudyLab/Core/ImageSampleGenerator.cs": {
     "mtime": 1786820696.9944386,
-    "seen": 1786898368.9095576,
+    "seen": 1786905623.0157528,
     "ast_hash": "b2dd31f8de945b3af5ff1a5ddabfbb67",
     "semantic_hash": "b2dd31f8de945b3af5ff1a5ddabfbb67"
   },
   "CGPDI.StudyLab/Core/InteractiveLabManager.cs": {
     "mtime": 1786841024.5602272,
-    "seen": 1786898368.9095583,
+    "seen": 1786905623.0157537,
     "ast_hash": "ff544f2f08448130a70345fc60dbb50c",
     "semantic_hash": "ff544f2f08448130a70345fc60dbb50c"
   },
   "CGPDI.StudyLab/Core/LiveCodeCompiler.cs": {
     "mtime": 1786848981.3261185,
-    "seen": 1786898368.9095592,
+    "seen": 1786905623.0157547,
     "ast_hash": "b9d50a5d7dd0929dfd1a0b3c7b35208b",
     "semantic_hash": "b9d50a5d7dd0929dfd1a0b3c7b35208b"
   },
   "CGPDI.StudyLab/Core/ProjectTemplatesManager.cs": {
     "mtime": 1786836702.4635248,
-    "seen": 1786898368.9095612,
+    "seen": 1786905623.0157566,
     "ast_hash": "c606f3941973c6f296df8e20ab483c7c",
     "semantic_hash": "c606f3941973c6f296df8e20ab483c7c"
   },
   "CGPDI.StudyLab/Core/StudyGuideData.cs": {
     "mtime": 1786848938.0740905,
-    "seen": 1786898368.9095619,
+    "seen": 1786905623.0157576,
     "ast_hash": "3c55d99a29ff9be054a7ce6811f4048c",
     "semantic_hash": "3c55d99a29ff9be054a7ce6811f4048c"
   },
   "CGPDI.StudyLab/Core/UpdateManager.cs": {
-    "mtime": 1786859863.7401907,
-    "seen": 1786898368.9095628,
-    "ast_hash": "b2002c14dbfae20d3939b01c473fb0b1",
+    "mtime": 1786905482.8658834,
+    "seen": 1786905623.0157583,
+    "ast_hash": "079559c92a73f9441e74f2324edc19d7",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Core/XamlSyntaxHighlighter.cs": {
     "mtime": 1786840311.7662637,
-    "seen": 1786898368.909564,
+    "seen": 1786905623.015761,
     "ast_hash": "9d18a090746be4a8e87f315a22c4afb2",
     "semantic_hash": "9d18a090746be4a8e87f315a22c4afb2"
   },
   "CGPDI.StudyLab/Graphics2D/Matrix2D.cs": {
     "mtime": 1786820875.0434444,
-    "seen": 1786898368.9095647,
+    "seen": 1786905623.0157619,
     "ast_hash": "76e6fc0088e30028b1ccee0e0945fd58",
     "semantic_hash": "76e6fc0088e30028b1ccee0e0945fd58"
   },
   "CGPDI.StudyLab/Graphics2D/Rasterizer2D.cs": {
     "mtime": 1786820884.035129,
-    "seen": 1786898368.9095657,
+    "seen": 1786905623.015763,
     "ast_hash": "04d0ad79ca0d26400e7feb2fbaf047aa",
     "semantic_hash": "04d0ad79ca0d26400e7feb2fbaf047aa"
   },
   "CGPDI.StudyLab/Graphics3D/HierarchicalModeling.cs": {
     "mtime": 1786820937.2525601,
-    "seen": 1786898368.9095664,
+    "seen": 1786905623.0157638,
     "ast_hash": "89f4211760ca4050883ab0115746c597",
     "semantic_hash": "89f4211760ca4050883ab0115746c597"
   },
   "CGPDI.StudyLab/Graphics3D/Math3D.cs": {
     "mtime": 1786820894.8060882,
-    "seen": 1786898368.9095676,
+    "seen": 1786905623.0157647,
     "ast_hash": "6127f6f307d497dca8e20bb9ce72284f",
     "semantic_hash": "6127f6f307d497dca8e20bb9ce72284f"
   },
   "CGPDI.StudyLab/Graphics3D/Raytracer3D.cs": {
     "mtime": 1786820914.54642,
-    "seen": 1786898368.9095683,
+    "seen": 1786905623.0157654,
     "ast_hash": "916e3617c622606a13bbea54bbfd1f6d",
     "semantic_hash": "916e3617c622606a13bbea54bbfd1f6d"
   },
   "CGPDI.StudyLab/Graphics3D/SoftwareRenderer3D.cs": {
     "mtime": 1786820904.7603765,
-    "seen": 1786898368.909569,
+    "seen": 1786905623.0157669,
     "ast_hash": "af22e0e47c6770e16262f97761430c75",
     "semantic_hash": "af22e0e47c6770e16262f97761430c75"
   },
   "CGPDI.StudyLab/Graphics3D/WpfViewport3DManager.cs": {
     "mtime": 1786852003.3901756,
-    "seen": 1786898368.9095697,
+    "seen": 1786905623.0157678,
     "ast_hash": "e8069b21c3e73ea38987c24841b5463b",
     "semantic_hash": "e8069b21c3e73ea38987c24841b5463b"
   },
   "CGPDI.StudyLab/ImageProcessing/FrequencyAndProcedural.cs": {
     "mtime": 1786820865.0808659,
-    "seen": 1786898368.909571,
+    "seen": 1786905623.0157685,
     "ast_hash": "b83a94a53cace817c751abdf40a16cf1",
     "semantic_hash": "b83a94a53cace817c751abdf40a16cf1"
   },
   "CGPDI.StudyLab/ImageProcessing/GeometricTransforms.cs": {
     "mtime": 1786820855.7722526,
-    "seen": 1786898368.9095716,
+    "seen": 1786905623.0157695,
     "ast_hash": "5ca0aca3bb342bb8b6a3a229ae7b7404",
     "semantic_hash": "5ca0aca3bb342bb8b6a3a229ae7b7404"
   },
   "CGPDI.StudyLab/ImageProcessing/Morphology.cs": {
     "mtime": 1786820846.5478032,
-    "seen": 1786898368.9095728,
+    "seen": 1786905623.0157704,
     "ast_hash": "b3b1e0062708156f7a4a89fce8ae9848",
     "semantic_hash": "b3b1e0062708156f7a4a89fce8ae9848"
   },
   "CGPDI.StudyLab/ImageProcessing/PointAndHistograms.cs": {
     "mtime": 1786820831.2615542,
-    "seen": 1786898368.9095736,
+    "seen": 1786905623.0157714,
     "ast_hash": "6c1d7e3b1be538fd48feac6068c61cae",
     "semantic_hash": "6c1d7e3b1be538fd48feac6068c61cae"
   },
   "CGPDI.StudyLab/ImageProcessing/SpatialFilters.cs": {
     "mtime": 1786820819.6826768,
-    "seen": 1786898368.9095745,
+    "seen": 1786905623.015772,
     "ast_hash": "fb7afdf92a643af0ae1ad91cc7a4a3d6",
     "semantic_hash": "fb7afdf92a643af0ae1ad91cc7a4a3d6"
   },
   "CGPDI.StudyLab/MainWindow.xaml": {
     "mtime": 1786862023.7688205,
-    "seen": 1786898368.9095755,
+    "seen": 1786905623.0157733,
     "ast_hash": "4e5510ca270d6394adc5f9567228f24c",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/MainWindow.xaml.cs": {
-    "mtime": 1786862043.790341,
-    "seen": 1786898368.9095762,
-    "ast_hash": "da7bdb31e876e87b243cfe34851db8ec",
+    "mtime": 1786901003.3386362,
+    "seen": 1786905623.015775,
+    "ast_hash": "51bcf0d20a62485083cb22a84d126cd6",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/CodeStudioWindow.xaml": {
     "mtime": 1786859095.6989737,
-    "seen": 1786898368.909578,
+    "seen": 1786905623.0157778,
     "ast_hash": "3f84b5c0bb0a3bb28911a8f519420bf6",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/CodeStudioWindow.xaml.cs": {
     "mtime": 1786862060.4139128,
-    "seen": 1786898368.9095788,
+    "seen": 1786905623.0157785,
     "ast_hash": "d20e5be7fc054f3774cbb99c62d478bd",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/ProjectStudioWindow.xaml": {
     "mtime": 1786859126.1009035,
-    "seen": 1786898368.9095814,
+    "seen": 1786905623.0157814,
     "ast_hash": "e2b767eca2530de1f012357faf720cc7",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/ProjectStudioWindow.xaml.cs": {
     "mtime": 1786862066.278548,
-    "seen": 1786898368.9095821,
+    "seen": 1786905623.0157824,
     "ast_hash": "628f5ab344fdc9768cee1f48800d45bc",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/UpdateDialogWindow.xaml": {
-    "mtime": 1786836762.4166658,
-    "seen": 1786898368.909583,
-    "ast_hash": "7a1c3a037e498dfaa02228e71f4f8721",
-    "semantic_hash": "7a1c3a037e498dfaa02228e71f4f8721"
+    "mtime": 1786905495.4560826,
+    "seen": 1786905623.015783,
+    "ast_hash": "f18ad517b7aeff780af492a416fde877",
+    "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/UpdateDialogWindow.xaml.cs": {
-    "mtime": 1786833974.130096,
-    "seen": 1786898368.9095838,
-    "ast_hash": "1586ed0538e9d23f91d9f38a030dc89c",
-    "semantic_hash": "1586ed0538e9d23f91d9f38a030dc89c"
+    "mtime": 1786905503.9419823,
+    "seen": 1786905623.0157843,
+    "ast_hash": "54dd1aa7e42eccb12c14b5582f971c3e",
+    "semantic_hash": ""
   },
   "build_release.ps1": {
-    "mtime": 1786836191.675945,
-    "seen": 1786898368.909585,
-    "ast_hash": "93571f864989e369c25a71a620a1cb01",
-    "semantic_hash": "93571f864989e369c25a71a620a1cb01"
+    "mtime": 1786902703.2832654,
+    "seen": 1786905623.0157852,
+    "ast_hash": "bfd65cb8f00c36f9c475b0651d4947b6",
+    "semantic_hash": ""
   },
   "docs/astro.config.mjs": {
-    "mtime": 1786828838.3092754,
-    "seen": 1786898368.909586,
-    "ast_hash": "9bae038bedde7266dc475b6fc8623ca6",
-    "semantic_hash": "9bae038bedde7266dc475b6fc8623ca6"
+    "mtime": 1786905563.7039337,
+    "seen": 1786905623.015786,
+    "ast_hash": "95587c5073b99789b7f225f6c8aa97e7",
+    "semantic_hash": ""
   },
   "docs/package.json": {
     "mtime": 1786825239.6210115,
-    "seen": 1786898368.9095867,
+    "seen": 1786905623.0157871,
     "ast_hash": "17e5b649212f10c237838dc1123b8b3b",
     "semantic_hash": "17e5b649212f10c237838dc1123b8b3b"
   },
   "docs/src/content.config.ts": {
     "mtime": 1786823827.3493817,
-    "seen": 1786898368.9095876,
+    "seen": 1786905623.0157878,
     "ast_hash": "9333c054c16ebc82d9223347ffd02563",
     "semantic_hash": "9333c054c16ebc82d9223347ffd02563"
   },
   "docs/tsconfig.json": {
     "mtime": 1786823790.692417,
-    "seen": 1786898368.9095888,
+    "seen": 1786905623.0157888,
     "ast_hash": "b82d305f115ecef5084a5596e8bd643d",
     "semantic_hash": "b82d305f115ecef5084a5596e8bd643d"
   },
   ".agents/rules/graphify.md": {
     "mtime": 1786846275.2865722,
-    "seen": 1786898368.9095895,
+    "seen": 1786905623.0157895,
     "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
     "semantic_hash": "a0e4d192b9e2e17256124dbfc8e24e6a"
   },
   ".agents/workflows/graphify.md": {
     "mtime": 1786846275.2865722,
-    "seen": 1786898368.9095912,
+    "seen": 1786905623.0157917,
     "ast_hash": "a831cf3669f1e6ab85d8a80ebe655f99",
     "semantic_hash": "a831cf3669f1e6ab85d8a80ebe655f99"
   },
   ".github/workflows/codeql.yml": {
     "mtime": 1786835335.0430713,
-    "seen": 1786898368.9095922,
+    "seen": 1786905623.0157924,
     "ast_hash": "0cdf98596b8356a48c9777398ab8723e",
     "semantic_hash": "0cdf98596b8356a48c9777398ab8723e"
   },
   ".github/workflows/deploy-docs.yml": {
-    "mtime": 1786824409.3593886,
-    "seen": 1786898368.9095929,
-    "ast_hash": "990648ac27dd4ba802e1e902b11cd9fc",
-    "semantic_hash": "990648ac27dd4ba802e1e902b11cd9fc"
+    "mtime": 1786899694.008911,
+    "seen": 1786905623.0157933,
+    "ast_hash": "76a02551bc05cf895aac91bef2bb04ff",
+    "semantic_hash": ""
   },
   ".github/workflows/release-app.yml": {
-    "mtime": 1786851869.9111743,
-    "seen": 1786898368.9095938,
-    "ast_hash": "a198ec3ce0d52ec802c3aedecd7a83ef",
-    "semantic_hash": "a198ec3ce0d52ec802c3aedecd7a83ef"
+    "mtime": 1786902693.0039997,
+    "seen": 1786905623.0157943,
+    "ast_hash": "9681fec39f7197dd420ba237a164eae1",
+    "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1786851853.9531162,
-    "seen": 1786898368.9095948,
-    "ast_hash": "3c6bc8723e663f039c537574b35dbc4e",
-    "semantic_hash": "3c6bc8723e663f039c537574b35dbc4e"
+    "mtime": 1786901036.5664327,
+    "seen": 1786905623.0157952,
+    "ast_hash": "b6b1e544b8768284ad9078d62fde31a0",
+    "semantic_hash": ""
   },
   "Plano de Ensino.md": {
     "mtime": 1786818926.290313,
-    "seen": 1786898368.9095967,
+    "seen": 1786905623.0157983,
     "ast_hash": "83372c83a99018ab823ab89d1cfdbbf8",
     "semantic_hash": "83372c83a99018ab823ab89d1cfdbbf8"
   },
   "README.md": {
-    "mtime": 1786833421.4298515,
-    "seen": 1786898368.9095974,
-    "ast_hash": "3075d6bdae024eb8382e941c3fbe6923",
-    "semantic_hash": "3075d6bdae024eb8382e941c3fbe6923"
+    "mtime": 1786905584.7239797,
+    "seen": 1786905623.0157993,
+    "ast_hash": "4b0914013f6f03b57fe0e14a83aab7d4",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/academico/mapeamento-do-plano.md": {
-    "mtime": 1786826448.283984,
-    "seen": 1786898368.909598,
-    "ast_hash": "8db69420a9660a5d10b3295674fa9df5",
-    "semantic_hash": "8db69420a9660a5d10b3295674fa9df5"
+    "mtime": 1786899670.1378436,
+    "seen": 1786905623.0158002,
+    "ast_hash": "048641e92d12946a87b045a25997370a",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/academico/roteiro-de-estudos-e-avaliacoes.md": {
-    "mtime": 1786825678.3223503,
-    "seen": 1786898368.909599,
-    "ast_hash": "15eff44c1aa754db6603f9521275c4db",
-    "semantic_hash": "15eff44c1aa754db6603f9521275c4db"
+    "mtime": 1786899670.1538444,
+    "seen": 1786905623.0158012,
+    "ast_hash": "c67fd0d60e7d003f5e0a6daacc3af57f",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/arquitetura/estrutura-de-pastas.md": {
-    "mtime": 1786825411.5706992,
-    "seen": 1786898368.9096,
-    "ast_hash": "77087e5c1f49d211afc2a4c95b2f6246",
-    "semantic_hash": "77087e5c1f49d211afc2a4c95b2f6246"
+    "mtime": 1786899670.191846,
+    "seen": 1786905623.0158024,
+    "ast_hash": "9aa26c1cb40e54ac1278da37a6d1ee32",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/arquitetura/visao-geral.md": {
-    "mtime": 1786826855.87682,
-    "seen": 1786898368.9096007,
-    "ast_hash": "b18bb76ea308388b1d983fb453d799ed",
-    "semantic_hash": "b18bb76ea308388b1d983fb453d799ed"
+    "mtime": 1786899670.2068434,
+    "seen": 1786905623.0158033,
+    "ast_hash": "af6534355d7af507acfaf88777a75886",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/arquitetura/wpf-e-xaml-explicados.md": {
-    "mtime": 1786826916.5788257,
-    "seen": 1786898368.9096014,
-    "ast_hash": "544745d19c2ee047d904f8c5efa1a5be",
-    "semantic_hash": "544745d19c2ee047d904f8c5efa1a5be"
+    "mtime": 1786899670.221843,
+    "seen": 1786905623.0158045,
+    "ast_hash": "283f14722ded818110c91e7779ef21c6",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg2d/algebra-linear-e-matrizes.md": {
-    "mtime": 1786826861.170314,
-    "seen": 1786898368.9096026,
-    "ast_hash": "328d798349df3600ffa2d137c158c2a0",
-    "semantic_hash": "328d798349df3600ffa2d137c158c2a0"
+    "mtime": 1786899670.2398438,
+    "seen": 1786905623.0158055,
+    "ast_hash": "b6c99a7050571e1c6d4c0354529ccfeb",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg2d/algoritmos-de-linhas.md": {
-    "mtime": 1786825564.8133218,
-    "seen": 1786898368.9096034,
-    "ast_hash": "a407e2377d5f156bf3864f3ecfb06634",
-    "semantic_hash": "a407e2377d5f156bf3864f3ecfb06634"
+    "mtime": 1786899670.249845,
+    "seen": 1786905623.0158064,
+    "ast_hash": "b07d09d3bb407eefeac429d860022865",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg2d/circulos-elipses-e-curvas.md": {
-    "mtime": 1786825571.6901832,
-    "seen": 1786898368.9096043,
-    "ast_hash": "a555aae14d037d66691ae4c88c146066",
-    "semantic_hash": "a555aae14d037d66691ae4c88c146066"
+    "mtime": 1786899670.2628446,
+    "seen": 1786905623.0158074,
+    "ast_hash": "b4067acadf38307654209167c2c24c58",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg2d/preenchimento-e-recorte.md": {
-    "mtime": 1786825581.559384,
-    "seen": 1786898368.9096053,
-    "ast_hash": "610576576c6bfe57050980daf92401d9",
-    "semantic_hash": "610576576c6bfe57050980daf92401d9"
+    "mtime": 1786899670.2798426,
+    "seen": 1786905623.0158083,
+    "ast_hash": "bc8625783085f981cddcf8c353bcf0fc",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg3d/matematica-vetorial-e-mvp.md": {
-    "mtime": 1786826866.7764792,
-    "seen": 1786898368.9096065,
-    "ast_hash": "6fca26b0a5b22a4f6e9c7c4fb4c5b8cb",
-    "semantic_hash": "6fca26b0a5b22a4f6e9c7c4fb4c5b8cb"
+    "mtime": 1786899670.293352,
+    "seen": 1786905623.0158093,
+    "ast_hash": "8d64d0c6a093693e279a2c82c26e015a",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg3d/renderizador-em-software.md": {
-    "mtime": 1786825605.58876,
-    "seen": 1786898368.9096074,
-    "ast_hash": "9792cc34f77d4e996e86c88fb2a26622",
-    "semantic_hash": "9792cc34f77d4e996e86c88fb2a26622"
+    "mtime": 1786899670.3063526,
+    "seen": 1786905623.01581,
+    "ast_hash": "b25622646665f8a08a00700ba126c579",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/cg3d/viewport3d-hardware-wpf.md": {
-    "mtime": 1786826408.313635,
-    "seen": 1786898368.9096081,
-    "ast_hash": "cf1cfb2bc90232fcf5b4cb068785b2a6",
-    "semantic_hash": "cf1cfb2bc90232fcf5b4cb068785b2a6"
+    "mtime": 1786899670.3208647,
+    "seen": 1786905623.015811,
+    "ast_hash": "74e7ee902d2729de8a5a8e152f032229",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/core/directbitmap.md": {
-    "mtime": 1786826377.43882,
-    "seen": 1786898368.9096093,
-    "ast_hash": "c97b66d3c99c076b04e35803df3b7035",
-    "semantic_hash": "c97b66d3c99c076b04e35803df3b7035"
+    "mtime": 1786899670.3298652,
+    "seen": 1786905623.015812,
+    "ast_hash": "0afddefed92bbddb31c853e10e9968f4",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/core/fundamentos-de-memoria.md": {
-    "mtime": 1786826366.4999287,
-    "seen": 1786898368.90961,
-    "ast_hash": "9dc092dbca1cf4cf817077ba34aa3e63",
-    "semantic_hash": "9dc092dbca1cf4cf817077ba34aa3e63"
+    "mtime": 1786899670.3441284,
+    "seen": 1786905623.0158129,
+    "ast_hash": "b673fe7fec7c1990371eeeb912c5bfa5",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/core/gerador-de-amostras.md": {
-    "mtime": 1786825473.5973692,
-    "seen": 1786898368.9096107,
-    "ast_hash": "11d29a1bba82b192d757a4ca2bab566e",
-    "semantic_hash": "11d29a1bba82b192d757a4ca2bab566e"
+    "mtime": 1786899670.353111,
+    "seen": 1786905623.0158136,
+    "ast_hash": "18f9253e956d32dc74948641e5100466",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/core/modelos-de-cor.md": {
-    "mtime": 1786825460.9512591,
-    "seen": 1786898368.9096117,
-    "ast_hash": "d3f7ad74dde03d41b35c0f0a6aeab743",
-    "semantic_hash": "d3f7ad74dde03d41b35c0f0a6aeab743"
+    "mtime": 1786899670.363111,
+    "seen": 1786905623.0158145,
+    "ast_hash": "82d4f8687b75e52a51ce98d116be0e9a",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/deploy/github-pages-e-ci-cd.md": {
-    "mtime": 1786834306.0292244,
-    "seen": 1786898368.9096127,
-    "ast_hash": "85b02b53dd2b0e5f2b5f80d660839b9e",
-    "semantic_hash": "85b02b53dd2b0e5f2b5f80d660839b9e"
+    "mtime": 1786903307.5039155,
+    "seen": 1786905623.0158155,
+    "ast_hash": "bce5a52430d426fafe5a336fecd5877b",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/hierarquia/braco-robotico-e-animacoes.md": {
-    "mtime": 1786826877.717132,
-    "seen": 1786898368.9096134,
-    "ast_hash": "0883fd42410eecee7e576d3831832ca6",
-    "semantic_hash": "0883fd42410eecee7e576d3831832ca6"
+    "mtime": 1786899670.3721142,
+    "seen": 1786905623.0158165,
+    "ast_hash": "909853000dfe39d80567a5475a73b03c",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/hierarquia/grafos-de-cena-e-teoria.md": {
-    "mtime": 1786826872.3075519,
-    "seen": 1786898368.909614,
-    "ast_hash": "da873606af32912b5b2fa20915dfe9a5",
-    "semantic_hash": "da873606af32912b5b2fa20915dfe9a5"
+    "mtime": 1786899670.3831117,
+    "seen": 1786905623.0158174,
+    "ast_hash": "2ea712cb65b64593dda829c12340b6b8",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/index.mdx": {
-    "mtime": 1786898278.8155887,
-    "seen": 1786898368.909615,
-    "ast_hash": "1075a27d26fe673c886b06c3c36c23c1",
+    "mtime": 1786905575.4449012,
+    "seen": 1786905623.0158184,
+    "ast_hash": "f441f23ea6a58d4c3c5b291006432063",
     "semantic_hash": ""
   },
   "docs/src/content/docs/iniciantes/depuracao-e-truques.md": {
-    "mtime": 1786826430.7200131,
-    "seen": 1786898368.9096162,
-    "ast_hash": "e9f4564bf5b5f6787487a37e54254ee2",
-    "semantic_hash": "e9f4564bf5b5f6787487a37e54254ee2"
+    "mtime": 1786899670.3941226,
+    "seen": 1786905623.0158205,
+    "ast_hash": "3c0cd75b3ba11553659c807536356e61",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/iniciantes/guia-linha-de-comando.md": {
-    "mtime": 1786825367.76982,
-    "seen": 1786898368.909617,
-    "ast_hash": "d74b44c9f085879f2db51a0b012bd32c",
-    "semantic_hash": "d74b44c9f085879f2db51a0b012bd32c"
+    "mtime": 1786899670.4077165,
+    "seen": 1786905623.015822,
+    "ast_hash": "d06855d828f4e0e32c02a1a68a687766",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/iniciantes/instalacao-visual-studio.md": {
-    "mtime": 1786825359.874298,
-    "seen": 1786898368.9096177,
-    "ast_hash": "1c42a7eecf4730ba2c5c5b10c5a92c0b",
-    "semantic_hash": "1c42a7eecf4730ba2c5c5b10c5a92c0b"
+    "mtime": 1786899670.4167254,
+    "seen": 1786905623.0158226,
+    "ast_hash": "1e1ed9e31994baa6ae8bb4ab6aabffc0",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/iniciantes/modo-interativo-e-playground.md": {
-    "mtime": 1786833520.342254,
-    "seen": 1786898368.9096184,
-    "ast_hash": "389c8f887dfaf2134b3fb7af2db2fa11",
-    "semantic_hash": "389c8f887dfaf2134b3fb7af2db2fa11"
+    "mtime": 1786899670.4286358,
+    "seen": 1786905623.0158236,
+    "ast_hash": "cface54ec8c360ea0fa2995d243e5df3",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/iniciantes/o-que-e-dotnet-csharp.md": {
-    "mtime": 1786826849.7499282,
-    "seen": 1786898368.909619,
-    "ast_hash": "0b65e993c0da5580ff6ee58ca80341a9",
-    "semantic_hash": "0b65e993c0da5580ff6ee58ca80341a9"
+    "mtime": 1786899670.4436219,
+    "seen": 1786905623.0158246,
+    "ast_hash": "de2415da84cbdb5e78baba295ebdbc8c",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/deteccao-de-bordas-e-canny.md": {
-    "mtime": 1786826885.7331882,
-    "seen": 1786898368.9096203,
-    "ast_hash": "bd730ba3a2d68f145c80f8c094637c7e",
-    "semantic_hash": "bd730ba3a2d68f145c80f8c094637c7e"
+    "mtime": 1786899670.4526234,
+    "seen": 1786905623.0158255,
+    "ast_hash": "2bd6ca041423bd009790bbab2d7c833f",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/dominio-da-frequencia-e-ruidos.md": {
-    "mtime": 1786825549.3350801,
-    "seen": 1786898368.909621,
-    "ast_hash": "25e75c149efd3c6611342765a55099bb",
-    "semantic_hash": "25e75c149efd3c6611342765a55099bb"
+    "mtime": 1786899670.4646232,
+    "seen": 1786905623.0158265,
+    "ast_hash": "4347355bfe38a4cdc3ae80579a74c6d7",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/filtros-espaciais-e-convolucoes.md": {
-    "mtime": 1786825492.143751,
-    "seen": 1786898368.9096217,
-    "ast_hash": "c217a2b69e0ab5442b9e279379316eac",
-    "semantic_hash": "c217a2b69e0ab5442b9e279379316eac"
+    "mtime": 1786899670.4750912,
+    "seen": 1786905623.0158272,
+    "ast_hash": "e240b23847e9bf8757f844154c37c809",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/morfologia-matematica-e-otsu.md": {
-    "mtime": 1786825533.3560789,
-    "seen": 1786898368.9096224,
-    "ast_hash": "19e13bf724be9e3d157f997358d56042",
-    "semantic_hash": "19e13bf724be9e3d157f997358d56042"
+    "mtime": 1786899670.4886446,
+    "seen": 1786905623.0158281,
+    "ast_hash": "6a32cb6cb87e6f37c5f4e7a8cb409585",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/operacoes-pontuais-e-histogramas.md": {
-    "mtime": 1786825482.0412204,
-    "seen": 1786898368.9096236,
-    "ast_hash": "1b5444200fd9c6523d8f6cfffac5b8b2",
-    "semantic_hash": "1b5444200fd9c6523d8f6cfffac5b8b2"
+    "mtime": 1786899670.4986434,
+    "seen": 1786905623.015829,
+    "ast_hash": "eea4f88bea7acc94a53d4ee267b52ee2",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/pdi/transformacoes-geometricas.md": {
-    "mtime": 1786825541.9568672,
-    "seen": 1786898368.9096243,
-    "ast_hash": "bfa10a35cb66826a3d092bdd9c63c6d2",
-    "semantic_hash": "bfa10a35cb66826a3d092bdd9c63c6d2"
+    "mtime": 1786899670.5122526,
+    "seen": 1786905623.01583,
+    "ast_hash": "33cd3d6f801e2f540701847fb70f0f33",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/raytracing/fundamentos-e-fisica-da-luz.md": {
-    "mtime": 1786826891.8072937,
-    "seen": 1786898368.909625,
-    "ast_hash": "9a60a88d0cd0d41d9a6d25ffda79a2d4",
-    "semantic_hash": "9a60a88d0cd0d41d9a6d25ffda79a2d4"
+    "mtime": 1786899670.5227604,
+    "seen": 1786905623.0158308,
+    "ast_hash": "80ee3b9c56aa3e1af6990d4b58166da9",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/raytracing/intersecao-e-geometria.md": {
-    "mtime": 1786826898.673134,
-    "seen": 1786898368.909626,
-    "ast_hash": "3f3dd02f7133208d192f8f1705cb4b9f",
-    "semantic_hash": "3f3dd02f7133208d192f8f1705cb4b9f"
+    "mtime": 1786899670.5317688,
+    "seen": 1786905623.0158315,
+    "ast_hash": "a422dc5b5148725a053d963dcaba31de",
+    "semantic_hash": ""
   },
   "docs/src/content/docs/raytracing/reflexao-refracao-snell.md": {
-    "mtime": 1786826904.2809112,
-    "seen": 1786898368.909627,
-    "ast_hash": "3c76102a17d5d087c8ec7115b896f188",
-    "semantic_hash": "3c76102a17d5d087c8ec7115b896f188"
+    "mtime": 1786899670.5427704,
+    "seen": 1786905623.0158327,
+    "ast_hash": "1dda289e28152dee4d5c9b07f8390874",
+    "semantic_hash": ""
   },
   "CGPDI.StudyLab/Assets/logo.png": {
     "mtime": 1786833264.0649388,
-    "seen": 1786898368.909628,
+    "seen": 1786905623.0158336,
     "ast_hash": "d3fb097ee835873269f8fe6e4d1d30b2",
     "semantic_hash": "d3fb097ee835873269f8fe6e4d1d30b2"
   },
   "CGPDI.StudyLab/Assets/logo.svg": {
     "mtime": 1786832796.4170074,
-    "seen": 1786898368.9096289,
+    "seen": 1786905623.0158346,
     "ast_hash": "2ef018f6894949e1b63c8421700dd526",
     "semantic_hash": "2ef018f6894949e1b63c8421700dd526"
   },
   "CGPDI.StudyLab/Assets/logo_full.svg": {
     "mtime": 1786832808.716121,
-    "seen": 1786898368.9096296,
+    "seen": 1786905623.0158353,
     "ast_hash": "96be1e46d9b10bbbcb2bfa33520396ca",
     "semantic_hash": "96be1e46d9b10bbbcb2bfa33520396ca"
   },
   "docs/src/assets/logo.svg": {
     "mtime": 1786833494.517994,
-    "seen": 1786898368.9096308,
+    "seen": 1786905623.0158365,
     "ast_hash": "2ef018f6894949e1b63c8421700dd526",
     "semantic_hash": "2ef018f6894949e1b63c8421700dd526"
   },
   "docs/src/assets/logo_full.svg": {
     "mtime": 1786833503.1161017,
-    "seen": 1786898368.9096315,
+    "seen": 1786905623.0158374,
     "ast_hash": "28db89bfa599fb02f225321f09b777ee",
     "semantic_hash": "28db89bfa599fb02f225321f09b777ee"
   },
   "CGPDI.StudyLab.Tests/CGPDI.StudyLab.Tests.csproj": {
     "mtime": 1786849397.5662453,
-    "seen": 1786898368.9095328,
+    "seen": 1786905623.0157197,
     "ast_hash": "705e9f65a93ce92adfc298f84e3d4589",
     "semantic_hash": "705e9f65a93ce92adfc298f84e3d4589"
   },
   "CGPDI.StudyLab.Tests/UiTests/LaboratorioUiTests.cs": {
     "mtime": 1786849461.7966013,
-    "seen": 1786898368.9095347,
+    "seen": 1786905623.0157213,
     "ast_hash": "598735def9e60d4bf1be00dd02e95cbd",
     "semantic_hash": "598735def9e60d4bf1be00dd02e95cbd"
   },
   "CGPDI.StudyLab.Tests/UiTests/MainWindowUiTests.cs": {
     "mtime": 1786861593.007643,
-    "seen": 1786898368.9095364,
+    "seen": 1786905623.0157223,
     "ast_hash": "1d8a51c91e510a57a3017539bc161a89",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab.Tests/UiTests/ProjectStudioUiTests.cs": {
     "mtime": 1786849468.4644063,
-    "seen": 1786898368.9095373,
+    "seen": 1786905623.0157235,
     "ast_hash": "524fe8130c67b40cd3323023f64ff6a2",
     "semantic_hash": "524fe8130c67b40cd3323023f64ff6a2"
   },
   "CGPDI.StudyLab.Tests/UnitTests/CompilerAndXamlTests.cs": {
     "mtime": 1786849713.7213762,
-    "seen": 1786898368.9095383,
+    "seen": 1786905623.0157268,
     "ast_hash": "bb04d956faaee9bf27475839f0119c78",
     "semantic_hash": "bb04d956faaee9bf27475839f0119c78"
   },
   "CGPDI.StudyLab.Tests/UnitTests/Graphics3DTests.cs": {
     "mtime": 1786849632.0931115,
-    "seen": 1786898368.9095407,
+    "seen": 1786905623.0157297,
     "ast_hash": "1bb23366959156cdd0143da9ce0ff625",
     "semantic_hash": "1bb23366959156cdd0143da9ce0ff625"
   },
   "CGPDI.StudyLab.Tests/UnitTests/ImageProcessingTests.cs": {
     "mtime": 1786849679.3172183,
-    "seen": 1786898368.9095414,
+    "seen": 1786905623.0157306,
     "ast_hash": "ee2f1e6197e6f720eb2dcad8a863ad88",
     "semantic_hash": "ee2f1e6197e6f720eb2dcad8a863ad88"
   },
   "CGPDI.StudyLab.Tests/UnitTests/QuizAndCurriculumTests.cs": {
     "mtime": 1786849446.5156932,
-    "seen": 1786898368.9095435,
+    "seen": 1786905623.0157332,
     "ast_hash": "d24aa9d3e01840034e112d0c3d3c74fa",
     "semantic_hash": "d24aa9d3e01840034e112d0c3d3c74fa"
   },
   "CGPDI.StudyLab.Tests/UnitTests/Rasterization2DTests.cs": {
     "mtime": 1786849624.5489695,
-    "seen": 1786898368.9095447,
+    "seen": 1786905623.0157344,
     "ast_hash": "8c5b52cf04a91fced676231eb9077b60",
     "semantic_hash": "8c5b52cf04a91fced676231eb9077b60"
   },
   "CGPDI.StudyLab/Views/ProjectStudioControl.xaml": {
     "mtime": 1786862030.3478384,
-    "seen": 1786898368.9095795,
+    "seen": 1786905623.0157795,
     "ast_hash": "0633ea195d255bcc39c354c2731d4e2e",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/ProjectStudioControl.xaml.cs": {
     "mtime": 1786849024.4373145,
-    "seen": 1786898368.9095805,
+    "seen": 1786905623.0157807,
     "ast_hash": "71a591cb1d3ddc64114749362932bd76",
     "semantic_hash": "71a591cb1d3ddc64114749362932bd76"
   },
   "CGPDI.StudyLab.Tests/UnitTests/MathRendererAndSyntaxTests.cs": {
     "mtime": 1786850705.4135392,
-    "seen": 1786898368.9095423,
+    "seen": 1786905623.0157323,
     "ast_hash": "937a61ed71f86526ba304cc6b054d5d0",
     "semantic_hash": "937a61ed71f86526ba304cc6b054d5d0"
   },
   "CGPDI.StudyLab/Core/AlgorithmCodeSnippets.cs": {
     "mtime": 1786850374.429742,
-    "seen": 1786898368.9095523,
+    "seen": 1786905623.015745,
     "ast_hash": "9130b016c46bfbdc1da963ddfaae8c09",
     "semantic_hash": "9130b016c46bfbdc1da963ddfaae8c09"
   },
   "CGPDI.StudyLab/Core/MathFormulaRenderer.cs": {
     "mtime": 1786850347.9959123,
-    "seen": 1786898368.90956,
+    "seen": 1786905623.0157554,
     "ast_hash": "33ac4f685f392e62b81bf561ff3cc793",
     "semantic_hash": "33ac4f685f392e62b81bf561ff3cc793"
   },
   "CGPDI.StudyLab.Tests/UnitTests/GeometricTransformsAndMath3DTests.cs": {
     "mtime": 1786852034.3955848,
-    "seen": 1786898368.9095392,
+    "seen": 1786905623.0157287,
     "ast_hash": "5bac105c67d2c539e95e00b0bdb179e9",
     "semantic_hash": "5bac105c67d2c539e95e00b0bdb179e9"
   },
   "CGPDI.StudyLab.Tests/UnitTests/Viewport3DAndXamlTests.cs": {
     "mtime": 1786852080.5169399,
-    "seen": 1786898368.9095466,
+    "seen": 1786905623.015738,
     "ast_hash": "f7a417ab9cf3e2d3570c38c1a0267873",
     "semantic_hash": "f7a417ab9cf3e2d3570c38c1a0267873"
   },
   ".agents/rules/project.md": {
-    "mtime": 1786851939.6146445,
-    "seen": 1786898368.9095905,
-    "ast_hash": "d6371c069c69f4dac646032ebb6c9f64",
-    "semantic_hash": "d6371c069c69f4dac646032ebb6c9f64"
+    "mtime": 1786901063.139647,
+    "seen": 1786905623.0157907,
+    "ast_hash": "86d1cb699e331e9a7ac999fbd46ca8b0",
+    "semantic_hash": ""
   },
   "GEMINI.md": {
-    "mtime": 1786851958.297695,
-    "seen": 1786898368.9095957,
-    "ast_hash": "2b96f9685297e5ca67f42de56a69f1a0",
-    "semantic_hash": "2b96f9685297e5ca67f42de56a69f1a0"
+    "mtime": 1786901053.049652,
+    "seen": 1786905623.0157976,
+    "ast_hash": "132dae818737e82d96bd83b6f055e8ff",
+    "semantic_hash": ""
   },
   "CGPDI.StudyLab.Tests/UnitTests/UpdateManagerTests.cs": {
-    "mtime": 1786859997.5080688,
-    "seen": 1786898368.9095454,
-    "ast_hash": "cdb11e85a7f45fa4916768ab32aa4983",
+    "mtime": 1786905511.8414927,
+    "seen": 1786905623.0157356,
+    "ast_hash": "55613e6c1c5c7b4d9730b22fe0ff7e44",
     "semantic_hash": ""
   },
   "CGPDI.StudyLab/Views/BorderlessWindow.cs": {
     "mtime": 1786862053.1706295,
-    "seen": 1786898368.9095771,
+    "seen": 1786905623.015776,
     "ast_hash": "6196727c97439b54d8e6692a9a416a2b",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab.Tests/UiTests/UpdateDialogUiTests.cs": {
+    "mtime": 1786905520.4095476,
+    "seen": 1786905623.015725,
+    "ast_hash": "d4553822d9242dfa4c26a6be4a1cd41c",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab.Tests/UnitTests/ChangelogParserTests.cs": {
+    "mtime": 1786901184.9862683,
+    "seen": 1786905623.0157259,
+    "ast_hash": "4c5f1260c80d40a5b37847518b50323c",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab.Tests/UnitTests/UpdateSettingsTests.cs": {
+    "mtime": 1786901075.471621,
+    "seen": 1786905623.0157366,
+    "ast_hash": "6a4a6a2e65acab5194977ea02cd513ce",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab/Core/ChangelogDocumentBuilder.cs": {
+    "mtime": 1786900810.9025273,
+    "seen": 1786905623.0157485,
+    "ast_hash": "be38bfb9a29ad628a79ec7c871e31375",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab/Core/ChangelogParser.cs": {
+    "mtime": 1786900794.3473856,
+    "seen": 1786905623.0157497,
+    "ast_hash": "2d1106bd8c89d42ab1d5311d27a4e858",
+    "semantic_hash": ""
+  },
+  "CGPDI.StudyLab/Core/UpdateSettings.cs": {
+    "mtime": 1786900769.6248138,
+    "seen": 1786905623.015759,
+    "ast_hash": "c6e5db36ba77bd0aeaad38a4dfb7f83c",
+    "semantic_hash": ""
+  },
+  "CHANGELOG.md": {
+    "mtime": 1786905594.626507,
+    "seen": 1786905623.0157962,
+    "ast_hash": "3f26d915dbc220e97f59247737756004",
+    "semantic_hash": ""
+  },
+  "docs/src/content/docs/iniciantes/cenario-universitario-sem-admin.md": {
+    "mtime": 1786905556.5538623,
+    "seen": 1786905623.0158193,
+    "ast_hash": "455e89af6191aca5b3327b895370a72d",
     "semantic_hash": ""
   }
 }

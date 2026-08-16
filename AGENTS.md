@@ -14,6 +14,12 @@ Arquitetura: `MainWindow` (7 abas) + janelas/controles separados de Estúdio e L
 - Não conclua uma tarefa com teste faltando. Regressão sem teste = tarefa incompleta.
 - Testes de UI usam `[UIFact]` / `[WpfFact]` (Xunit.StaFact) e liberam recursos com `Close()`/`Dispose()`.
 
+## Regra do Changelog (obrigatória)
+- **Toda mudança visível ao usuário DEVE entrar no `CHANGELOG.md`** em `## [Unreleased]`, com seções `### Adicionado`, `### Corrigido`, `### Alterado`, `### Removido` e `### Segurança` (formato Keep a Changelog, em português).
+- A seção do `[Unreleased]` vira o corpo da release no GitHub Releases (extraída pelo workflow `release-app.yml`, que falha se a seção da versão não existir) e é exibida dentro do app no diálogo de atualização.
+- Ao criar uma release: renomeie `## [Unreleased]` para `## [vX.Y.Z] - AAAA-MM-DD` antes de gerar a tag.
+- Mudanças internas (refatoração sem efeito visível, docs de código) NÃO precisam de entrada no changelog.
+
 ## Consistência de estilo (NÃO quebrar o que funciona)
 - Use a paleta escura existente (#181825, #182032, #252F46, texto #E2E8F0/#94A3B8) e os mesmos estilos de App.xaml. Reutilize recursos de `App.xaml`; não duplique cores inline.
 - Janelas do app usam `WindowStyle="None"` + controles próprios de minimizar/maximizar/fechar. Mantenha esse padrão.
