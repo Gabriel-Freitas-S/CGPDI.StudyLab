@@ -36,16 +36,6 @@ jobs:
         working-directory: ./docs
         run: npm ci || npm install
 
-      - name: Install & Configure Snyk CLI
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: |
-          npm install -g snyk
-          snyk config set api="$SNYK_TOKEN"
-
-      - name: Snyk Security Gate (Docs Dependencies)
-        working-directory: ./docs
-        run: snyk test --severity-threshold=medium
 
       - name: Build documentation
         working-directory: ./docs

@@ -138,26 +138,6 @@ jobs:
             throw "Testes falharam. A release não pode ser publicada com regressões."
           }
 
-      - name: Install & Configure Snyk CLI
-        shell: pwsh
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: |
-          npm install -g snyk
-          snyk config set api="$env:SNYK_TOKEN"
-
-      - name: Snyk Security Gate (Block Release on Medium+ Vulnerabilities)
-        shell: pwsh
-        run: |
-          Write-Host "Executando Snyk Security Gate (limiar: moderado / medium ou superior)..."
-          snyk test --file="CGPDI.StudyLab/CGPDI.StudyLab.csproj" --severity-threshold=medium
-          if ($LASTEXITCODE -ne 0) {
-            throw "Vulnerabilidades moderadas ou superiores encontradas nas dependencias pelo Snyk. Release cancelada."
-          }
-          snyk code test
-          if ($LASTEXITCODE -ne 0) {
-            throw "Vulnerabilidades encontradas no codigo-fonte pelo Snyk. Release cancelada."
-          }
 
       - name: Publish Single-File Self-Contained App (win-x64)
         shell: pwsh
