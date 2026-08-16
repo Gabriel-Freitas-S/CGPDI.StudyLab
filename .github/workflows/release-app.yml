@@ -66,6 +66,15 @@ jobs:
             /p:AssemblyVersion=${{ steps.get_version.outputs.VERSION }}.0 `
             /p:FileVersion=${{ steps.get_version.outputs.VERSION }}.0
 
+      - name: Run Unit & UI Tests (gate)
+        shell: pwsh
+        run: |
+          dotnet test CGPDI.StudyLab.Tests/CGPDI.StudyLab.Tests.csproj -c Release `
+            --nologo --verbosity minimal
+          if ($LASTEXITCODE -ne 0) {
+            throw "Testes falharam. A release não pode ser publicada com regressões."
+          }
+
       - name: Publish Single-File Self-Contained App (win-x64)
         shell: pwsh
         run: |

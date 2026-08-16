@@ -202,6 +202,11 @@ namespace CGPDI.StudyLab.Graphics3D
             UpdateCameraPosition();
         }
 
+        public Point3D CameraPosition => _perspectiveCamera.Position;
+
+        public int CurrentGeometryPositionsCount =>
+            _currentGeometryModel.Geometry is MeshGeometry3D mesh ? mesh.Positions.Count : 0;
+
         #endregion
 
         #region Materiais e Iluminação
