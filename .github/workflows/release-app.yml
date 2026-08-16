@@ -142,11 +142,6 @@ jobs:
         shell: pwsh
         run: npm install -g snyk
 
-      - name: Authenticate Snyk
-        shell: pwsh
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk auth $env:SNYK_TOKEN
 
       - name: Snyk Security Gate (Block Release on Medium+ Vulnerabilities)
         shell: pwsh
