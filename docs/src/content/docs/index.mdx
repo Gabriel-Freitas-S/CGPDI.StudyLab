@@ -66,11 +66,11 @@ Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, c
     alt="Demonstração animada do CGPDI StudyLab percorrendo todas as abas"
     style="max-width: 100%; border-radius: 12px; border: 1px solid #252F46; box-shadow: 0 8px 32px rgba(0,0,0,0.5);"
   />
-  <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 0.5rem;">⬆️ GIF atualizado automaticamente pelo CI a cada push</p>
+  <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 0.5rem;">GIF atualizado automaticamente pelo CI a cada push</p>
 </div>
 
 <Tabs>
-  <TabItem label="🖼️ PDI">
+  <TabItem label="PDI">
     <img
       src="/screenshots/pdi.png"
       alt="Laboratório de Processamento Digital de Imagens — filtros, histogramas e detecção de bordas"
@@ -78,7 +78,7 @@ Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, c
     />
     **Laboratório PDI** — Mais de 20 filtros espaciais (Sobel, Canny, Laplace), equalização de histograma, morfologia matemática e transformações geométricas. Resultados em tempo real com `DirectBitmap`.
   </TabItem>
-  <TabItem label="✏️ 2D">
+  <TabItem label="CG 2D">
     <img
       src="/screenshots/cg2d.png"
       alt="Computação Gráfica 2D — algoritmos de rasterização, Bresenham e transformações homogêneas"
@@ -86,7 +86,7 @@ Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, c
     />
     **Computação Gráfica 2D** — Algoritmos de reta (DDA, Bresenham, Wu), círculos, curvas de Bézier e transformações afins 3×3 em coordenadas homogêneas.
   </TabItem>
-  <TabItem label="🧊 3D">
+  <TabItem label="CG 3D">
     <img
       src="/screenshots/cg3d.png"
       alt="Computação Gráfica 3D — pipeline MVP, renderizador em software e Viewport3D com DirectX"
@@ -94,7 +94,7 @@ Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, c
     />
     **Computação Gráfica 3D** — Pipeline MVP completo, renderizador em software (CPU + Z-Buffer) e Viewport3D acelerado por DirectX. Modelagem hierárquica de robôs articulados.
   </TabItem>
-  <TabItem label="💡 Ray Tracing">
+  <TabItem label="Ray Tracing">
     <img
       src="/screenshots/ray-tracing.png"
       alt="Ray Tracing fotorrealista — interseção raio-esfera, modelo Phong e reflexões especulares"
@@ -102,29 +102,29 @@ Veja abaixo uma demonstração animada e os screenshots reais de cada módulo, c
     />
     **Ray Tracing** — Simulação física da luz: interseção analítica raio-esfera/plano, sombreamento Phong, sombras nítidas e refração pela Lei de Snell.
   </TabItem>
-  <TabItem label="📚 Central de Estudos">
+  <TabItem label="Central de Estudos">
     <img
       src="/screenshots/central-estudos.png"
       alt="Central de Estudos — teoria, fórmulas matemáticas, quizzes e referências"
       style="width:100%; border-radius:8px; border:1px solid #252F46;"
     />
-    **Central de Estudos** — Teoria completa com fórmulas renderizadas por LaTeX, quizzes de fixação, código C# comentado e complexidade computacional por algoritmo.
+    **Central de Estudos** — 19 tópicos estruturados com formulação matemática LaTeX, quizzes de fixação interativos, snippets de código C#/XAML e referências oficiais da Microsoft Learn.
   </TabItem>
-  <TabItem label="⚗️ Laboratório">
+  <TabItem label="Laboratório">
     <img
       src="/screenshots/laboratorio.png"
       alt="Laboratório de Código — editor C# ao vivo com compilação Roslyn e testes unitários"
       style="width:100%; border-radius:8px; border:1px solid #252F46;"
     />
-    **Laboratório de Código** — Editor C# ao vivo com compilação Roslyn em tempo real, testes unitários automatizados e gabarito oficial com 1 clique.
+    **Laboratório de Código** — 15 lições com editor C# ao vivo com compilação Roslyn em tempo real, testes unitários automatizados, renderização visual dinâmica e gabarito oficial com 1 clique.
   </TabItem>
-  <TabItem label="🎨 Estúdio">
+  <TabItem label="Estúdio de Projetos">
     <img
       src="/screenshots/estudio.png"
-      alt="Estúdio de Projetos — janela dedicada maximizável com layout retrátil"
+      alt="Estúdio de Projetos — janela dedicada maximizável com layout retrátil e exportador Visual Studio 2022"
       style="width:100%; border-radius:8px; border:1px solid #252F46;"
     />
-    **Estúdio de Projetos** — Janela independente maximizável com suporte a múltiplos monitores, layout retrátil (trilha, editor e canvas) e modo foco.
+    **Estúdio de Projetos** — 9 templates executáveis, janela independente maximizável com suporte a múltiplos monitores, layout retrátil, shaders ao vivo e exportador automático para soluções completas do Visual Studio 2022 em .zip.
   </TabItem>
 </Tabs>
 
@@ -146,8 +146,8 @@ Esta documentação foi elaborada com foco na clareza pedagógica: conceitos mat
     href="/iniciantes/modo-interativo-e-playground/"
   />
   <LinkCard
-    title="1. Guia para Iniciantes (12 Lições C#)"
-    description="Trilha de aprendizado cobrindo desde tipos primitivos (byte, uint), ponteiros unsafe, Data Binding reativo até Ray Tracing."
+    title="1. Guia para Iniciantes (15 Lições C#)"
+    description="Trilha de aprendizado cobrindo tipos primitivos (byte, uint), ponteiros unsafe, Data Binding reativo, templates 2D, malhas 3D e cinemática hierárquica."
     href="/iniciantes/o-que-e-dotnet-csharp/"
   />
   <LinkCard
@@ -167,7 +167,7 @@ Esta documentação foi elaborada com foco na clareza pedagógica: conceitos mat
   />
   <LinkCard
     title="5. Modelagem Hierárquica (Cinemática)"
-    description="Grafos de cena para robôs articulados e sistema solar com propagação matricial em cadeia pai-filho e cinemática direta."
+    description="Grafos de cena para robôs articulados e quadrúpedes com propagação matricial em cadeia pai-filho e cinemática direta."
     href="/hierarquia/grafos-de-cena-e-teoria/"
   />
   <LinkCard
@@ -205,7 +205,7 @@ graph TD
 1. **Para quem está começando:** Inicie por [O que é C#, .NET e WPF?](/iniciantes/o-que-e-dotnet-csharp/) e veja o [Modo Interativo & Playground](/iniciantes/modo-interativo-e-playground/).
 2. **Para laboratórios de faculdade e TI:** Consulte o [Cenário Universitário & Zero-Admin](/iniciantes/cenario-universitario-sem-admin/) para aprender como instalar para todos os usuários e atualizar sem precisar de administrador.
 3. **Para quem deseja entender a engenharia do projeto:** Consulte a [Visão Geral da Arquitetura](/arquitetura/visao-geral/) e os [Fundamentos de Memória & DirectBitmap](/core/fundamentos-de-memoria/).
-4. **Para estudantes universitários:** Consulte o [Mapeamento do Plano de Ensino](/academico/mapeamento-do-plano/) para encontrar os conteúdos correspondentes aos trabalhos práticos (T1, T2 e T3).
+4. **Para estudantes universitários:** Consulte o [Mapeamento do Plano de Ensino](/academico/mapeamento-do-plano/) para encontrar os conteúdos correspondentes às atividades práticas e teóricas.
 
 ---
 

@@ -1,60 +1,72 @@
-﻿---
-title: Roteiro de Estudos para Avaliações (T1, T2 e T3)
-description: Guia de preparação acadêmica para os trabalhos computacionais práticos das Unidades 1, 2 e 3 do curso universitário.
+---
+title: Roteiro Pedagógico de Estudos e Atividades Práticas Aplicadas
+description: Guia integrado de estudos teóricos e atividades práticas aplicadas para as Unidades Curriculares de Computação Gráfica e PDI.
 ---
 
-Este roteiro organiza os tópicos práticos e teóricos necessários para a preparação dos três Trabalhos Computacionais do curso.
-
----
-
-## 1. Trabalho T1 — Unidade 1: Introdução, Cor & PDI
-
-### Conteúdos de Estudo:
-- Pipeline gráfico básico e manipulação de buffers de memória.
-- Conversão de espaços de cor (RGB para HSV, YCbCr, Escala de Cinza ITU-R BT.709).
-- Histograma de intensidade, Equalização por CDF e Normalização Min-Max.
-- Convolução espacial 2D (Gaussiano, Média, Mediana e Sobel).
-- Binarização de Otsu e Morfologia Matemática (Erosão e Dilatação).
-
-### Prática no CGPDI.StudyLab:
-1. Abra a aba **Processamento Digital de Imagens (PDI)**.
-2. Carregue uma imagem de baixo contraste e aplique a **Equalização de Histograma** observando o histograma antes e depois.
-3. Adicione ruído "Sal & Pimenta" e compare visualmente a filtragem por **Média** versus **Mediana**.
-4. Execute o **Detector Canny em 5 Etapas** e varie os limiares $T_{\text{baixo}}$ e $T_{\text{alto}}$ para analisar a conexão de bordas por histerese.
+Este roteiro organiza os conteúdos teóricos e as atividades práticas aplicadas disponíveis na **Central de Estudos (Aba 5)**, no **Laboratório Interativo (Aba 6)** e no **Estúdio de Projetos (Aba 7)**.
 
 ---
 
-## 2. Trabalho T2 — Unidade 2: Geometria 3D, Malhas & Câmeras
+## 1. Unidade 1: Fundamentos de Memória, Cor & Processamento de Imagens
 
-### Conteúdos de Estudo:
-- Álgebra Linear 3D: Produto Escalar, Produto Vetorial e Matrizes de Rotação e Translação.
-- Construção de malhas triangulares (`Mesh3D` / `MeshGeometry3D`) e cálculo de normais por vértice.
-- O Pipeline MVP: Objeto $\to$ Mundo $\to$ Câmera (LookAt) $\to$ Projeção (Perspectiva com FOV) $\to$ NDC $\to$ Viewport.
-- O algoritmo de profundidade **Z-Buffer** e descarte de faces ocultas (*Back-face Culling*).
-- Representação de iluminação (Luz Ambiente, Difusa e Especular de Phong).
+### Conteúdo de Estudo & Teoria
+- **Estrutura de Memória & DirectBitmap**: Formato BGRA32, ponteiros não gerenciados (`unsafe`), cálculo de `Stride` e ciclo de vida do `WriteableBitmap`.
+- **Espaços de Cores & Percepção**: Conversões RGB para HSV, YCbCr e Escala de Cinza Perceptual (ITU-R BT.709).
+- **Operações Pontuais e Histogramas**: Equalização de histograma por CDF acumulada e normalização Min-Max.
+- **Filtros Espaciais e Convoluções**: Filtro da Média, Gaussiano, Mediana e operadores gradientes (Sobel e Prewitt).
+- **Segmentação e Morfologia**: Limiarização de Otsu e operações morfológicas de Erosão e Dilatação.
 
-### Prática no CGPDI.StudyLab:
-1. Abra a aba **Computação Gráfica 3D (DirectX)** e teste a **Câmera Orbital Arcball** girando os modelos 3D com o mouse.
-2. Alterne entre **Projeção Perspectiva** e **Projeção Ortográfica**.
-3. Abra a aba **Software 3D & Ray Tracing** e execute o renderizador CPU puro. Alterne entre **Wireframe**, **Flat Shading** e **Gouraud Shading**.
-
----
-
-## 3. Trabalho T3 — Unidade 3: Modelagem Hierárquica & Cinemática
-
-### Conteúdos de Estudo:
-- Motivação para modelagem hierárquica e Grafos de Cena (*Scene Graph*).
-- Design Top-Down e Construção Bottom-Up de primitivas geométricas.
-- Propagação de matrizes pai-filho: $M_{\text{filho}} = M_{\text{pai}} \times M_{\text{local}}$.
-- Cinemática Direta (*Forward Kinematics*) aplicada a robôs articulados.
-- Animação em tempo real e reusabilidade de componentes gráficos.
-
-### Prática no CGPDI.StudyLab:
-1. Abra a aba **Computação Gráfica 3D** $\to$ **Modelagem Hierárquica**.
-2. Carregue o **Braço Robótico Articulado** e mova individualmente os sliders de **Base**, **Ombro**, **Cotovelo** e **Pulso**.
-3. Observe como a rotação da base move todos os membros seguintes juntos.
-4. Teste a simulação do **Sistema Solar** para ver a translação simultânea do Sol, Terra e Lua.
+### Atividades Práticas Aplicadas
+1. **Calibração de Memória no Laboratório:** Acesse a **Lição 01** e a **Lição 03** para manipular o array BGRA e observar o deslocamento linear na memória RAM em tempo real.
+2. **Filtragem e Limiarização:** Acesse a aba **Processamento Digital de Imagens (PDI)**, aplique o **Detector Canny em 5 Etapas** e ajuste os limiares de histerese para analisar a conectividade de bordas.
+3. **Equalização de Contraste:** Carregue uma imagem com distribuição concentrada de tons e execute a **Equalização de Histograma** comparando os gráficos antes e depois do processamento.
 
 ---
 
-**Próximo Passo:** Aprenda a publicar esta documentação no [GitHub Pages & Configurar o CI/CD](/deploy/github-pages-e-ci-cd/).
+## 2. Unidade 2: Computação Gráfica 2D, Malhas Triangulares 3D & Iluminação
+
+### Conteúdo de Estudo & Teoria
+- **Pipeline Gráfico 2D & Coordenadas Homogêneas:** Matrizes afins $3\times3$, translação, rotação em torno de ponto pivô arbitrário $P(x_0,y_0)$ e instanciação com `ControlTemplate`.
+- **Rasterização dos Primeiros Princípios:** Reta de Bresenham com inteiros puros, suavização de Xiaolin Wu e Círculo do Ponto Médio.
+- **Malhas Triangulares 3D & Câmeras:** Estrutura de vértices e triângulos no `MeshGeometry3D`, ordenação anti-horária (CCW) e projeção perspectiva com `PerspectiveCamera`.
+- **Modelos de Iluminação & Texturas:** Lei de Reflexão Difusa de Lambert ($I = k_d \cdot \max(0, N \cdot L)$), sombreamento de Gouraud e repetição de texturas com `TileMode="Tile"`.
+
+### Atividades Práticas Aplicadas
+1. **Sistema Mecânico Articulado 2D:**
+   - Acesse a **Lição 13** do Laboratório e o template **Veículo Articulado 2D** no Estúdio de Projetos.
+   - Projete um veículo composto por chassi e 4 rodas formadas por templates de ponteiros angulares pivotados, com translação sincronizada e inversão contínua via `AutoReverse="True"`.
+2. **Cena Arquitetônica 3D com Sistema Solar Duplo:**
+   - Acesse a **Lição 14** e o template correspondente no Estúdio de Projetos.
+   - Construa uma estrutura tridimensional multifacetada sobre piso texturizado com repetição, posicionando duas fontes de luz direcional a 30° de inclinação em rotação oposta e uma câmera orbital em arco de 180°.
+
+---
+
+## 3. Unidade 3: Modelagem Hierárquica, Grafos de Cena & Ray Tracing
+
+### Conteúdo de Estudo & Teoria
+- **Grafos de Cena & Design Hierárquico:** Metodologia Top-Down e Bottom-Up, separação entre componentes primitivos e agrupadores (`Model3DGroup`).
+- **Transformações de Instância vs Transformações de Junta:** Posicionamento estático no sistema de coordenadas pai versus rotação dinâmica parametrizada no tempo.
+- **Cinemática Harmônica de Marcha:** Defasagem angular periódica ($\theta(t) = A \cdot \sin(\omega t + \phi)$) para locomoção fluida de múltiplos membros articulados.
+- **Fundamentos de Ray Tracing:** Equação paramétrica do raio $r(t) = O + t D$, interseção analítica quadrática com esferas, reflexão especular e refração pela Lei de Snell.
+
+### Atividades Práticas Aplicadas
+1. **Quadrúpede Articulado 3D e Caravana em Marcha:**
+   - Acesse a **Lição 15** do Laboratório e o template **Modelo Hierárquico de Quadrúpede** no Estúdio de Projetos.
+   - Instancie um animal tridimensional completo com 14 componentes primitivos coloridos e 9 juntas animadas, aplicando funções senoidais defasadas em $\pi$ e $\pi/2$ para simular a marcha coordenada.
+2. **Exportação Autônoma para o Visual Studio 2022:**
+   - No Estúdio de Projetos, clique em **Exportar Solução VS2022 (.ZIP)** para gerar o projeto completo (`.sln`, `.csproj`, XAML e C#) pronto para ser compilado e executado fora do aplicativo.
+
+---
+
+<div class="ms-ref-card">
+  <h4>Documentação e Recursos Oficiais</h4>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/transforms-overview" target="_blank" rel="noopener">Visão Geral de Transformações no WPF</a> — Classes RotateTransform, TranslateTransform e MatrixTransform.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/3-d-graphics-overview" target="_blank" rel="noopener">Visão Geral de Gráficos 3D no WPF</a> — MeshGeometry3D, PerspectiveCamera e Model3DGroup.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.tilebrush.tilemode" target="_blank" rel="noopener">Classe TileBrush e Propriedade TileMode</a> — Mapeamento e repetição de texturas.</li>
+  </ul>
+</div>
+
+---
+
+**Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino](/academico/mapeamento-do-plano/) para detalhes curriculares por unidade.

@@ -1,11 +1,11 @@
-﻿---
+---
 title: Álgebra Linear 2D & Coordenadas Homogêneas (Matrix2D.cs)
-description: Por que usamos matrizes 3x3 no plano 2D, coordenadas homogêneas, translação, rotação, escala, cisalhamento e composição afim.
+description: Por que usamos matrizes 3x3 no plano 2D, coordenadas homogêneas, translação, rotação em pivô, templates e animações contínuas.
 ---
 
 A base matemática de toda a Computação Gráfica é a **Álgebra Linear Matricial**.
 
-O arquivo [`Matrix2D.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/Graphics2D/Matrix2D.cs) encapsula as matrizes de transformação afim no plano bidimensional.
+O arquivo [`Matrix2D.cs`](https://github.com/Gabriel-Freitas-S/CGPDI.StudyLab/blob/main/CGPDI.StudyLab/Graphics2D/Matrix2D.cs) encapsula as matrizes de transformação afim no plano bidimensional, e o WPF implementa essas operações nativamente através de `TransformGroup`, `RotateTransform` e `TranslateTransform`.
 
 ---
 
@@ -60,6 +60,39 @@ $$
 :::caution[Ordem de Multiplicação]
 A multiplicação de matrizes **não é comutativa** ($A \times B \neq B \times A$). A ordem das operações afeta diretamente o resultado visual.
 :::
+
+---
+
+## 4. Reutilização com ControlTemplates e Animações com AutoReverse
+
+No ecossistema WPF, matrizes de transformação são aplicadas modularmente a geometrias definidas em `ControlTemplates`:
+
+```xml
+<!-- Template de Ponteiro/Raio Modular -->
+<ControlTemplate x:Key="PonteiroTemplate">
+    <Polygon Points="0,0 -4,-18 0,-50 4,-18" Fill="#38BDF8"/>
+</ControlTemplate>
+
+<!-- Instanciação com Rotação Pivotada -->
+<Control Template="{StaticResource PonteiroTemplate}">
+    <Control.RenderTransform>
+        <RotateTransform Angle="45" CenterX="0" CenterY="0"/>
+    </Control.RenderTransform>
+</Control>
+```
+
+### Animações Contínuas Bidirecionais
+Ao aplicar `DoubleAnimation` em conjunto com a propriedade `AutoReverse="True"`, a linha do tempo interpola o trajeto até o valor final e, ao término, reproduz a interpolação em sentido inverso automaticamente, mantendo a coerência física em veículos e mecanismos articulados.
+
+---
+
+<div class="ms-ref-card">
+  <h4>Referências Oficiais Microsoft Learn</h4>
+  <ul>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/graphics-multimedia/transforms-overview" target="_blank" rel="noopener">Visão Geral de Transformações no WPF</a> — Classes RotateTransform, TranslateTransform e MatrixTransform.</li>
+    <li><a href="https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.animation.timeline.autoreverse" target="_blank" rel="noopener">Classe Timeline.AutoReverse Property</a> — Como criar animações cíclicas bidirecionais suaves.</li>
+  </ul>
+</div>
 
 ---
 
