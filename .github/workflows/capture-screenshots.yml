@@ -64,6 +64,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Garantir runtime desktop do Windows
+        shell: pwsh
+        run: |
+          dotnet --list-runtimes | Select-String "Microsoft.WindowsDesktop.App"
+
       - name: Install FFmpeg
         shell: pwsh
         run: |
@@ -79,7 +84,8 @@ jobs:
 
           pwsh -File scripts/capture-screenshots.ps1 `
             -StartupWaitSec 15 `
-            -TabWaitMs 3000
+            -TabWaitMs 3500 `
+            -PostLaunchWaitMs 3500
 
       - name: Verify output files
         shell: pwsh
@@ -115,4 +121,3 @@ jobs:
           } else {
             Write-Host "Nenhuma mudanca nos screenshots - commit pulado."
           }
-

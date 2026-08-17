@@ -2,11 +2,13 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -51,27 +53,93 @@ namespace CGPDI.StudyLab.Core
 
     public static partial class LiveCodeCompiler
     {
-        private static readonly ScriptOptions DefaultOptions = ScriptOptions.Default
-            .WithReferences(
-                typeof(object).Assembly,
-                typeof(Math).Assembly,
-                typeof(DirectBitmap).Assembly,
-                typeof(Vector3).Assembly,
-                typeof(System.Linq.Enumerable).Assembly,
-                typeof(System.Windows.UIElement).Assembly,
-                typeof(System.Windows.Media.Color).Assembly,
-                typeof(System.Windows.Media.Media3D.Vector3D).Assembly,
-                typeof(System.Text.RegularExpressions.Regex).Assembly)
-            .WithImports(
-                "System",
-                "System.Math",
-                "System.Collections.Generic",
-                "System.Text",
-                "System.Text.RegularExpressions",
-                "System.Numerics",
-                "System.Windows",
-                "System.Windows.Media",
-                "CGPDI.StudyLab.Core");
+        private static readonly Lazy<ScriptOptions> DefaultOptionsLazy = new(CreateDefaultOptions);
+        private static ScriptOptions DefaultOptions => DefaultOptionsLazy.Value;
+
+        private static ScriptOptions CreateDefaultOptions()
+        {
+            try
+            {
+                var references = new Dictionary<string, MetadataReference>(StringComparer.OrdinalIgnoreCase);
+                AddAssemblyReference(references, typeof(object).Assembly);
+                AddAssemblyReference(references, typeof(Math).Assembly);
+                AddAssemblyReference(references, typeof(DirectBitmap).Assembly);
+                AddAssemblyReference(references, typeof(Vector3).Assembly);
+                AddAssemblyReference(references, typeof(System.Linq.Enumerable).Assembly);
+                AddAssemblyReference(references, typeof(System.Windows.UIElement).Assembly);
+                AddAssemblyReference(references, typeof(System.Windows.Media.Color).Assembly);
+                AddAssemblyReference(references, typeof(System.Windows.Media.Media3D.Vector3D).Assembly);
+                AddAssemblyReference(references, typeof(System.Text.RegularExpressions.Regex).Assembly);
+
+                if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trustedPlatformAssemblies)
+                {
+                    foreach (string path in trustedPlatformAssemblies.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        TryAddReferenceFromPath(references, path);
+                    }
+                }
+
+                return ScriptOptions.Default
+                    .WithReferences(references.Values)
+                    .WithImports(
+                        "System",
+                        "System.Math",
+                        "System.Collections.Generic",
+                        "System.Text",
+                        "System.Text.RegularExpressions",
+                        "System.Numerics",
+                        "System.Windows",
+                        "System.Windows.Media",
+                        "CGPDI.StudyLab.Core");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LiveCodeCompiler] Falha ao inicializar referências do Roslyn: {ex}");
+                return ScriptOptions.Default
+                    .WithImports(
+                        "System",
+                        "System.Math",
+                        "System.Collections.Generic",
+                        "System.Text",
+                        "System.Text.RegularExpressions",
+                        "System.Numerics",
+                        "System.Windows",
+                        "System.Windows.Media",
+                        "CGPDI.StudyLab.Core");
+            }
+        }
+
+        private static void AddAssemblyReference(Dictionary<string, MetadataReference> references, Assembly assembly)
+        {
+            if (assembly.IsDynamic)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(assembly.Location))
+            {
+                return;
+            }
+
+            TryAddReferenceFromPath(references, assembly.Location);
+        }
+
+        private static void TryAddReferenceFromPath(Dictionary<string, MetadataReference> references, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path) || references.ContainsKey(path))
+            {
+                return;
+            }
+
+            try
+            {
+                references[path] = MetadataReference.CreateFromFile(path);
+            }
+            catch
+            {
+                // Ignora referencias indisponiveis no ambiente atual.
+            }
+        }
 
         public static async Task<EvaluationReport> RunTestsAndEvaluateAsync(
             InteractiveLesson lesson,
@@ -1270,6 +1338,9 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
         [GeneratedRegex(@"\s+WindowStartupLocation=""[^""]*""")]
         private static partial Regex XamlWindowStartupRegex();
 
+        [GeneratedRegex(@"xmlns:(?<prefix>[A-Za-z_][A-Za-z0-9_.-]*)=""clr-namespace:(?<ns>CGPDI\.[^;\""]+)""")]
+        private static partial Regex XamlClrNamespaceWithoutAssemblyRegex();
+
         private static readonly SearchValues<char> XamlTagDelimiters = SearchValues.Create(" >\r\n\t");
 
         public static XamlEvaluationResult EvaluateXaml(string xamlCode)
@@ -1295,6 +1366,13 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
                 fullXaml = XamlXmlnsDRegex().Replace(fullXaml, "");
                 fullXaml = XamlDAttrRegex().Replace(fullXaml, "");
                 fullXaml = XamlWindowStartupRegex().Replace(fullXaml, "");
+                fullXaml = XamlClrNamespaceWithoutAssemblyRegex().Replace(fullXaml, match =>
+                {
+                    string prefix = match.Groups["prefix"].Value;
+                    string clrNamespace = match.Groups["ns"].Value;
+                    string assemblyName = typeof(LiveCodeCompiler).Assembly.GetName().Name ?? "CGPDI.StudyLab";
+                    return $"xmlns:{prefix}=\"clr-namespace:{clrNamespace};assembly={assemblyName}\"";
+                });
 
                 // 2. Se o usuário não incluiu os namespaces raiz do WPF, injeta automaticamente para conveniência
                 if (!fullXaml.Contains("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"") &&

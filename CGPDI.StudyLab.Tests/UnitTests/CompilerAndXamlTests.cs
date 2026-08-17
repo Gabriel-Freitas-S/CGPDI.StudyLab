@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using CGPDI.StudyLab.Core;
+using CGPDI.StudyLab.Views;
 using FluentAssertions;
 using Xunit;
 
@@ -38,6 +39,19 @@ namespace CGPDI.StudyLab.Tests.UnitTests
             result.Element.Should().BeOfType<Border>();
             var border = (Border)result.Element!;
             border.Child.Should().BeOfType<StackPanel>();
+        }
+
+        [UIFact]
+        public void EvaluateXaml_ProjectNamespaceWithoutAssembly_StillResolvesControl()
+        {
+            string xaml = @"<views:ProjectStudioControl
+    xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+    xmlns:views=""clr-namespace:CGPDI.StudyLab.Views"" />";
+
+            var result = LiveCodeCompiler.EvaluateXaml(xaml);
+            result.Success.Should().BeTrue();
+            result.Element.Should().BeOfType<ProjectStudioControl>();
         }
 
         [Fact]
