@@ -19,6 +19,7 @@ param (
     [string]$FfmpegPath      = "ffmpeg",
     [int]   $StartupWaitSec  = 10,
     [int]   $TabWaitMs       = 2500,
+    [int]   $PostLaunchWaitMs = 2500,
     [switch]$SkipBuild
 )
 
@@ -162,6 +163,80 @@ function Find-Window([int]$procId) {
     throw "Janela nao apareceu."
 }
 
+function Set-VirtualDisplayResolution([int]$width = 1920, [int]$height = 1080) {
+    Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class DisplayNative {
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+  public struct DEVMODE {
+    private const int CCHDEVICENAME = 32;
+    private const int CCHFORMNAME = 32;
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)] public string dmDeviceName;
+    public short dmSpecVersion;
+    public short dmDriverVersion;
+    public short dmSize;
+    public short dmDriverExtra;
+    public int dmFields;
+    public int dmPositionX;
+    public int dmPositionY;
+    public int dmDisplayOrientation;
+    public int dmDisplayFixedOutput;
+    public short dmColor;
+    public short dmDuplex;
+    public short dmYResolution;
+    public short dmTTOption;
+    public short dmCollate;
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)] public string dmFormName;
+    public short dmLogPixels;
+    public int dmBitsPerPel;
+    public int dmPelsWidth;
+    public int dmPelsHeight;
+    public int dmDisplayFlags;
+    public int dmDisplayFrequency;
+    public int dmICMMethod;
+    public int dmICMIntent;
+    public int dmMediaType;
+    public int dmDitherType;
+    public int dmReserved1;
+    public int dmReserved2;
+    public int dmPanningWidth;
+    public int dmPanningHeight;
+  }
+  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern bool EnumDisplaySettings(string? lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern int ChangeDisplaySettings(ref DEVMODE lpDevMode, int dwflags);
+  public const int ENUM_CURRENT_SETTINGS = -1;
+  public const int CDS_UPDATEREGISTRY = 0x01;
+  public const int CDS_GLOBAL = 0x08;
+  public const int DISP_CHANGE_SUCCESSFUL = 0;
+  public const int DM_PELSWIDTH = 0x00080000;
+  public const int DM_PELSHEIGHT = 0x00100000;
+}
+"@
+
+    $dm = New-Object DisplayNative+DEVMODE
+    $dm.dmSize = [Runtime.InteropServices.Marshal]::SizeOf([DisplayNative+DEVMODE])
+    if (-not [DisplayNative]::EnumDisplaySettings($null, [DisplayNative]::ENUM_CURRENT_SETTINGS, [ref]$dm)) {
+        Write-Warning "Nao foi possivel ler a configuracao atual de display."
+        return
+    }
+
+    if ($dm.dmPelsWidth -eq $width -and $dm.dmPelsHeight -eq $height) {
+        Write-Host "Resolucao de display ja esta em ${width}x${height}."
+        return
+    }
+
+    $dm.dmPelsWidth = $width
+    $dm.dmPelsHeight = $height
+    $dm.dmFields = [DisplayNative]::DM_PELSWIDTH -bor [DisplayNative]::DM_PELSHEIGHT
+    $result = [DisplayNative]::ChangeDisplaySettings([ref]$dm, [DisplayNative]::CDS_UPDATEREGISTRY -bor [DisplayNative]::CDS_GLOBAL)
+    if ($result -eq [DisplayNative]::DISP_CHANGE_SUCCESSFUL) {
+        Write-Host "Resolucao alterada para ${width}x${height}."
+    } else {
+        Write-Warning "Nao foi possivel alterar resolucao para ${width}x${height}. Codigo: $result"
+    }
+}
+
 $Tabs = @(
     @{i=0;n="hero";          l="PDI - Visao Geral"},
     @{i=0;n="pdi";           l="Laboratorio PDI"},
@@ -175,28 +250,47 @@ $Tabs = @(
 
 if (-not $SkipBuild) {
     Write-Host "BUILD..." -ForegroundColor Cyan
-    dotnet publish $ProjectFile -c Release -r win-x64 --self-contained true `
-        -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:EnableCompressionInSingleFile=true -p:MinVerSkip=true -o $PublishDir `
+    dotnet publish $ProjectFile -c Release -r win-x64 --self-contained false `
+        -p:PublishSingleFile=false -p:UseAppHost=true -p:MinVerSkip=true -o $PublishDir `
         --nologo -v quiet
     if ($LASTEXITCODE -ne 0) { throw "Build falhou" }
 }
 
 if (-not (Test-Path $ExePath)) { throw "Exe nao encontrado: $ExePath" }
 
+Set-VirtualDisplayResolution -width 1920 -height 1080
+
 Write-Host "INICIANDO APP..." -ForegroundColor Cyan
 $proc = Start-Process -FilePath $ExePath -PassThru
 Start-Sleep -Seconds $StartupWaitSec
 $hWnd = Find-Window -procId $proc.Id
 [WinCapture]::ShowWindow($hWnd, 3) | Out-Null
-Start-Sleep -Milliseconds 800
+[WinCapture]::SetForegroundWindow($hWnd) | Out-Null
+Start-Sleep -Milliseconds $PostLaunchWaitMs
+Select-Tab -hWnd $hWnd -idx 0 | Out-Null
+Start-Sleep -Milliseconds $TabWaitMs
 
 $captured = @()
 foreach ($tab in $Tabs) {
     Write-Host "  Capturando: $($tab.l)" -ForegroundColor Yellow
     Select-Tab -hWnd $hWnd -idx $tab.i | Out-Null
     $path = Join-Path $ScreenshotsDir "$($tab.n).png"
-    [WinCapture]::Capture($hWnd, $path)
+    $saved = $false
+    for ($attempt = 1; $attempt -le 3 -and -not $saved; $attempt++) {
+        [WinCapture]::Capture($hWnd, $path)
+        if (Test-Path $path -PathType Leaf) {
+            $size = (Get-Item $path).Length
+            if ($size -gt 8KB) {
+                $saved = $true
+                break
+            }
+        }
+        Write-Warning "Captura incompleta para '$($tab.l)' (tentativa $attempt/3). Repetindo..."
+        Start-Sleep -Milliseconds $TabWaitMs
+    }
+    if (-not $saved) {
+        throw "Falha ao capturar screenshot valido da aba '$($tab.l)'."
+    }
     $captured += $path
     Write-Host "    OK: $path" -ForegroundColor Green
 }
