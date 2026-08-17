@@ -87,4 +87,4 @@ Para aplicar texturas de piso e parede sem esticar a imagem, utiliza-se `ImageBr
 
 ---
 
-**Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena (Unidade 3)](/hierarquia/grafos-de-cena-e-teoria/).
+**Próximo Passo:** Explore a [Modelagem Hierárquica e Grafos de Cena](/hierarquia/grafos-de-cena-e-teoria/).

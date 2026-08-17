@@ -1,15 +1,15 @@
-﻿---
-title: Mapeamento do Plano de Ensino Universitário
-description: Relação completa 1:1 entre a Ementa Oficial da disciplina de Computação Gráfica / PDI e as classes do projeto.
+---
+title: Mapeamento Curricular dos Módulos
+description: Relação estruturada entre os tópicos pedagógicos de Computação Gráfica / PDI e as classes do projeto.
 ---
 
-O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da disciplina de Computação Gráfica e Processamento de Imagens.
+O **CGPDI.StudyLab** foi desenvolvido para cobrir de forma modular e prática todos os tópicos curriculares essenciais de Computação Gráfica e Processamento Digital de Imagens.
 
 ---
 
-## Tabela de Correspondência da Ementa Oficial
+## Tabela de Correspondência dos Módulos
 
-| Tópico da Ementa Oficial | Localização no Código | Módulo na Documentação |
+| Tópico Pedagógico | Localização no Código | Módulo na Documentação |
 | :--- | :--- | :--- |
 | **Apresentação do Pipeline Gráfico** | `Graphics3D/Math3D.cs` e `SoftwareRenderer3D.cs` | [Matemática 3D & Matrizes MVP](/cg3d/matematica-vetorial-e-mvp/) |
 | **Sistemas Gráficos (Hardware e Arquitetura)** | `Core/DirectBitmap.cs` e `WpfViewport3DManager.cs` | [Fundamentos de Memória & DirectBitmap](/core/fundamentos-de-memoria/) |
@@ -30,8 +30,8 @@ O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da
 ---
 
 <div class="ms-ref-card">
-  <h4>Referências Oficiais Microsoft Learn para Estudantes</h4>
-  <p>Portais e materiais de referência recomendados para o aprendizado acadêmico:</p>
+  <h4>Referências Oficiais Microsoft Learn</h4>
+  <p>Portais e materiais de referência recomendados para o aprendizado:</p>
   <ul>
     <li><a href="https://learn.microsoft.com/pt-br/training/dotnet/" target="_blank" rel="noopener">Roteiros de Aprendizagem do .NET no Microsoft Learn</a> — Cursos e trilhas gratuitas do iniciante ao avançado.</li>
     <li><a href="https://learn.microsoft.com/pt-br/dotnet/csharp/" target="_blank" rel="noopener">Documentação da Linguagem C#</a> — Guia completo de referência do compilador Roslyn e especificações da linguagem.</li>
@@ -41,4 +41,4 @@ O **CGPDI.StudyLab** foi desenvolvido para cobrir todas as unidades de ensino da
 
 ---
 
-**Próximo Passo:** Veja o [Roteiro de Estudos para os Trabalhos T1, T2 e T3](/academico/roteiro-de-estudos-e-avaliacoes/).
+**Próximo Passo:** Veja o [Roteiro Integrado de Estudos e Práticas](/academico/roteiro-de-estudos-e-avaliacoes/).

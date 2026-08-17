@@ -1,7 +1,7 @@
 # Graph Report - CGPDI.StudyLab  (2026-08-17)
 
 ## Corpus Check
-- 125 files · ~254,611 words
+- 125 files · ~255,789 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d1497700`
+- Built from commit: `bc7f2fdb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -50,7 +50,7 @@
 - FrequencyAndProcedural
 - Microsoft.CodeAnalysis.Analyzers
 - CGPDI.StudyLab.Tests
-- cenario-universitario-sem-admin.md
+- cenario-universitario-sem-admin.mdx
 - MainWindow
 - TextBox
 - .BtnStudioQuizOption_Click
@@ -322,9 +322,9 @@ Nodes (20): Microsoft.CodeAnalysis.Analyzers, Microsoft.CodeAnalysis.Common, Mic
 Cohesion: 0.13
 Nodes (14): net10.0-windows, Microsoft.NET.Sdk, CGPDI.StudyLab.Tests, net10.0-windows, Microsoft.NET.Sdk, coverlet.collector (6.0.4), FluentAssertions (8.0.1), Microsoft.CodeAnalysis.CSharp.Scripting (5.6.0) (+6 more)
 
-### Community 35 - "cenario-universitario-sem-admin.md"
+### Community 35 - "cenario-universitario-sem-admin.mdx"
 Cohesion: 0.20
-Nodes (9): 1. O serviço de atualização fere alguma política de segurança corporativa/acadêmica?, 2. E se a faculdade precisar "congelar" a versão para dias de prova ou trabalhos avaliativos?, A Solução do CGPDI StudyLab, Como Funciona a Atualização Sem Administrador (Zero-Admin)?, Modelos de Instalação Disponíveis, O Problema: Por que o Visual Studio Community Gera Fricção nos Laboratórios?, Pesquisa de Segurança & Políticas de TI (Compliance), Principais Dores Enfrentadas por Professores e Alunos: (+1 more)
+Nodes (9): 1. O serviço de atualização fere alguma política de segurança corporativa/acadêmica?, 2. E se a instituição precisar "congelar" a versão para dias de atividades avaliativas?, A Solução do CGPDI StudyLab, Como Funciona a Atualização Sem Administrador (Zero-Admin)?, Modelos de Instalação Disponíveis, O Problema: Por que o Visual Studio Community Gera Fricção nos Laboratórios?, Pesquisa de Segurança & Políticas de TI (Compliance), Principais Dores Enfrentadas por Professores e Alunos: (+1 more)
 
 ### Community 36 - "MainWindow"
 Cohesion: 0.22

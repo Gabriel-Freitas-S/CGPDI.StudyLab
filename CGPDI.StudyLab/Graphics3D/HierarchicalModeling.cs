@@ -8,7 +8,7 @@ namespace CGPDI.StudyLab.Graphics3D
     /// <summary>
     /// Nó da Árvore de Modelagem Hierárquica (Scene Graph / Grafo de Cena).
     /// 
-    /// TEORIA DA MODELAGEM HIERÁRQUICA (Unidade 3 do Plano de Ensino):
+    /// TEORIA DA MODELAGEM HIERÁRQUICA & GRAFOS DE CENA:
     /// Em sistemas gráficos complexos, objetos são compostos por partes interconectadas (ex: robôs, veículos, esqueletos).
     /// Cada nó filho herda e acumula as transformações geométricas do seu nó pai:
     /// M_{global, filho} = M_{global, pai} \times M_{local, filho}

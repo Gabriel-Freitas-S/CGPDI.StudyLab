@@ -479,7 +479,7 @@ if (z < zBuffer[zIdx]) {
                 new StudyTopic
                 {
                     Id = "hierarchical_modeling",
-                    Category = "8. Modelagem Hierárquica (Unidade 3)",
+                    Category = "8. Modelagem Hierárquica & Cinemática",
                     Title = "Grafos de Cena (Scene Graph), Design Top-Down e Cinemática Direta (Robô Articulado)",
                     Summary = "Composição de objetos complexos articulados e propagação de transformações geométricas pai-filho.",
                     TargetLessonNumber = 8,
@@ -635,23 +635,23 @@ if (renderingTier >= 2)
                 },
                 #endregion
 
-                #region 11. Guia Acadêmico & Trabalhos Práticos
+                #region 11. Guia de Estudos & Roteiro Integrado
                 new StudyTopic
                 {
-                    Id = "academic_t1_t2_t3",
-                    Category = "11. Plano de Ensino & Avaliações",
-                    Title = "Roteiro de Estudos para os Trabalhos Acadêmicos (T1, T2 e T3)",
-                    Summary = "Guia passo a passo para preparação e desenvolvimento das avaliações práticas da disciplina universitária.",
+                    Id = "academic_guide_integrated",
+                    Category = "11. Guia de Estudos & Práticas",
+                    Title = "[CONTEÚDO DE ESTUDO & TEORIA] Roteiro Integrado de Estudos e Práticas Aplicadas",
+                    Summary = "Visão integrada conectando Processamento Digital de Imagens, Rasterização 2D, Computação Gráfica 3D, Modelagem Hierárquica e Ray Tracing.",
                     TargetLessonNumber = 11,
                     MathFormulas =
-                        "• Divisão do Conteúdo Programático:\n" +
-                        "  - T1: Processamento Digital de Imagens (Canais, Filtros Convolucionais, Canny, Histograma e Morfologia).\n" +
-                        "  - T2: Computação Gráfica 2D e 3D (Bresenham, Bézier, MVP, Pipeline em Software e Z-Buffer).\n" +
-                        "  - T3: Modelagem Hierárquica (Grafos de Cena, Robô Articulado) e Ray Tracing Fotorrealista.",
+                        "• Estrutura Pedagógica Integrada:\n" +
+                        "  - Processamento Digital de Imagens: Canais BGRA, Filtros Convolucionais, Canny, Histograma e Morfologia.\n" +
+                        "  - Computação Gráfica 2D e 3D: Bresenham, Bézier, MVP, Pipeline em Software, Z-Buffer e Iluminação Difusa.\n" +
+                        "  - Modelagem Hierárquica e Ray Tracing: Grafos de Cena, Cadeias Cinemáticas, Modelo de Phong e Reflexões Analíticas.",
                     CodeExplanation =
-                        "1. Para o Trabalho T1: Explore os módulos em ImageProcessing/ e teste cada filtro na Aba PDI.\n" +
-                        "2. Para o Trabalho T2: Analise Graphics2D/Rasterizer2D.cs e Graphics3D/SoftwareRenderer3D.cs para entender a rasterização.\n" +
-                        "3. Para o Trabalho T3: Experimente a articulação do robô em Graphics3D/HierarchicalModeling.cs e o traçado de raios em Graphics3D/Raytracer3D.cs.",
+                        "1. Processamento Digital de Imagens: Explore os módulos em ImageProcessing/ e teste cada filtro na Aba PDI.\n" +
+                        "2. Computação Gráfica 2D e 3D: Analise Graphics2D/Rasterizer2D.cs e Graphics3D/SoftwareRenderer3D.cs para entender a rasterização.\n" +
+                        "3. Modelagem Hierárquica e Ray Tracing: Experimente a articulação de mecanismos em Graphics3D/HierarchicalModeling.cs e o traçado de raios em Graphics3D/Raytracer3D.cs.",
                     CodeSnippet =
 @"// Roteiro de estudos interativo:
 // Navegue pelas abas superiores do programa e compare os resultados
@@ -660,7 +660,7 @@ if (renderingTier >= 2)
                     WhereToTest = "Central de Estudos e Laboratório C#/WPF.",
                     Quiz = new StudyQuiz
                     {
-                        Question = "Qual dos tópicos a seguir faz parte do escopo fundamental do Trabalho T2 (Computação Gráfica 2D e 3D)?",
+                        Question = "Qual dos tópicos a seguir faz parte do escopo fundamental de Computação Gráfica 2D e 3D?",
                         Options = new List<string>
                         {
                             "Rasterização de primitivas (Bresenham, Círculo de Ponto Médio), Curvas de Bézier e Pipeline 3D com matrizes MVP e Z-Buffer.",
@@ -668,7 +668,7 @@ if (renderingTier >= 2)
                             "Compilação de shaders HLSL para WebGL."
                         },
                         CorrectOptionIndex = 0,
-                        Explanation = "Correto! O Trabalho T2 aborda a base matemática de conversão geométrica discreta 2D e o pipeline clássico 3D de visualização."
+                        Explanation = "Correto! O módulo aborda a base matemática de conversão geométrica discreta 2D e o pipeline clássico 3D de visualização."
                     },
                     MicrosoftReferences = new List<DocReference>
                     {

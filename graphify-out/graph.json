@@ -20831,7 +20831,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "cenario-universitario-sem-admin.mdx"
     },
     {
@@ -20842,19 +20842,19 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_1_o_servi\u00e7o_de_atualiza\u00e7\u00e3o_fere_alguma_pol\u00edtica_de_seguran\u00e7a_corporativa_acad\u00eamica",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "1. o servico de atualizacao fere alguma politica de seguranca corporativa/academica?"
     },
     {
-      "label": "2. E se a faculdade precisar \"congelar\" a vers\u00e3o para dias de prova ou trabalhos avaliativos?",
+      "label": "2. E se a institui\u00e7\u00e3o precisar \"congelar\" a vers\u00e3o para dias de atividades avaliativas?",
       "file_type": "document",
       "source_file": "docs/src/content/docs/iniciantes/cenario-universitario-sem-admin.mdx",
       "source_location": "L131",
       "_origin": "ast",
-      "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_2_e_se_a_faculdade_precisar_congelar_a_vers\u00e3o_para_dias_de_prova_ou_trabalhos_avaliativos",
+      "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_2_e_se_a_institui\u00e7\u00e3o_precisar_congelar_a_vers\u00e3o_para_dias_de_atividades_avaliativas",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
-      "norm_label": "2. e se a faculdade precisar \"congelar\" a versao para dias de prova ou trabalhos avaliativos?"
+      "community_name": "cenario-universitario-sem-admin.mdx",
+      "norm_label": "2. e se a instituicao precisar \"congelar\" a versao para dias de atividades avaliativas?"
     },
     {
       "label": "A Solu\u00e7\u00e3o do CGPDI StudyLab",
@@ -20864,7 +20864,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_a_solu\u00e7\u00e3o_do_cgpdi_studylab",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "a solucao do cgpdi studylab"
     },
     {
@@ -20875,7 +20875,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_como_funciona_a_atualiza\u00e7\u00e3o_sem_administrador_zero_admin",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "como funciona a atualizacao sem administrador (zero-admin)?"
     },
     {
@@ -20886,7 +20886,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_modelos_de_instala\u00e7\u00e3o_dispon\u00edveis",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "modelos de instalacao disponiveis"
     },
     {
@@ -20897,7 +20897,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_o_problema_por_que_o_visual_studio_community_gera_fric\u00e7\u00e3o_nos_laborat\u00f3rios",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "o problema: por que o visual studio community gera friccao nos laboratorios?"
     },
     {
@@ -20908,7 +20908,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_pesquisa_de_seguran\u00e7a_pol\u00edticas_de_ti_compliance",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "pesquisa de seguranca & politicas de ti (compliance)"
     },
     {
@@ -20919,7 +20919,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_principais_dores_enfrentadas_por_professores_e_alunos",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "principais dores enfrentadas por professores e alunos:"
     },
     {
@@ -20930,7 +20930,7 @@
       "_origin": "ast",
       "id": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_resumo_dos_benef\u00edcios",
       "community": 35,
-      "community_name": "cenario-universitario-sem-admin.md",
+      "community_name": "cenario-universitario-sem-admin.mdx",
       "norm_label": "resumo dos beneficios"
     },
     {
@@ -21739,9 +21739,9 @@
       "label": "Adicionado",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L105",
+      "source_location": "L111",
       "_origin": "ast",
-      "id": "changelog_adicionado_105",
+      "id": "changelog_adicionado_111",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "adicionado"
@@ -21750,9 +21750,9 @@
       "label": "Adicionado",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L112",
+      "source_location": "L118",
       "_origin": "ast",
-      "id": "changelog_adicionado_112",
+      "id": "changelog_adicionado_118",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "adicionado"
@@ -21761,9 +21761,9 @@
       "label": "Adicionado",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L119",
+      "source_location": "L125",
       "_origin": "ast",
-      "id": "changelog_adicionado_119",
+      "id": "changelog_adicionado_125",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "adicionado"
@@ -21772,9 +21772,9 @@
       "label": "Adicionado",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L78",
+      "source_location": "L84",
       "_origin": "ast",
-      "id": "changelog_adicionado_78",
+      "id": "changelog_adicionado_84",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "adicionado"
@@ -21805,7 +21805,7 @@
       "label": "Corrigido",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L60",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "changelog_corrigido",
       "community": 47,
@@ -21816,9 +21816,9 @@
       "label": "Corrigido",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L92",
+      "source_location": "L98",
       "_origin": "ast",
-      "id": "changelog_corrigido_92",
+      "id": "changelog_corrigido_98",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "corrigido"
@@ -21827,7 +21827,7 @@
       "label": "Removido",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L100",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "changelog_removido",
       "community": 47,
@@ -21849,9 +21849,9 @@
       "label": "Seguran\u00e7a",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L97",
+      "source_location": "L103",
       "_origin": "ast",
-      "id": "changelog_seguran\u00e7a_97",
+      "id": "changelog_seguran\u00e7a_103",
       "community": 47,
       "community_name": "Changelog \u2014 CGPDI StudyLab",
       "norm_label": "seguranca"
@@ -21871,7 +21871,7 @@
       "label": "[v1.0.0] - 2026-08-15",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L117",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "changelog_v1_0_0_2026_08_15",
       "community": 47,
@@ -21882,7 +21882,7 @@
       "label": "[v1.0.3] - 2026-08-16",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L110",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "changelog_v1_0_3_2026_08_16",
       "community": 47,
@@ -21893,7 +21893,7 @@
       "label": "[v1.0.4] - 2026-08-16",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L103",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "changelog_v1_0_4_2026_08_16",
       "community": 47,
@@ -21904,7 +21904,7 @@
       "label": "[v1.0.5] - 2026-08-16",
       "file_type": "document",
       "source_file": "CHANGELOG.md",
-      "source_location": "L76",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "changelog_v1_0_5_2026_08_16",
       "community": 47,
@@ -60273,7 +60273,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L103",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog_cgpdi_studylab",
@@ -60295,7 +60295,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L110",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog_cgpdi_studylab",
@@ -60306,7 +60306,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L117",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog_cgpdi_studylab",
@@ -60317,7 +60317,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L76",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_changelog_cgpdi_studylab",
@@ -60361,7 +60361,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L60",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_unreleased",
@@ -60372,40 +60372,51 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L119",
+      "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_0_2026_08_15",
-      "target": "changelog_adicionado_119",
+      "target": "changelog_adicionado_125",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L112",
+      "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_3_2026_08_16",
-      "target": "changelog_adicionado_112",
+      "target": "changelog_adicionado_118",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L105",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_4_2026_08_16",
-      "target": "changelog_adicionado_105",
+      "target": "changelog_adicionado_111",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L100",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "changelog_v1_0_5_2026_08_16",
+      "target": "changelog_seguran\u00e7a_103",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CHANGELOG.md",
+      "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_5_2026_08_16",
@@ -60416,33 +60427,22 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L78",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_5_2026_08_16",
-      "target": "changelog_adicionado_78",
+      "target": "changelog_adicionado_84",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CHANGELOG.md",
-      "source_location": "L92",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "changelog_v1_0_5_2026_08_16",
-      "target": "changelog_corrigido_92",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CHANGELOG.md",
-      "source_location": "L97",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "changelog_v1_0_5_2026_08_16",
-      "target": "changelog_seguran\u00e7a_97",
+      "target": "changelog_corrigido_98",
       "confidence_score": 1.0
     },
     {
@@ -60860,7 +60860,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_pesquisa_de_seguran\u00e7a_pol\u00edticas_de_ti_compliance",
-      "target": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_2_e_se_a_faculdade_precisar_congelar_a_vers\u00e3o_para_dias_de_prova_ou_trabalhos_avaliativos",
+      "target": "docs_src_content_docs_iniciantes_cenario_universitario_sem_admin_2_e_se_a_institui\u00e7\u00e3o_precisar_congelar_a_vers\u00e3o_para_dias_de_atividades_avaliativas",
       "confidence_score": 1.0
     },
     {
@@ -72052,5 +72052,5 @@
       "source_file": "docs/src/content/docs/core/directbitmap.md"
     }
   ],
-  "built_at_commit": "d1497700b6ec70eec99fbea826583b560e5045d7"
+  "built_at_commit": "bc7f2fdb96180654da5dd2ca1d29a9f36559c7c9"
 }

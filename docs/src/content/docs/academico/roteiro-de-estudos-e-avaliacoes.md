@@ -1,13 +1,13 @@
 ---
-title: Roteiro Pedagógico de Estudos e Atividades Práticas Aplicadas
-description: Guia integrado de estudos teóricos e atividades práticas aplicadas para as Unidades Curriculares de Computação Gráfica e PDI.
+title: Roteiro Integrado de Estudos e Práticas Aplicadas
+description: Guia integrado de estudos teóricos e atividades práticas aplicadas de Computação Gráfica e Processamento Digital de Imagens.
 ---
 
 Este roteiro organiza os conteúdos teóricos e as atividades práticas aplicadas disponíveis na **Central de Estudos (Aba 5)**, no **Laboratório Interativo (Aba 6)** e no **Estúdio de Projetos (Aba 7)**.
 
 ---
 
-## 1. Unidade 1: Fundamentos de Memória, Cor & Processamento de Imagens
+## 1. Módulo: Memória, Cor & Processamento Digital de Imagens
 
 ### Conteúdo de Estudo & Teoria
 - **Estrutura de Memória & DirectBitmap**: Formato BGRA32, ponteiros não gerenciados (`unsafe`), cálculo de `Stride` e ciclo de vida do `WriteableBitmap`.
@@ -23,7 +23,7 @@ Este roteiro organiza os conteúdos teóricos e as atividades práticas aplicada
 
 ---
 
-## 2. Unidade 2: Computação Gráfica 2D, Malhas Triangulares 3D & Iluminação
+## 2. Módulo: Computação Gráfica 2D, Malhas Triangulares 3D & Iluminação
 
 ### Conteúdo de Estudo & Teoria
 - **Pipeline Gráfico 2D & Coordenadas Homogêneas:** Matrizes afins $3\times3$, translação, rotação em torno de ponto pivô arbitrário $P(x_0,y_0)$ e instanciação com `ControlTemplate`.
@@ -41,7 +41,7 @@ Este roteiro organiza os conteúdos teóricos e as atividades práticas aplicada
 
 ---
 
-## 3. Unidade 3: Modelagem Hierárquica, Grafos de Cena & Ray Tracing
+## 3. Módulo: Modelagem Hierárquica, Grafos de Cena & Ray Tracing
 
 ### Conteúdo de Estudo & Teoria
 - **Grafos de Cena & Design Hierárquico:** Metodologia Top-Down e Bottom-Up, separação entre componentes primitivos e agrupadores (`Model3DGroup`).
@@ -69,4 +69,4 @@ Este roteiro organiza os conteúdos teóricos e as atividades práticas aplicada
 
 ---
 
-**Próximo Passo:** Consulte o [Mapeamento do Plano de Ensino](/academico/mapeamento-do-plano/) para detalhes curriculares por unidade.
+**Próximo Passo:** Consulte o [Mapeamento Curricular dos Módulos](/academico/mapeamento-do-plano/).

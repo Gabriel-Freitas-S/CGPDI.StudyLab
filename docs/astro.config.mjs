@@ -238,10 +238,10 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Guia Acadêmico e Avaliações',
+          label: 'Guia de Estudos & Práticas',
           items: [
-            { label: 'Mapeamento do Plano de Ensino', link: '/academico/mapeamento-do-plano/' },
-            { label: 'Roteiro de Estudos para os Trabalhos T1, T2 e T3', link: '/academico/roteiro-de-estudos-e-avaliacoes/' },
+            { label: 'Mapeamento Curricular dos Módulos', link: '/academico/mapeamento-do-plano/' },
+            { label: 'Roteiro Integrado de Estudos e Práticas', link: '/academico/roteiro-de-estudos-e-avaliacoes/' },
           ],
         },
         {

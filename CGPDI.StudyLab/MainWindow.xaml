@@ -689,7 +689,7 @@
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox Header="3. Modelagem Hierárquica (Unidade 3)">
+                            <GroupBox Header="3. Modelagem Hierárquica &amp; Grafos de Cena">
                                 <StackPanel>
                                     <Button Content="Carregar Robô Articulado (Scene Graph)" Click="Btn3D_LoadRobot_Click" Style="{StaticResource PrimaryButton}" Margin="0,2,0,4"/>
                                     
