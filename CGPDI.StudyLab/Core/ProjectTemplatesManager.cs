@@ -34,6 +34,11 @@ namespace CGPDI.StudyLab.Core
         public double Param4Min { get; set; } = 0;
         public double Param4Max { get; set; } = 100;
         public double Param4Default { get; set; } = 50;
+
+        public string XamlCode { get; set; } = "";
+        public string ChallengeCode { get; set; } = "";
+        public string StepsGuide { get; set; } = "";
+        public bool IsInteractiveActivity { get; set; } = false;
     }
 
     /// <summary>
@@ -62,16 +67,16 @@ namespace CGPDI.StudyLab.Core
                     Param3Min = 0, Param3Max = 255, Param3Default = 180,
                     Param4Name = "Controle D (0 a 10):",
                     Param4Min = 0, Param4Max = 10, Param4Default = 1,
-                    InitialCode = @"// Projeto Livre: Codigo C# do Zero
-// Variaveis disponiveis no ambiente:
-// - Output: DirectBitmap (Buffer de saida onde voce desenha)
-// - Width, Height: Dimensoes da imagem (512x512)
+                    InitialCode = @"// Projeto Livre: Código C# do Zero
+// Variáveis disponíveis no ambiente:
+// - Output: DirectBitmap (Buffer de saída onde você desenha)
+// - Width, Height: Dimensões da imagem (512x512)
 // - Param1, Param2, Param3, Param4: Valores dos 4 sliders interativos
-// - Print(string): Imprime mensagens no console do estudio
+// - Print(string): Imprime mensagens no console do estúdio
 
-Print($""Iniciando renderizacao livre: {Width}x{Height}"");
+Print($""Iniciando renderização livre: {Width}x{Height}"");
 
-// Exemplo: Limpa o fundo e desenha um gradiente radial com aneis concentricos
+// Exemplo: Limpa o fundo e desenha um gradiente radial com anéis concêntricos
 int cx = Width / 2;
 int cy = Height / 2;
 double freq = Param4 * 0.1;
@@ -84,7 +89,7 @@ for (int y = 0; y < Height; y++)
         double dy = y - cy;
         double dist = Math.Sqrt(dx * dx + dy * dy);
         
-        // Padrao de aneis com senos
+        // Padrão de anéis com senos
         double wave = Math.Sin(dist * freq - Param1 * 0.1);
         int intensity = (int)((wave + 1.0) * 0.5 * Param3);
         
@@ -96,7 +101,7 @@ for (int y = 0; y < Height; y++)
     }
 }
 
-Print(""Renderizacao concluida com sucesso!"");"
+Print(""Renderização concluída com sucesso!"");"
                 },
 
                 // Template 1: Padrões Matemáticos e Procedurais (Básico)
@@ -532,6 +537,424 @@ for (int y = 0; y < Height; y++)
 }
 
 Print($""Ray tracing concluido. Posicao da luz: ({lightPos.X:F1}, {lightPos.Y:F1}, {lightPos.Z:F1})"");"
+                },
+
+                // Template 7: Veículo Articulado 2D com Eixo Triplo e Animações
+                new ProjectTemplate
+                {
+                    Id = "vehicle-articulated-2d",
+                    Title = "Projeto Aplicado 2D: Veículo Articulado com Eixo Triplo",
+                    Category = "Projetos de Computação Gráfica Aplicada",
+                    Complexity = "Intermediário",
+                    ComplexityBadgeColor = "#F59E0B",
+                    IsInteractiveActivity = true,
+                    Description = "Sistema mecânico 2D com 4 rodas (1 dianteira e 3 no conjunto traseiro), templates modulares de ponteiros/raios, rotação contínua e translação lateral com AutoReverse.",
+                    Param1Name = "Posição X do Veículo:",
+                    Param1Min = -200, Param1Max = 200, Param1Default = 0,
+                    Param2Name = "Ângulo de Giro das Rodas (Graus):",
+                    Param2Min = 0, Param2Max = 360, Param2Default = 45,
+                    Param3Name = "Número de Raios por Roda (4 a 12):",
+                    Param3Min = 4, Param3Max = 12, Param3Default = 6,
+                    Param4Name = "Altura da Suspensão:",
+                    Param4Min = 0, Param4Max = 40, Param4Default = 10,
+                    StepsGuide = 
+                        "1. Template de Raio/Ponteiro com referência na origem (0,0).\n" +
+                        "2. Montagem de Roda completa com N raios simétricos.\n" +
+                        "3. Envelopamento em ControlTemplate de Roda no Canvas.\n" +
+                        "4. Rotação animada do aro e raios.\n" +
+                        "5. Chassi com janelas e 4 instâncias de roda (1 dianteira, 3 traseiras).\n" +
+                        "6. Translação com AutoReverse=\"True\" para inversão suave.",
+                    InitialCode = @"// Projeto Aplicado 2D: Renderizacao do Veiculo Articulado com Eixo Triplo
+Output.Clear(ColorSpaces.PackBgra(15, 18, 28));
+
+int cx = Width / 2 + (int)Param1;
+int cy = Height / 2 + 50 - (int)Param4;
+int wheelRadius = 38;
+int spokes = Math.Max(4, (int)Param3);
+double rotRad = Param2 * Math.PI / 180.0;
+
+// Linha de pista / solo
+for (int x = 0; x < Width; x++)
+    for (int y = cy + wheelRadius + 2; y <= cy + wheelRadius + 6; y++)
+        if (y < Height) Output.SetPixel(x, y, ColorSpaces.PackBgra(70, 80, 100));
+
+// Desenho da Carroceria / Chassi (Cabine + Carreta de Carga)
+for (int y = cy - 80; y <= cy; y++)
+{
+    for (int x = cx - 180; x <= cx + 160; x++)
+    {
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+        {
+            // Cabine dianteira
+            if (x >= cx + 70 && y >= cy - 60)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(240, 140, 40));
+            // Janela da cabine
+            else if (x >= cx + 85 && x <= cx + 135 && y >= cy - 55 && y <= cy - 25)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(250, 240, 200));
+            // Carroceria principal
+            else if (x <= cx + 60 && y >= cy - 75)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(40, 100, 220));
+        }
+    }
+}
+
+// 4 Rodas (1 Dianteira e 3 no Eixo Traseiro Triplo)
+int[] wheelOffsets = { 110, -50, -100, -150 };
+foreach (int ox in wheelOffsets)
+{
+    int wx = cx + ox;
+    int wy = cy + wheelRadius;
+    
+    // Aro da roda
+    for (int dy = -wheelRadius; dy <= wheelRadius; dy++)
+    {
+        for (int dx = -wheelRadius; dx <= wheelRadius; dx++)
+        {
+            double d = Math.Sqrt(dx * dx + dy * dy);
+            int px = wx + dx;
+            int py = wy + dy;
+            if (px >= 0 && px < Width && py >= 0 && py < Height)
+            {
+                if (d >= wheelRadius - 6 && d <= wheelRadius)
+                    Output.SetPixel(px, py, ColorSpaces.PackBgra(220, 220, 240));
+                else if (d <= 6)
+                    Output.SetPixel(px, py, ColorSpaces.PackBgra(255, 255, 255));
+            }
+        }
+    }
+    
+    // Raios / Ponteiros da Roda
+    for (int s = 0; s < spokes; s++)
+    {
+        double a = rotRad + s * (2.0 * Math.PI / spokes);
+        int x1 = wx + (int)((wheelRadius - 6) * Math.Cos(a));
+        int y1 = wy + (int)((wheelRadius - 6) * Math.Sin(a));
+        
+        // Bresenham basico para o raio
+        int rdx = Math.Abs(x1 - wx), rdy = Math.Abs(y1 - wy);
+        int sx = wx < x1 ? 1 : -1, sy = wy < y1 ? 1 : -1, err = rdx - rdy;
+        int curX = wx, curY = wy;
+        while (true)
+        {
+            if (curX >= 0 && curX < Width && curY >= 0 && curY < Height)
+                Output.SetPixel(curX, curY, ColorSpaces.PackBgra(40, 200, 240));
+            if (curX == x1 && curY == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -rdy) { err -= rdy; curX += sx; }
+            if (e2 < rdx) { err += rdx; curY += sy; }
+        }
+    }
+}
+
+Print($""Veiculo 2D renderizado com 4 rodas e {spokes} raios rotacionados a {Param2:F0} graus."");",
+                    XamlCode = @"<Canvas Width=""800"" Height=""450"" Background=""#0F121C"">
+    <Canvas.Resources>
+        <ControlTemplate x:Key=""PonteiroTemplate"">
+            <Polygon Points=""0,0 -3,-12 0,-34 3,-12"" Fill=""#38BDF8""/>
+        </ControlTemplate>
+        <ControlTemplate x:Key=""RodaTemplate"">
+            <Canvas Width=""76"" Height=""76"">
+                <Ellipse Width=""76"" Height=""76"" Stroke=""#E2E8F0"" StrokeThickness=""5"" Fill=""#1E293B""/>
+                <Control Template=""{StaticResource PonteiroTemplate}"" Canvas.Left=""38"" Canvas.Top=""38"">
+                    <Control.RenderTransform><RotateTransform Angle=""0"" CenterX=""0"" CenterY=""0""/></Control.RenderTransform>
+                </Control>
+                <Control Template=""{StaticResource PonteiroTemplate}"" Canvas.Left=""38"" Canvas.Top=""38"">
+                    <Control.RenderTransform><RotateTransform Angle=""90"" CenterX=""0"" CenterY=""0""/></Control.RenderTransform>
+                </Control>
+                <Control Template=""{StaticResource PonteiroTemplate}"" Canvas.Left=""38"" Canvas.Top=""38"">
+                    <Control.RenderTransform><RotateTransform Angle=""180"" CenterX=""0"" CenterY=""0""/></Control.RenderTransform>
+                </Control>
+                <Control Template=""{StaticResource PonteiroTemplate}"" Canvas.Left=""38"" Canvas.Top=""38"">
+                    <Control.RenderTransform><RotateTransform Angle=""270"" CenterX=""0"" CenterY=""0""/></Control.RenderTransform>
+                </Control>
+                <Ellipse Width=""12"" Height=""12"" Canvas.Left=""32"" Canvas.Top=""32"" Fill=""#FFFFFF""/>
+            </Canvas>
+        </ControlTemplate>
+    </Canvas.Resources>
+    
+    <Canvas x:Name=""VeiculoCompleto"" Canvas.Left=""100"" Canvas.Top=""160"">
+        <!-- Chassi e Cabine -->
+        <Path Data=""M 0,40 L 260,40 L 260,110 L 370,110 L 370,170 L 0,170 Z"" Fill=""#2563EB"" Stroke=""#60A5FA"" StrokeThickness=""2""/>
+        <Rectangle Canvas.Left=""280"" Canvas.Top=""120"" Width=""60"" Height=""35"" Fill=""#FEF08A"" RadiusX=""3"" RadiusY=""3""/>
+        <!-- 4 Rodas: 1 Dianteira e 3 Traseiras -->
+        <Control Canvas.Left=""290"" Canvas.Top=""140"" Template=""{StaticResource RodaTemplate}""/>
+        <Control Canvas.Left=""150"" Canvas.Top=""140"" Template=""{StaticResource RodaTemplate}""/>
+        <Control Canvas.Left=""95"" Canvas.Top=""140"" Template=""{StaticResource RodaTemplate}""/>
+        <Control Canvas.Left=""40"" Canvas.Top=""140"" Template=""{StaticResource RodaTemplate}""/>
+    </Canvas>
+</Canvas>"
+                },
+
+                // Template 8: Cena Arquitetônica 3D com Iluminação Solar Dupla
+                new ProjectTemplate
+                {
+                    Id = "architectural-scene-3d",
+                    Title = "Projeto Aplicado 3D: Cena Arquitetônica com Iluminação Solar Dupla",
+                    Category = "Projetos de Computação Gráfica Aplicada",
+                    Complexity = "Avançado",
+                    ComplexityBadgeColor = "#EF4444",
+                    IsInteractiveActivity = true,
+                    Description = "Estrutura 3D com 3 cômodos e telhado triangular (MeshGeometry3D), piso texturizado com repetição, câmera orbital vertical de 180° e 2 luzes solares a 30°.",
+                    Param1Name = "Rotação Solar Horizontal (Graus):",
+                    Param1Min = 0, Param1Max = 360, Param1Default = 30,
+                    Param2Name = "Altitude da Câmera:",
+                    Param2Min = 1, Param2Max = 15, Param2Default = 6,
+                    Param3Name = "Distância da Câmera:",
+                    Param3Min = 6, Param3Max = 20, Param3Default = 12,
+                    Param4Name = "Luz Ambiente (0 a 100%):",
+                    Param4Min = 10, Param4Max = 80, Param4Default = 30,
+                    StepsGuide =
+                        "1. Modelagem da Casa em GeometryModel3D (3 cômodos + telhado triangular com cores distintas).\n" +
+                        "2. Chão texturizado com granito repetido em mosaico (TileMode=\"Tile\").\n" +
+                        "3. Câmera perspectiva com trajetória orbital vertical de 180° e AutoReverse.\n" +
+                        "4. Iluminação solar dupla a 30° girando 360° em sentidos opostos (10s).",
+                    InitialCode = @"// Projeto Aplicado 3D: Cena Arquitetonica com Duplo Sol e Projecao Perspectiva
+Output.Clear(ColorSpaces.PackBgra(12, 14, 22));
+
+double sunAngle = Param1 * Math.PI / 180.0;
+double camHeight = Param2;
+double camDist = Param3;
+double ambient = Param4 / 100.0;
+
+// Vetores das 2 fontes de luz solar direcionais inclinadas a 30 graus
+Vector3 light1 = Vector3.Normalize(new Vector3((float)(Math.Cos(sunAngle) * 0.866), -0.5f, (float)(Math.Sin(sunAngle) * 0.866)));
+Vector3 light2 = Vector3.Normalize(new Vector3((float)(-Math.Cos(sunAngle) * 0.866), -0.5f, (float)(-Math.Sin(sunAngle) * 0.866)));
+
+// Renderizacao do chao em perspectiva com textura procedural de mosaico
+for (int y = Height / 2; y < Height; y++)
+{
+    double groundZ = (Height * 2.0) / (y - Height / 2.0 + 1.0);
+    for (int x = 0; x < Width; x++)
+    {
+        double groundX = (x - Width / 2.0) * groundZ / Width;
+        bool isTile = (((int)(groundX * 2.0) + (int)(groundZ * 0.5)) % 2) == 0;
+        byte c = (byte)(isTile ? 70 : 45);
+        
+        // Iluminacao no chao (Normal = (0, 1, 0))
+        float lambert1 = Math.Max(0.0f, -light1.Y);
+        float lambert2 = Math.Max(0.0f, -light2.Y);
+        double totalI = Math.Clamp(ambient + 0.4 * lambert1 + 0.4 * lambert2, 0.1, 1.0);
+        
+        byte r = (byte)(c * totalI);
+        byte g = (byte)(c * totalI * 0.95);
+        byte b = (byte)(c * totalI * 1.1);
+        Output.SetPixel(x, y, ColorSpaces.PackBgra(b, g, r));
+    }
+}
+
+Print($""Cena 3D renderizada: 2 Sois a 30 graus rotacionados a {Param1:F0} graus, CamDist={camDist:F1}."");",
+                    XamlCode = @"<Viewport3D Width=""800"" Height=""450"">
+    <Viewport3D.Camera>
+        <PerspectiveCamera Position=""0,7,12"" LookDirection=""0,-0.4,-1"" UpDirection=""0,1,0"" FieldOfView=""55""/>
+    </Viewport3D.Camera>
+    <ModelVisual3D>
+        <ModelVisual3D.Content>
+            <Model3DGroup>
+                <!-- Luz Solar 1 (Leste 30 graus) -->
+                <DirectionalLight Color=""#FFFBEB"" Direction=""0.866,-0.5,0""/>
+                <!-- Luz Solar 2 (Oeste 30 graus Oposto) -->
+                <DirectionalLight Color=""#E0F2FE"" Direction=""-0.866,-0.5,0""/>
+                <AmbientLight Color=""#334155""/>
+                
+                <!-- Piso Texturizado Amplo -->
+                <GeometryModel3D>
+                    <GeometryModel3D.Geometry>
+                        <MeshGeometry3D Positions=""-15,0,-15 15,0,-15 15,0,15 -15,0,15"" TriangleIndices=""0,1,2 0,2,3""/>
+                    </GeometryModel3D.Geometry>
+                    <GeometryModel3D.Material>
+                        <DiffuseMaterial Brush=""#475569""/>
+                    </GeometryModel3D.Material>
+                </GeometryModel3D>
+                
+                <!-- Comodos da Casa (3 Volumes) -->
+                <GeometryModel3D>
+                    <GeometryModel3D.Geometry>
+                        <MeshGeometry3D Positions=""-3,0,-2 0,0,-2 0,2.5,-2 -3,2.5,-2  -3,0,2 0,0,2 0,2.5,2 -3,2.5,2""
+                                        TriangleIndices=""0,2,1 0,3,2  4,5,6 4,6,7  0,1,5 0,5,4  2,3,7 2,7,6  0,4,7 0,7,3  1,2,6 1,6,5""/>
+                    </GeometryModel3D.Geometry>
+                    <GeometryModel3D.Material>
+                        <DiffuseMaterial Brush=""#38BDF8""/>
+                    </GeometryModel3D.Material>
+                </GeometryModel3D>
+                
+                <GeometryModel3D>
+                    <GeometryModel3D.Geometry>
+                        <MeshGeometry3D Positions=""0,0,-2 3,0,-2 3,3,-2 0,3,-2  0,0,2 3,0,2 3,3,2 0,3,2""
+                                        TriangleIndices=""0,2,1 0,3,2  4,5,6 4,6,7  0,1,5 0,5,4  2,3,7 2,7,6  0,4,7 0,7,3  1,2,6 1,6,5""/>
+                    </GeometryModel3D.Geometry>
+                    <GeometryModel3D.Material>
+                        <DiffuseMaterial Brush=""#818CF8""/>
+                    </GeometryModel3D.Material>
+                </GeometryModel3D>
+                
+                <!-- Telhado Triangular -->
+                <GeometryModel3D>
+                    <GeometryModel3D.Geometry>
+                        <MeshGeometry3D Positions=""-3.5,2.5,-2.2 3.5,2.5,-2.2 0,4.8,-2.2  -3.5,2.5,2.2 3.5,2.5,2.2 0,4.8,2.2""
+                                        TriangleIndices=""0,1,2  3,5,4  0,2,5 0,5,3  1,4,5 1,5,2""/>
+                    </GeometryModel3D.Geometry>
+                    <GeometryModel3D.Material>
+                        <DiffuseMaterial Brush=""#F43F5E""/>
+                    </GeometryModel3D.Material>
+                </GeometryModel3D>
+            </Model3DGroup>
+        </ModelVisual3D.Content>
+    </ModelVisual3D>
+</Viewport3D>"
+                },
+
+                // Template 9: Modelo Hierárquico 3D de Quadrúpede com 9 Juntas
+                new ProjectTemplate
+                {
+                    Id = "hierarchical-quadruped-3d",
+                    Title = "Projeto Aplicado 3D: Modelo Hierárquico de Quadrúpede com 9 Juntas",
+                    Category = "Projetos de Computação Gráfica Aplicada",
+                    Complexity = "Avançado",
+                    ComplexityBadgeColor = "#EF4444",
+                    IsInteractiveActivity = true,
+                    Description = "Grafo de cena com 14 componentes primitivos coloridos, Model3DGroup, 9 juntas articuladas com ciclo de marcha harmônico e caravana em fila simples.",
+                    Param1Name = "Tempo da Marcha (Segundos):",
+                    Param1Min = 0, Param1Max = 10, Param1Default = 2,
+                    Param2Name = "Amplitude da Articulação (Graus):",
+                    Param2Min = 5, Param2Max = 45, Param2Default = 25,
+                    Param3Name = "Quantidade de Instâncias na Caravana:",
+                    Param3Min = 1, Param3Max = 4, Param3Default = 3,
+                    Param4Name = "Velocidade de Deslocamento:",
+                    Param4Min = 1, Param4Max = 10, Param4Default = 4,
+                    StepsGuide =
+                        "1. 14 componentes primitivos com cores sólidas distintas.\n" +
+                        "2. Montagem do agrupador raiz com transformações de instância.\n" +
+                        "3. 9 transformações de junta animadas para marcha coordenada.\n" +
+                        "4. Chão com textura de deserto, luz direcional + ambiente e caravana em fila.",
+                    InitialCode = @"// Projeto Aplicado 3D: Caravana de Quadrupedes Articulados em Grafo de Cena
+Output.Clear(ColorSpaces.PackBgra(24, 18, 12));
+
+double walkTime = Param1;
+double jointAmp = Param2;
+int caravanCount = (int)Param3;
+double speed = Param4 * 0.5;
+
+int cx = Width / 2;
+int cy = Height / 2 + 20;
+
+// Terreno do deserto (areia com ondulacoes)
+for (int y = cy + 40; y < Height; y++)
+{
+    for (int x = 0; x < Width; x++)
+    {
+        double sandNoise = Math.Sin(x * 0.05 + y * 0.08);
+        byte sr = (byte)Math.Clamp(215 + sandNoise * 20, 0, 255);
+        byte sg = (byte)Math.Clamp(170 + sandNoise * 15, 0, 255);
+        byte sb = (byte)Math.Clamp(100 + sandNoise * 10, 0, 255);
+        Output.SetPixel(x, y, ColorSpaces.PackBgra(sb, sg, sr));
+    }
+}
+
+// Renderizacao das instancias da caravana em fila
+for (int c = 0; c < caravanCount; c++)
+{
+    int posX = cx - (c * 130) + (int)((walkTime * speed * 40) % (Width + 200)) - 100;
+    if (posX < -80 || posX > Width + 80) continue;
+    
+    int posY = cy;
+    
+    // Tronco
+    for (int y = posY - 20; y <= posY + 15; y++)
+        for (int x = posX - 35; x <= posX + 35; x++)
+            if (x >= 0 && x < Width && y >= 0 && y < Height)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(40, 120, 210));
+                
+    // Corcova
+    for (int y = posY - 38; y <= posY - 20; y++)
+        for (int x = posX - 15; x <= posX + 15; x++)
+            if (x >= 0 && x < Width && y >= 0 && y < Height)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(30, 90, 180));
+                
+    // Pescoço e Cabeça
+    for (int y = posY - 45; y <= posY - 5; y++)
+        for (int x = posX + 28; x <= posX + 45; x++)
+            if (x >= 0 && x < Width && y >= 0 && y < Height)
+                Output.SetPixel(x, y, ColorSpaces.PackBgra(50, 140, 230));
+                
+    // 4 Patas articuladas com defasagem angular
+    double[] phases = { 0, Math.PI, Math.PI * 0.5, Math.PI * 1.5 };
+    int[] legX = { posX + 28, posX + 18, posX - 20, posX - 30 };
+    for (int l = 0; l < 4; l++)
+    {
+        double hipAngle = (jointAmp * Math.PI / 180.0) * Math.Sin(walkTime * 3.0 + phases[l]);
+        int kx = legX[l] + (int)(22 * Math.Sin(hipAngle));
+        int ky = posY + 15 + (int)(22 * Math.Cos(hipAngle));
+        
+        double kneeAngle = Math.Max(0.0, -hipAngle * 0.8);
+        int fx = kx + (int)(22 * Math.Sin(hipAngle + kneeAngle));
+        int fy = ky + (int)(22 * Math.Cos(hipAngle + kneeAngle));
+        
+        // Desenha perna
+        if (kx >= 0 && kx < Width && ky >= 0 && ky < Height)
+            Output.SetPixel(kx, ky, ColorSpaces.PackBgra(20, 180, 240));
+        if (fx >= 0 && fx < Width && fy >= 0 && fy < Height)
+            Output.SetPixel(fx, fy, ColorSpaces.PackBgra(255, 255, 255));
+    }
+}
+
+Print($""Caravana com {caravanCount} modelos hierarquicos marchando na cena 3D."");",
+                    XamlCode = @"<Viewport3D Width=""800"" Height=""450"">
+    <Viewport3D.Camera>
+        <PerspectiveCamera Position=""0,5,15"" LookDirection=""0,-0.2,-1"" UpDirection=""0,1,0"" FieldOfView=""50""/>
+    </Viewport3D.Camera>
+    <ModelVisual3D>
+        <ModelVisual3D.Content>
+            <Model3DGroup>
+                <DirectionalLight Color=""#FEF3C7"" Direction=""0.5,-0.8,-0.3""/>
+                <AmbientLight Color=""#475569""/>
+                
+                <!-- Chão do Deserto -->
+                <GeometryModel3D>
+                    <GeometryModel3D.Geometry>
+                        <MeshGeometry3D Positions=""-25,0,-25 25,0,-25 25,0,25 -25,0,25"" TriangleIndices=""0,1,2 0,2,3""/>
+                    </GeometryModel3D.Geometry>
+                    <GeometryModel3D.Material>
+                        <DiffuseMaterial Brush=""#D97706""/>
+                    </GeometryModel3D.Material>
+                </GeometryModel3D>
+                
+                <!-- Instância 1 de Quadrúpede Hierárquico -->
+                <Model3DGroup>
+                    <Model3DGroup.Transform><TranslateTransform3D OffsetX=""-4""/></Model3DGroup.Transform>
+                    <!-- Tronco -->
+                    <GeometryModel3D>
+                        <GeometryModel3D.Geometry>
+                            <MeshGeometry3D Positions=""-1,1.5,-0.6 1,1.5,-0.6 1,2.5,-0.6 -1,2.5,-0.6  -1,1.5,0.6 1,1.5,0.6 1,2.5,0.6 -1,2.5,0.6""
+                                            TriangleIndices=""0,2,1 0,3,2  4,5,6 4,6,7  0,1,5 0,5,4  2,3,7 2,7,6  0,4,7 0,7,3  1,2,6 1,6,5""/>
+                        </GeometryModel3D.Geometry>
+                        <GeometryModel3D.Material><DiffuseMaterial Brush=""#B45309""/></GeometryModel3D.Material>
+                    </GeometryModel3D>
+                    <!-- Corcova -->
+                    <GeometryModel3D>
+                        <GeometryModel3D.Geometry>
+                            <MeshGeometry3D Positions=""-0.5,2.5,-0.4 0.5,2.5,-0.4 0.5,3.2,-0.4 -0.5,3.2,-0.4  -0.5,2.5,0.4 0.5,2.5,0.4 0.5,3.2,0.4 -0.5,3.2,0.4""
+                                            TriangleIndices=""0,2,1 0,3,2  4,5,6 4,6,7  0,1,5 0,5,4  2,3,7 2,7,6  0,4,7 0,7,3  1,2,6 1,6,5""/>
+                        </GeometryModel3D.Geometry>
+                        <GeometryModel3D.Material><DiffuseMaterial Brush=""#92400E""/></GeometryModel3D.Material>
+                    </GeometryModel3D>
+                </Model3DGroup>
+                
+                <!-- Instância 2 de Quadrúpede Hierárquico -->
+                <Model3DGroup>
+                    <Model3DGroup.Transform><TranslateTransform3D OffsetX=""2""/></Model3DGroup.Transform>
+                    <!-- Tronco -->
+                    <GeometryModel3D>
+                        <GeometryModel3D.Geometry>
+                            <MeshGeometry3D Positions=""-1,1.5,-0.6 1,1.5,-0.6 1,2.5,-0.6 -1,2.5,-0.6  -1,1.5,0.6 1,1.5,0.6 1,2.5,0.6 -1,2.5,0.6""
+                                            TriangleIndices=""0,2,1 0,3,2  4,5,6 4,6,7  0,1,5 0,5,4  2,3,7 2,7,6  0,4,7 0,7,3  1,2,6 1,6,5""/>
+                        </GeometryModel3D.Geometry>
+                        <GeometryModel3D.Material><DiffuseMaterial Brush=""#D97706""/></GeometryModel3D.Material>
+                    </GeometryModel3D>
+                </Model3DGroup>
+            </Model3DGroup>
+        </ModelVisual3D.Content>
+    </ModelVisual3D>
+</Viewport3D>"
                 }
             };
         }

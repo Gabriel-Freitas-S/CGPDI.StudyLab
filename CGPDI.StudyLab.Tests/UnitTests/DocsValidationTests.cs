@@ -142,7 +142,7 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                     string line = lines[i];
 
                     // Verifica títulos (##, ###) e Mermaid nodes
-                    if (line.TrimStart().StartsWith("#") || line.Contains("graph ") || line.Contains("flowchart ") || line.Contains("-->") || line.Contains(":::"))
+                    if (line.TrimStart().StartsWith('#') || line.Contains("graph ") || line.Contains("flowchart ") || line.Contains("-->") || line.Contains(":::"))
                     {
                         if (emojiRegex.IsMatch(line))
                         {

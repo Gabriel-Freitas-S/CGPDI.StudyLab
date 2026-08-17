@@ -119,7 +119,7 @@ namespace CGPDI.StudyLab
             }
             if (RtbLabXamlCode != null)
             {
-                RtbLabXamlCode.TextChanged += RtbLabXamlCode_TextChanged;
+                RtbLabXamlCode.TextChanged += RtbLabEditableCode_TextChanged;
             }
 
             // 7. Conecta Popout do Estúdio de Projetos (Aba 7)
@@ -164,13 +164,6 @@ namespace CGPDI.StudyLab
         }
 
         private void RtbLabEditableCode_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_isLabHighlighting) return;
-            _highlightDebounceTimerLab.Stop();
-            _highlightDebounceTimerLab.Start();
-        }
-
-        private void RtbLabXamlCode_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_isLabHighlighting) return;
             _highlightDebounceTimerLab.Stop();
@@ -1558,6 +1551,13 @@ public static DirectBitmap Process(DirectBitmap src)
             if (BrdStudyTopicQuizFeedback != null) BrdStudyTopicQuizFeedback.Visibility = Visibility.Collapsed;
         }
 
+        private static readonly SolidColorBrush QuizSuccessFgBrush = new((Color)ColorConverter.ConvertFromString("#86EFAC"));
+        private static readonly SolidColorBrush QuizSuccessBgBrush = new((Color)ColorConverter.ConvertFromString("#1E3A24"));
+        private static readonly SolidColorBrush QuizSuccessBorderBrush = new((Color)ColorConverter.ConvertFromString("#22C55E"));
+        private static readonly SolidColorBrush QuizErrorFgBrush = new((Color)ColorConverter.ConvertFromString("#FCA5A5"));
+        private static readonly SolidColorBrush QuizErrorBgBrush = new((Color)ColorConverter.ConvertFromString("#3A1E1E"));
+        private static readonly SolidColorBrush QuizErrorBorderBrush = new((Color)ColorConverter.ConvertFromString("#EF4444"));
+
         private void BtnStudyTopicQuizOpt_Click(object sender, RoutedEventArgs e)
         {
             if (LstStudyTopics?.SelectedItem is not StudyTopic topic || topic.Quiz == null) return;
@@ -1570,26 +1570,26 @@ public static DirectBitmap Process(DirectBitmap src)
             {
                 if (BrdStudyTopicQuizFeedback != null)
                 {
-                    BrdStudyTopicQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E3A24"));
-                    BrdStudyTopicQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#22C55E"));
+                    BrdStudyTopicQuizFeedback.Background = QuizSuccessBgBrush;
+                    BrdStudyTopicQuizFeedback.BorderBrush = QuizSuccessBorderBrush;
                 }
                 if (TxtStudyTopicQuizFeedback != null)
                 {
                     TxtStudyTopicQuizFeedback.Text = $"✓ RESPOSTA CORRETA!\n{topic.Quiz.Explanation}";
-                    TxtStudyTopicQuizFeedback.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
+                    TxtStudyTopicQuizFeedback.Foreground = QuizSuccessFgBrush;
                 }
             }
             else
             {
                 if (BrdStudyTopicQuizFeedback != null)
                 {
-                    BrdStudyTopicQuizFeedback.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A1E1E"));
-                    BrdStudyTopicQuizFeedback.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
+                    BrdStudyTopicQuizFeedback.Background = QuizErrorBgBrush;
+                    BrdStudyTopicQuizFeedback.BorderBrush = QuizErrorBorderBrush;
                 }
                 if (TxtStudyTopicQuizFeedback != null)
                 {
                     TxtStudyTopicQuizFeedback.Text = $"✕ INCORRETO. Tente novamente!\n{topic.Quiz.Explanation}";
-                    TxtStudyTopicQuizFeedback.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FCA5A5"));
+                    TxtStudyTopicQuizFeedback.Foreground = QuizErrorFgBrush;
                 }
             }
         }

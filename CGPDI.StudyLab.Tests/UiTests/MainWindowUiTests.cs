@@ -43,12 +43,12 @@ namespace CGPDI.StudyLab.Tests.UiTests
             // Tab 4: Central de Estudos
             tabControl.SelectedIndex = 4;
             window.LstStudyTopics.Should().NotBeNull();
-            window.LstStudyTopics.Items.Count.Should().Be(13);
+            window.LstStudyTopics.Items.Count.Should().Be(19);
 
             // Tab 5: Laboratório
             tabControl.SelectedIndex = 5;
             window.LstInteractiveLessons.Should().NotBeNull();
-            window.LstInteractiveLessons.Items.Count.Should().Be(12);
+            window.LstInteractiveLessons.Items.Count.Should().Be(15);
 
             // Tab 6: Estúdio de Projetos
             tabControl.SelectedIndex = 6;

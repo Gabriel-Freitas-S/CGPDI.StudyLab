@@ -396,9 +396,9 @@ namespace CGPDI.StudyLab.Core
             {
                 Application.Current?.Dispatcher?.Invoke(() => Application.Current.Shutdown());
             }
-            catch
+            catch (Exception)
             {
-                // App já encerrando.
+                // App já em processo de encerramento, ignora falhas residuais de despacho
             }
         }
 
@@ -474,8 +474,9 @@ namespace CGPDI.StudyLab.Core
                 Process.Start(psi);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine($"[UpdateManager] Elevação cancelada pelo usuário: {ex.Message}");
                 return false;
             }
         }
@@ -535,8 +536,8 @@ namespace CGPDI.StudyLab.Core
                 response.EnsureSuccessStatusCode();
                 long? totalBytes = response.Content.Headers.ContentLength;
 
-                using var stream = await response.Content.ReadAsStreamAsync(ct);
-                using var fs = new FileStream(destFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await using var stream = await response.Content.ReadAsStreamAsync(ct);
+                await using var fs = new FileStream(destFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
 
                 var buffer = new byte[81920]; // 80 KB
                 long totalRead = 0;

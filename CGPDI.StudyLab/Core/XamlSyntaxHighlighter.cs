@@ -37,7 +37,8 @@ namespace CGPDI.StudyLab.Core
             @"(?<TagEnd>/?>)|" +
             @"(?<Attribute>[a-zA-Z0-9_\.:]+)(?=\s*=)|" +
             @"(?<Symbol>[=])",
-            RegexOptions.Multiline)]
+            RegexOptions.Multiline,
+            matchTimeoutMilliseconds: 2000)]
         private static partial Regex XamlTokenRegex();
 
         /// <summary>
@@ -166,9 +167,9 @@ namespace CGPDI.StudyLab.Core
                     rtb.CaretPosition = rtb.Document.ContentEnd;
                 }
             }
-            catch
+            catch (Exception)
             {
-                // Fallback seguro
+                // Fallback silencioso seguro se o offset de caractere estiver fora dos limites durante digitação rápida
             }
         }
     }

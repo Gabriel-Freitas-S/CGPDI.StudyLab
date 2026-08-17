@@ -25,7 +25,10 @@ namespace CGPDI.StudyLab.Core
         MatrixTransform2D,
         PipelineMVP3D,
         HierarchicalSceneGraph,
-        RayTracingIntersection
+        RayTracingIntersection,
+        XAMLAnimationTemplates2D,
+        MeshGeometry3DLights,
+        HierarchicalJoints3D
     }
 
     public class InteractiveLesson
@@ -1102,6 +1105,263 @@ if (delta >= 0) {
                             Description = "Operações vetoriais de produto escalar, produto vetorial, reflexão e normalização."
                         }
                     }
+                },
+                #endregion
+
+                #region Lição 13
+                new InteractiveLesson
+                {
+                    Number = 13,
+                    Id = "lesson_xaml_templates_2d",
+                    Title = "13. Templates XAML 2D e Animações com AutoReverse",
+                    Module = "Módulo 5: Computação Gráfica 2D Aplicada",
+                    Type = LessonType.XAMLAnimationTemplates2D,
+                    Summary = "Construção de componentes gráficos modulares com ControlTemplate, transformações afins pivotadas e Storyboard com AutoReverse.",
+                    Theory =
+                        "• Reuso Modular com ControlTemplate:\n" +
+                        "  Permite encapsular uma forma geométrica (Path, Polygon, Canvas) em recursos para instanciação em múltiplas coordenadas sem duplicação de XAML.\n\n" +
+                        "• Rotação Pivotada no Canvas:\n" +
+                        "  A rotação em torno do centro exige RenderTransform com RotateTransform (Angle, CenterX, CenterY).\n\n" +
+                        "• Animação Suave Bidirecional (AutoReverse):\n" +
+                        "  DoubleAnimation com AutoReverse=\"True\" inverte automaticamente a linha do tempo e a rotação/translação ao final do percurso.",
+                    CodeSnippet =
+@"// Cálculo da coordenada de cada raio da roda:
+double angleRad = spokeIndex * (2.0 * Math.PI / totalSpokes);
+int px = (int)(centerX + radius * Math.Cos(angleRad));
+int py = (int)(centerY + radius * Math.Sin(angleRad));",
+                    CodeExplanation =
+@"1. 'double angleRad = spokeIndex * (2.0 * Math.PI / totalSpokes);' -> Distribui uniformemente os raios da roda em 360 graus.
+2. 'Math.Cos' e 'Math.Sin' -> Projeta o raio nos eixos horizontal e vertical da tela.
+3. No XAML, o ControlTemplate reutilizável aplica essa mesma geometria de forma declarativa e acelera via hardware GPU.",
+                    XamlSnippet =
+@"<Canvas.Resources>
+    <ControlTemplate x:Key=""PonteiroTemplate"">
+        <Polygon Points=""0,0 -3,-15 0,-40 3,-15"" Fill=""#38BDF8""/>
+    </ControlTemplate>
+</Canvas.Resources>",
+                    XamlExplanation = "O ControlTemplate 'PonteiroTemplate' define a geometria pontiaguda do raio com vértice na origem (0,0), pronta para ser instanciada e rotacionada pelo chassi.",
+                    ChallengeGoal = "Implemente a função CalculateSpokePositions calculando as coordenadas (X, Y) dos N raios de uma roda com raio R a partir da origem (cx, cy).",
+                    BlankTemplate =
+@"public static (int X, int Y)[] CalculateSpokePositions(int cx, int cy, int radius, int spokesCount)
+{
+    // Calcule as posições das pontas dos raios:
+    return new (int, int)[0];
+}",
+                    StarterTemplate =
+@"public static (int X, int Y)[] CalculateSpokePositions(int cx, int cy, int radius, int spokesCount)
+{
+    int count = Math.Max(1, spokesCount);
+    var points = new (int X, int Y)[count];
+    
+    // TODO: Itere de 0 até count - 1 calculando angle = i * (2 * PI / count)
+    for (int i = 0; i < count; i++)
+    {
+        double angle = i * (2.0 * Math.PI / count);
+        int px = (int)(cx + radius * Math.Cos(angle));
+        int py = (int)(cy + radius * Math.Sin(angle));
+        points[i] = (px, py);
+    }
+    
+    return points;
+}",
+                    SolutionCode =
+@"public static (int X, int Y)[] CalculateSpokePositions(int cx, int cy, int radius, int spokesCount)
+{
+    int count = Math.Max(1, spokesCount);
+    var points = new (int X, int Y)[count];
+    for (int i = 0; i < count; i++)
+    {
+        double angle = i * (2.0 * Math.PI / count);
+        int px = (int)(cx + radius * Math.Cos(angle));
+        int py = (int)(cy + radius * Math.Sin(angle));
+        points[i] = (px, py);
+    }
+    return points;
+}",
+                    ControlsDescription = "Ajuste os controles de ângulo de rotação da roda e deslocamento X do chassi para visualizar a translação sincronizada com AutoReverse.",
+                    QuizQuestion = "Qual a vantagem de declarar um elemento como ControlTemplate em Canvas.Resources em vez de desenhá-lo repetidamente no Canvas principal?",
+                    QuizOptions = new List<QuizOption>
+                    {
+                        new QuizOption { Text = "Modularidade e desempenho: o XAML compila a árvore visual uma única vez e instancia múltiplas réplicas compartilhando recursos gráficos", IsCorrect = true, Explanation = "Correto! ControlTemplates desacoplam a lógica visual da instância, reduzindo tamanho de arquivo e acelerando a criação de objetos." },
+                        new QuizOption { Text = "O ControlTemplate desabilita o DirectX para economizar energia", IsCorrect = false, Explanation = "Incorreto. O WPF continua usando aceleração gráfica total via Direct3D." },
+                        new QuizOption { Text = "Permite usar apenas cores monocromáticas", IsCorrect = false, Explanation = "Incorreto. Templates suportam qualquer material, brush ou animação." }
+                    },
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Personalização da aparência de controles com ControlTemplate",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/desktop/wpf/controls/how-to-create-a-controltemplate",
+                            Description = "Como estruturar ControlTemplates modulares e recursos no WPF."
+                        }
+                    }
+                },
+                #endregion
+
+                #region Lição 14
+                new InteractiveLesson
+                {
+                    Number = 14,
+                    Id = "lesson_mesh_lights_3d",
+                    Title = "14. Malhas MeshGeometry3D, Iluminação Direcional Dupla e UV",
+                    Module = "Módulo 6: Computação Gráfica 3D & Iluminação",
+                    Type = LessonType.MeshGeometry3DLights,
+                    Summary = "Especificação de triângulos CCW em MeshGeometry3D, reflexão difusa de Lambert com duas luzes direcionais a 30° e repetição UV TileMode.",
+                    Theory =
+                        "• MeshGeometry3D no WPF:\n" +
+                        "  - Positions: Coordenadas 3D (X, Y, Z) dos vértices no espaço local.\n" +
+                        "  - TriangleIndices: Lista de inteiros agrupados de 3 em 3 em sentido anti-horário (CCW) para definir a orientação frontal das faces.\n" +
+                        "  - TextureCoordinates: Mapeamento UV (0 a 1) para texturização.\n\n" +
+                        "• Iluminação Direcional Oposta a 30°:\n" +
+                        "  - Dois sóis iluminando lados opostos criam contraste e relevo volumétrico tridimensional realista.\n" +
+                        "  - Componente vertical: Dy = -sin(30°) = -0.5.\n\n" +
+                        "• Mapeamento de Textura com TileMode:\n" +
+                        "  ImageBrush configurado com TileMode=\"Tile\" repete a imagem uniformemente em superfícies extensas como pisos e paredes.",
+                    CodeSnippet =
+@"// Cálculo da Intensidade Difusa de Lambert para duas luzes:
+double lambert1 = Math.Max(0.0, normal.X * lightDir1.X + normal.Y * lightDir1.Y + normal.Z * lightDir1.Z);
+double lambert2 = Math.Max(0.0, normal.X * lightDir2.X + normal.Y * lightDir2.Y + normal.Z * lightDir2.Z);
+double totalIntensity = ambient + 0.6 * lambert1 + 0.6 * lambert2;",
+                    CodeExplanation =
+@"1. 'Math.Max(0.0, Vector3.Dot(normal, lightDir))' -> Implementa a lei do cosseno de Lambert (energia máxima quando a luz incide a 90° e zero quando atinge a face oposta).
+2. Combinar duas fontes direcionais opostas garante que ambos os lados de estruturas 3D permaneçam visíveis e com sombreamento suave.",
+                    XamlSnippet =
+@"<GeometryModel3D>
+    <GeometryModel3D.Geometry>
+        <MeshGeometry3D Positions=""-2,0,-2  2,0,-2  2,0,2  -2,0,2"" TriangleIndices=""0,1,2 0,2,3""/>
+    </GeometryModel3D.Geometry>
+    <GeometryModel3D.Material>
+        <DiffuseMaterial Brush=""#38BDF8""/>
+    </GeometryModel3D.Material>
+</GeometryModel3D>",
+                    XamlExplanation = "Especificação direta de um plano 3D com 4 vértices e 2 triângulos indexados no sentido anti-horário.",
+                    ChallengeGoal = "Implemente a função CalculateLambertDualIntensity calculando a intensidade total combinando luz ambiente e duas luzes direcionais.",
+                    BlankTemplate =
+@"public static double CalculateLambertDualIntensity(double nx, double ny, double nz, double lx1, double ly1, double lz1, double lx2, double ly2, double lz2, double ambient)
+{
+    // Calcule a intensidade difusa de Lambert combinada:
+    return ambient;
+}",
+                    StarterTemplate =
+@"public static double CalculateLambertDualIntensity(double nx, double ny, double nz, double lx1, double ly1, double lz1, double lx2, double ly2, double lz2, double ambient)
+{
+    // TODO 1: Produto escalar N . L1
+    double dot1 = nx * lx1 + ny * ly1 + nz * lz1;
+    double d1 = Math.Max(0.0, dot1);
+    
+    // TODO 2: Produto escalar N . L2
+    double dot2 = nx * lx2 + ny * ly2 + nz * lz2;
+    double d2 = Math.Max(0.0, dot2);
+    
+    // TODO 3: Combinar com luz ambiente
+    return Math.Clamp(ambient + 0.5 * d1 + 0.5 * d2, 0.0, 1.0);
+}",
+                    SolutionCode =
+@"public static double CalculateLambertDualIntensity(double nx, double ny, double nz, double lx1, double ly1, double lz1, double lx2, double ly2, double lz2, double ambient)
+{
+    double dot1 = nx * lx1 + ny * ly1 + nz * lz1;
+    double d1 = Math.Max(0.0, dot1);
+    double dot2 = nx * lx2 + ny * ly2 + nz * lz2;
+    double d2 = Math.Max(0.0, dot2);
+    return Math.Clamp(ambient + 0.5 * d1 + 0.5 * d2, 0.0, 1.0);
+}",
+                    ControlsDescription = "Mova o ângulo horizontal das luzes solares e a altitude orbital da câmera para inspecionar o sombreamento e a textura.",
+                    QuizQuestion = "Por que os índices de triângulos (TriangleIndices) devem ser declarados no sentido anti-horário (CCW) em relação ao observador?",
+                    QuizOptions = new List<QuizOption>
+                    {
+                        new QuizOption { Text = "Para que o pipeline 3D identifique que a face está voltada para frente e não a descarte por Back-Face Culling", IsCorrect = true, Explanation = "Correto! O WPF utiliza a regra da mão direita: vértices anti-horários indicam a normal apontando para fora da superfície." },
+                        new QuizOption { Text = "Porque o formato BGRA32 armazena cores em ordem inversa", IsCorrect = false, Explanation = "Incorreto. A indexação de vértices diz respeito à geometria 3D, não ao formato de cor em memória." },
+                        new QuizOption { Text = "Para permitir que o modelo 3D seja exportado em SVG", IsCorrect = false, Explanation = "Incorreto." }
+                    },
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe MeshGeometry3D (System.Windows.Media.Media3D)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.meshgeometry3d",
+                            Description = "Documentação oficial de Positions, TriangleIndices, Normals e TextureCoordinates."
+                        }
+                    }
+                },
+                #endregion
+
+                #region Lição 15
+                new InteractiveLesson
+                {
+                    Number = 15,
+                    Id = "lesson_hierarchical_joints_3d",
+                    Title = "15. Modelagem Hierárquica 3D e Animação de Juntas Articuladas",
+                    Module = "Módulo 7: Grafos de Cena & Modelagem Hierárquica",
+                    Type = LessonType.HierarchicalJoints3D,
+                    Summary = "Montagem de grafo de cena com Model3DGroup, transformações de instância e rotações de juntas para marcha articulada.",
+                    Theory =
+                        "• Grafo de Cena Hierárquico:\n" +
+                        "  Estrutura em árvore onde nós pais (Tronco) transmitem suas transformações espaciais para nós filhos (Membros -> Submembros).\n\n" +
+                        "• Transformação de Instância vs Junta:\n" +
+                        "  - Instância: Posiciona estaticamente o membro no ponto de ancoragem do pai (ex: TranslateTransform3D OffsetY=-1.5).\n" +
+                        "  - Junta: Aplica a rotação angular dinâmica no pivô da articulação (ex: RotateTransform3D Angle=sin(t)).\n\n" +
+                        "• Ciclo Harmônico de Marcha Quadrúpede:\n" +
+                        "  A alternância de fase entre patas opostas (0°, 90°, 180°, 270°) gera locomoção estável e contínua.",
+                    CodeSnippet =
+@"// Cálculo do ângulo da junta no tempo t:
+double hipAngle = amplitude * Math.Sin(time * speed + phaseOffset);
+double kneeAngle = Math.Max(0.0, hipAngle * 0.75); // Flexão do joelho",
+                    CodeExplanation =
+@"1. O ângulo do quadril oscila senoidalmente de acordo com a velocidade de marcha.
+2. O joelho flexiona proporcionalmente ao quadril durante o ciclo de recuo da pata, garantindo que o pé não atravesse o chão.",
+                    XamlSnippet =
+@"<Model3DGroup x:Name=""MembroArticulado"">
+    <GeometryModel3D Geometry=""{StaticResource CoxaMesh}""/>
+    <Model3DGroup>
+        <Model3DGroup.Transform>
+            <TranslateTransform3D OffsetY=""-1.2""/>
+        </Model3DGroup.Transform>
+        <GeometryModel3D Geometry=""{StaticResource CanelaMesh}""/>
+    </Model3DGroup>
+</Model3DGroup>",
+                    XamlExplanation = "O submembro (canela) herda a posição da coxa e adiciona seu próprio deslocamento de montagem relativo.",
+                    ChallengeGoal = "Implemente a função CalculateLegJointAngles calculando os ângulos do quadril e joelho para um membro articulado no instante t.",
+                    BlankTemplate =
+@"public static (double HipAngle, double KneeAngle) CalculateLegJointAngles(double t, double phase, double maxAngle)
+{
+    // Calcule os ângulos de rotação do quadril e joelho:
+    return (0.0, 0.0);
+}",
+                    StarterTemplate =
+@"public static (double HipAngle, double KneeAngle) CalculateLegJointAngles(double t, double phase, double maxAngle)
+{
+    // TODO 1: Oscilação harmônica do quadril
+    double hip = maxAngle * Math.Sin(t + phase);
+    
+    // TODO 2: Flexão coordenada do joelho (apenas quando o quadril recua)
+    double knee = Math.Max(0.0, -hip * 0.8);
+    
+    return (hip, knee);
+}",
+                    SolutionCode =
+@"public static (double HipAngle, double KneeAngle) CalculateLegJointAngles(double t, double phase, double maxAngle)
+{
+    double hip = maxAngle * Math.Sin(t + phase);
+    double knee = Math.Max(0.0, -hip * 0.8);
+    return (hip, knee);
+}",
+                    ControlsDescription = "Varie o tempo da marcha e o ângulo da junta para inspecionar a articulação hierárquica e a sincronização das 4 patas.",
+                    QuizQuestion = "Ao rotacionar ou transladar o nó raiz (Tronco) em um grafo de cena hierárquico, o que acontece com os membros filhos (Coxas, Canelas e Pés)?",
+                    QuizOptions = new List<QuizOption>
+                    {
+                        new QuizOption { Text = "Todos os membros filhos acompanham automaticamente o movimento do tronco, mantendo suas posições e articulações relativas preservadas", IsCorrect = true, Explanation = "Correto! A matriz de transformação global de cada nó filho é o produto acumulado das matrizes de seus ancestrais." },
+                        new QuizOption { Text = "Os membros filhos ficam parados na origem do mundo", IsCorrect = false, Explanation = "Incorreto. A propagação matricial ocorre automaticamente pela árvore." },
+                        new QuizOption { Text = "Os membros filhos invertem suas cores", IsCorrect = false, Explanation = "Incorreto." }
+                    },
+                    MicrosoftReferences = new List<DocReference>
+                    {
+                        new DocReference
+                        {
+                            Title = "Classe Transform3DGroup (System.Windows.Media.Media3D)",
+                            Url = "https://learn.microsoft.com/pt-br/dotnet/api/system.windows.media.media3d.transform3dgroup",
+                            Description = "Composição hierárquica de matrizes de rotação, escala e translação no WPF 3D."
+                        }
+                    }
                 }
                 #endregion
             };
@@ -1159,6 +1419,15 @@ if (delta >= 0) {
                     break;
                 case LessonType.RayTracingIntersection:
                     RenderRayTracingSimulation(bmp, p1, logOut);
+                    break;
+                case LessonType.XAMLAnimationTemplates2D:
+                    RenderXamlTemplates2DSimulation(bmp, p1, p2, logOut);
+                    break;
+                case LessonType.MeshGeometry3DLights:
+                    RenderMeshLights3DSimulation(bmp, p1, p2, p3, logOut);
+                    break;
+                case LessonType.HierarchicalJoints3D:
+                    RenderHierarchicalJoints3DSimulation(bmp, p1, p2, logOut);
                     break;
             }
 
@@ -1711,6 +1980,198 @@ if (delta >= 0) {
                 log.AppendLine($"• Posição do Raio Y = {rayOriginY}");
                 log.AppendLine($"• Discriminante Δ = {disc:F1} (Δ < 0 -> O RAIO PASSOU NO VAZIO)");
             }
+        }
+
+        private static void RenderXamlTemplates2DSimulation(DirectBitmap bmp, double rotAngle, double transX, StringBuilder log)
+        {
+            int cx = 250 + (int)(transX * 0.8);
+            int cy = 200;
+            int radius = 45;
+            double rad = rotAngle * Math.PI / 180.0;
+
+            // Desenha linha de solo / pista
+            DrawLine(bmp, 20, 255, 490, 255, Color.FromRgb(50, 60, 80));
+
+            // Desenha chassi / carroceria do veículo
+            for (int y = cy - 45; y <= cy; y++)
+            {
+                for (int x = cx - 110; x <= cx + 90; x++)
+                {
+                    bmp.SetPixel(x, y, Color.FromRgb(30, 41, 59));
+                }
+            }
+            // Cabine do chassi
+            for (int y = cy - 80; y <= cy - 45; y++)
+            {
+                for (int x = cx - 110; x <= cx - 30; x++)
+                {
+                    bmp.SetPixel(x, y, Color.FromRgb(56, 189, 248));
+                }
+            }
+
+            // 4 Posições de rodas (1 dianteira e 3 traseiras)
+            int[] wheelOffsets = { -80, 0, 40, 75 };
+            foreach (int ox in wheelOffsets)
+            {
+                int wx = cx + ox;
+                int wy = cy + 10;
+
+                // Aro da roda
+                DrawCircle(bmp, wx, wy, radius / 2, Color.FromRgb(200, 210, 230));
+
+                // 4 Raios/Ponteiros rotacionados (0, 90, 180, 270 graus)
+                for (int s = 0; s < 4; s++)
+                {
+                    double a = rad + s * (Math.PI / 2.0);
+                    int px = (int)(wx + (radius / 2 - 2) * Math.Cos(a));
+                    int py = (int)(wy + (radius / 2 - 2) * Math.Sin(a));
+                    DrawLine(bmp, wx, wy, px, py, Color.FromRgb(245, 158, 11));
+                }
+
+                // Centro do eixo
+                DrawCircle(bmp, wx, wy, 3, Color.FromRgb(255, 255, 255));
+            }
+
+            log.AppendLine("[Simulação 2D: Templates Modulares & Animações]");
+            log.AppendLine($"• Posição Horizontal do Veículo: X = {cx} px");
+            log.AppendLine($"• Ângulo de Rotação das Rodas: {rotAngle:F1}°");
+            log.AppendLine($"• Instâncias de Roda Ativas: 4 (1 Dianteira + 3 Traseiras)");
+            log.AppendLine($"• Transformações Afins Aplicadas: RotateTransform(Angle) -> TranslateTransform(X, Y)");
+            log.AppendLine($"• Comportamento AutoReverse: Ativo no Storyboard XAML para inversão suave de percurso.");
+        }
+
+        private static void RenderMeshLights3DSimulation(DirectBitmap bmp, double lightAngleDeg, double camHeight, double ambientVal, StringBuilder log)
+        {
+            double lightRad = lightAngleDeg * Math.PI / 180.0;
+            double l1x = Math.Cos(lightRad) * 0.866;
+            double l1y = -0.5;
+            double l1z = Math.Sin(lightRad) * 0.866;
+
+            double l2x = -l1x;
+            double l2y = -0.5;
+            double l2z = -l1z;
+
+            int cx = 250;
+            int cy = 210 - (int)(camHeight * 0.4);
+
+            // Desenha plano do chão texturizado (mosaico de pedra)
+            for (int y = cy + 20; y < 350; y += 12)
+            {
+                for (int x = 40; x < 460; x += 12)
+                {
+                    Color tileColor = ((x / 12 + y / 12) % 2 == 0) ? Color.FromRgb(55, 65, 81) : Color.FromRgb(35, 42, 54);
+                    for (int dy = 0; dy < 10; dy++)
+                        for (int dx = 0; dx < 10; dx++)
+                            bmp.SetPixel(x + dx, y + dy, tileColor);
+                }
+            }
+
+            // Desenha estrutura 3D da Casa (Cômodo Esquerdo, Central, Direito e Telhado Triangular)
+            int[,] rooms = { { -90, -40, 70, 60, 56, 189, 248 }, { -20, -50, 70, 70, 129, 140, 248 }, { 50, -40, 70, 60, 167, 139, 250 } };
+            for (int r = 0; r < 3; r++)
+            {
+                int rx = cx + rooms[r, 0];
+                int ry = cy + rooms[r, 1];
+                int rw = rooms[r, 2];
+                int rh = rooms[r, 3];
+
+                // Cálculo de iluminação de Lambert na face frontal (Normal N = (0, 0, 1))
+                double dot1 = Math.Max(0.0, l1z);
+                double dot2 = Math.Max(0.0, l2z);
+                double intensity = Math.Clamp(ambientVal + 0.45 * dot1 + 0.45 * dot2, 0.2, 1.0);
+
+                byte red = (byte)Math.Clamp(rooms[r, 4] * intensity, 0, 255);
+                byte green = (byte)Math.Clamp(rooms[r, 5] * intensity, 0, 255);
+                byte blue = (byte)Math.Clamp(rooms[r, 6] * intensity, 0, 255);
+                Color faceCol = Color.FromRgb(red, green, blue);
+
+                for (int y = ry; y < ry + rh; y++)
+                    for (int x = rx; x < rx + rw; x++)
+                        bmp.SetPixel(x, y, faceCol);
+            }
+
+            // Telhado triangular (Prisma Triangular MeshGeometry3D)
+            int tx0 = cx - 100, ty0 = cy - 50;
+            int tx1 = cx, ty1 = cy - 105;
+            int tx2 = cx + 130, ty2 = cy - 50;
+
+            DrawLine(bmp, tx0, ty0, tx1, ty1, Color.FromRgb(244, 63, 94));
+            DrawLine(bmp, tx1, ty1, tx2, ty2, Color.FromRgb(244, 63, 94));
+            DrawLine(bmp, tx0, ty0, tx2, ty2, Color.FromRgb(244, 63, 94));
+
+            log.AppendLine("[Simulação 3D: MeshGeometry3D & Sistema Solar Duplo]");
+            log.AppendLine($"• Direção do Sol 1 (30° Solo): ({l1x:F2}, {l1y:F2}, {l1z:F2})");
+            log.AppendLine($"• Direção do Sol 2 (30° Oposto): ({l2x:F2}, {l2y:F2}, {l2z:F2})");
+            log.AppendLine($"• Ângulo de Rotação Solar Horizontal: {lightAngleDeg:F0}°");
+            log.AppendLine($"• Câmera Perspectiva: Órbita Vertical com arco de 180° e AutoReverse=True.");
+            log.AppendLine($"• Mapeamento de Chão: ImageBrush com TileMode=\"Tile\" para repetição de textura.");
+        }
+
+        private static void RenderHierarchicalJoints3DSimulation(DirectBitmap bmp, double walkTime, double jointAmp, StringBuilder log)
+        {
+            int cx = 240;
+            int cy = 160;
+
+            // Desenha linha de solo
+            DrawLine(bmp, 20, 260, 490, 260, Color.FromRgb(217, 119, 6));
+
+            // Tronco do quadrúpede (Nó Raiz do Grafo de Cena)
+            for (int y = cy - 25; y <= cy + 25; y++)
+            {
+                for (int x = cx - 60; x <= cx + 60; x++)
+                {
+                    bmp.SetPixel(x, y, Color.FromRgb(217, 119, 6)); // Cor Caramelo
+                }
+            }
+
+            // Pescoço e Cabeça (Subcomponentes hierárquicos dianteiros)
+            for (int y = cy - 65; y <= cy - 10; y++)
+                for (int x = cx + 45; x <= cx + 70; x++)
+                    bmp.SetPixel(x, y, Color.FromRgb(180, 83, 9));
+
+            for (int y = cy - 75; y <= cy - 50; y++)
+                for (int x = cx + 65; x <= cx + 100; x++)
+                    bmp.SetPixel(x, y, Color.FromRgb(245, 158, 11));
+
+            // Corcova / Detalhe Superior
+            for (int y = cy - 50; y <= cy - 25; y++)
+                for (int x = cx - 20; x <= cx + 20; x++)
+                    bmp.SetPixel(x, y, Color.FromRgb(180, 83, 9));
+
+            // 4 Patas articuladas com ângulos harmônicos defasados (Coxa -> Canela -> Pé)
+            (int HipX, double Phase)[] legs = {
+                (cx + 45, 0.0),                  // Dianteira Esquerda
+                (cx + 30, Math.PI),              // Dianteira Direita
+                (cx - 40, Math.PI * 0.5),        // Traseira Esquerda
+                (cx - 55, Math.PI * 1.5)         // Traseira Direita
+            };
+
+            foreach (var (hx, phase) in legs)
+            {
+                double hipRad = (jointAmp * Math.PI / 180.0) * Math.Sin(walkTime * 2.0 + phase);
+                double kneeRad = Math.Max(0.0, -hipRad * 0.8);
+
+                // Coxa (comprimento = 35 px)
+                int kx = (int)(hx + 35 * Math.Sin(hipRad));
+                int ky = (int)(cy + 25 + 35 * Math.Cos(hipRad));
+                DrawLine(bmp, hx, cy + 25, kx, ky, Color.FromRgb(245, 158, 11));
+
+                // Canela e Pé (comprimento = 35 px articulado a partir do joelho)
+                double totalLegRad = hipRad + kneeRad;
+                int fx = (int)(kx + 35 * Math.Sin(totalLegRad));
+                int fy = (int)(ky + 35 * Math.Cos(totalLegRad));
+                DrawLine(bmp, kx, ky, fx, fy, Color.FromRgb(251, 191, 36));
+
+                // Pé/Pata
+                DrawCircle(bmp, fx, fy, 3, Color.FromRgb(255, 255, 255));
+            }
+
+            log.AppendLine("[Simulação 3D: Modelagem Hierárquica & Grafo de Cena]");
+            log.AppendLine($"• Tempo de Marcha (t): {walkTime:F2} s");
+            log.AppendLine($"• Amplitude de Oscilação das Juntas: {jointAmp:F1}°");
+            log.AppendLine($"• Membros Articulados Ativos: 4 Patas x 2 Juntas (Quadril + Joelho) + Pescoço/Cabeça = 9 Juntas");
+            log.AppendLine($"• Topologia Hierárquica: Tronco (Raiz) -> Coxa (Instância) -> Canela (Junta) -> Pé");
+            log.AppendLine($"• Deslocamento em Fila: Grafo modular instanciado em múltiplos nós espaciais na cena.");
         }
 
         #endregion

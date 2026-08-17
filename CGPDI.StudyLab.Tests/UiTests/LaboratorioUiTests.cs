@@ -13,7 +13,7 @@ namespace CGPDI.StudyLab.Tests.UiTests
             var window = new CodeStudioWindow(1);
             window.Should().NotBeNull();
 
-            window.LstStudioLessons.Items.Count.Should().Be(12);
+            window.LstStudioLessons.Items.Count.Should().Be(15);
             window.LstStudioLessons.SelectedIndex.Should().Be(0);
 
             // Verifica elementos de UI essenciais

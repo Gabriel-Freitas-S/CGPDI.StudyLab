@@ -135,9 +135,9 @@ namespace CGPDI.StudyLab.Core
             {
                 references[path] = MetadataReference.CreateFromFile(path);
             }
-            catch
+            catch (Exception)
             {
-                // Ignora referencias indisponiveis no ambiente atual.
+                // Ignora referências indisponíveis no ambiente de execução atual
             }
         }
 
@@ -206,6 +206,18 @@ namespace CGPDI.StudyLab.Core
 
                     case LessonType.RayTracingIntersection:
                         await RunRaySphereTestsAsync(userCode, report);
+                        break;
+
+                    case LessonType.XAMLAnimationTemplates2D:
+                        await RunSpokePositionsTestsAsync(userCode, report);
+                        break;
+
+                    case LessonType.MeshGeometry3DLights:
+                        await RunLambertDualIntensityTestsAsync(userCode, report);
+                        break;
+
+                    case LessonType.HierarchicalJoints3D:
+                        await RunLegJointAnglesTestsAsync(userCode, report);
                         break;
 
                     default:
@@ -298,9 +310,8 @@ PackBgra((byte){bIn}, (byte){gIn}, (byte){rIn}, (byte){aIn})
                         targetBitmap.Lock();
                         targetBitmap.Clear(System.Windows.Media.Color.FromRgb(14, 14, 20));
 
-                        // Bloco de Cor Gerado pelo Código do Aluno
-                        System.Windows.Media.Color userColor = System.Windows.Media.Color.FromArgb(
-                            aRes == 0 && userPixel != 0 ? (byte)255 : (aRes == 0 ? (byte)255 : aRes), rRes, gRes, bRes);
+                        byte alpha = aRes == 0 ? (byte)255 : aRes;
+                        System.Windows.Media.Color userColor = System.Windows.Media.Color.FromArgb(alpha, rRes, gRes, bRes);
                         for (int y = 40; y < 220; y++)
                         {
                             for (int x = 40; x < 230; x++)
@@ -316,38 +327,37 @@ PackBgra((byte){bIn}, (byte){gIn}, (byte){rIn}, (byte){aIn})
                         InteractiveLabManager.DrawMemoryCell(targetBitmap, 440, 60, 50, 130, System.Windows.Media.Color.FromRgb(180, 180, 200), $"Byte 3 (A)\n{aRes}\n0x{aRes:X2}");
 
                         // Gradiente ao vivo gerado usando as cores calculadas pelo aluno
-                        for (int x = 40; x < 490; x++)
+                        for (int gx = 40; gx < 490; gx++)
                         {
-                            byte gb = (byte)((x - 40) * 255 / 450);
-                            for (int y = 235; y < 265; y++)
+                            float t = (gx - 40) / 450.0f;
+                            byte r = (byte)(rRes * t);
+                            byte g = (byte)(gRes * t);
+                            byte b = (byte)(bRes * t);
+                            for (int gy = 260; gy < 300; gy++)
                             {
-                                targetBitmap.SetPixel(x, y, System.Windows.Media.Color.FromArgb(255, rRes, gRes, gb));
+                                targetBitmap.SetPixel(gx, gy, System.Windows.Media.Color.FromArgb(255, r, g, b));
                             }
                         }
 
                         targetBitmap.Unlock(true);
 
-                        logs.AppendLine($"[Canvas Renderizado pelo SEU Código]:");
-                        logs.AppendLine($" • uint Compactado: 0x{userPixel:X8} ({userPixel})");
-                        logs.AppendLine($" • Decodificação dos 4 bytes: B={bRes}, G={gRes}, R={rRes}, A={aRes}");
+                        logs.AppendLine($"[Renderização no DirectBitmap]: Pixel gerado = 0x{userPixel:X8} (BGRA = [{bRes}, {gRes}, {rRes}, {aRes}])");
                         break;
                     }
 
                     case LessonType.CSharpPropertiesAndNotify:
                     {
-                        int valIn = (int)Math.Clamp(param1, 0, 255);
+                        int inputVal = (int)Math.Clamp(param1, 0, 255);
                         string script = $@"
 {userCode}
 
-var tupleFunc = (Func<(bool, int, string)>)(() => {{
-    int field = 100;
-    string prop = """";
-    bool changed = SetProperty(ref field, {valIn}, p => prop = p, ""Threshold"");
-    return (changed, field, prop);
-}});
-tupleFunc()
+var model = new PixelModel();
+string notified = null;
+model.PropertyChanged += (s, e) => {{ notified = e.PropertyName; }};
+bool res = model.SetProperty(ref model.backingField, {inputVal}, ""Brightness"");
+(model.backingField, res, notified)
 ";
-                        var (changed, fieldVal, propNotified) = await CSharpScript.EvaluateAsync<(bool, int, string)>(script, DefaultOptions);
+                        var (fieldVal, changed, propNotified) = await CSharpScript.EvaluateAsync<(int, bool, string)>(script, DefaultOptions);
 
                         targetBitmap.Lock();
                         targetBitmap.Clear(System.Windows.Media.Color.FromRgb(14, 14, 20));
@@ -361,7 +371,7 @@ tupleFunc()
                                 targetBitmap.SetPixel(x, y, reactiveColor);
 
                         // Barra de valor do backing field
-                        int barW = (int)Math.Clamp(fieldVal * 420 / 255, 0, 420);
+                        int barW = Math.Clamp(fieldVal * 420 / 255, 0, 420);
                         for (int y = 170; y < 205; y++)
                         {
                             for (int x = 40; x < 40 + barW; x++)
@@ -406,9 +416,13 @@ CalculatePixelOffset({xIn}, {yIn}, {strideIn})
                                 bool isCalculatedOffset = (expectedOffset == userOffset);
                                 bool isInputCoords = (gx == xIn && gy == yIn);
 
-                                System.Windows.Media.Color cellCol = isCalculatedOffset
-                                    ? System.Windows.Media.Color.FromRgb(245, 158, 11)
-                                    : (isInputCoords ? System.Windows.Media.Color.FromRgb(59, 130, 246) : System.Windows.Media.Color.FromRgb(30, 41, 59));
+                                System.Windows.Media.Color cellCol;
+                                if (isCalculatedOffset)
+                                    cellCol = System.Windows.Media.Color.FromRgb(245, 158, 11);
+                                else if (isInputCoords)
+                                    cellCol = System.Windows.Media.Color.FromRgb(59, 130, 246);
+                                else
+                                    cellCol = System.Windows.Media.Color.FromRgb(30, 41, 59);
 
                                 for (int py = 0; py < cellSize - 2; py++)
                                 {
@@ -425,7 +439,14 @@ CalculatePixelOffset({xIn}, {yIn}, {strideIn})
                         {
                             int bOffset = i * 4;
                             bool isTarget = (bOffset == userOffset);
-                            System.Windows.Media.Color bCol = isTarget ? System.Windows.Media.Color.FromRgb(239, 68, 68) : (i % 8 == 0 ? System.Windows.Media.Color.FromRgb(71, 85, 105) : System.Windows.Media.Color.FromRgb(30, 41, 59));
+                            System.Windows.Media.Color bCol;
+                            if (isTarget)
+                                bCol = System.Windows.Media.Color.FromRgb(239, 68, 68);
+                            else if (i % 8 == 0)
+                                bCol = System.Windows.Media.Color.FromRgb(71, 85, 105);
+                            else
+                                bCol = System.Windows.Media.Color.FromRgb(30, 41, 59);
+
                             for (int py = 0; py < 25; py++)
                             {
                                 for (int px = 0; px < 5; px++)
@@ -816,6 +837,30 @@ CountBresenhamPoints(0, 0, {x1In}, {y1In})
                         logs.AppendLine($" • Raio Central: t = {(tCenter > 0 ? tCenter.ToString("F2") : "Sem Colisão")}");
                         logs.AppendLine($" • Raio Esquerdo: t = {(tLeft > 0 ? tLeft.ToString("F2") : "Sem Colisão")}");
                         logs.AppendLine($" • Raio Direito:  t = {(tRight > 0 ? tRight.ToString("F2") : "Sem Colisão")}");
+                        break;
+                    }
+
+                    case LessonType.XAMLAnimationTemplates2D:
+                    {
+                        double angleParam = param1;
+                        double transParam = param2;
+                        InteractiveLabManager.RenderSimulation(targetBitmap, lesson, angleParam, transParam, 6, 10, 0, logs);
+                        break;
+                    }
+
+                    case LessonType.MeshGeometry3DLights:
+                    {
+                        double lightAngle = param1;
+                        double camH = param2;
+                        InteractiveLabManager.RenderSimulation(targetBitmap, lesson, lightAngle, camH, 0.3, 0, 0, logs);
+                        break;
+                    }
+
+                    case LessonType.HierarchicalJoints3D:
+                    {
+                        double walkT = param1 * 0.05;
+                        double jointA = param2;
+                        InteractiveLabManager.RenderSimulation(targetBitmap, lesson, walkT, jointA, 0, 0, 0, logs);
                         break;
                     }
                 }
@@ -1212,6 +1257,108 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
                 Expected = "t < 0 (Sem Interseção)",
                 Actual = tMiss.ToString("F2"),
                 Details = passMiss ? "Discriminante negativo detectado corretamente." : "Falso positivo de interseção."
+            });
+        }
+
+        private static async Task RunSpokePositionsTestsAsync(string userCode, EvaluationReport report)
+        {
+            string script = $@"
+{userCode}
+
+(
+    CalculateSpokePositions(0, 0, 100, 4),
+    CalculateSpokePositions(50, 50, 10, 1)
+)
+";
+            var (spokes4, spoke1) = await CSharpScript.EvaluateAsync<((int X, int Y)[], (int X, int Y)[])>(script, DefaultOptions);
+
+            bool pass4 = spokes4 != null && spokes4.Length == 4 && spokes4[0].X == 100 && spokes4[0].Y == 0;
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 1: Roda de 4 Raios (0, 90, 180, 270 graus)",
+                Passed = pass4,
+                Expected = "4 raios com Raio 0 em (100, 0)",
+                Actual = $"{spokes4?.Length ?? 0} raios com Raio 0 em ({(spokes4?.Length > 0 ? spokes4[0].X : 0)}, {(spokes4?.Length > 0 ? spokes4[0].Y : 0)})",
+                Details = pass4 ? "Distribuição angular regular calculada com sucesso." : "Falha no cálculo trigonométrico dos raios da roda."
+            });
+
+            bool pass1 = spoke1 != null && spoke1.Length == 1 && spoke1[0].X == 60 && spoke1[0].Y == 50;
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 2: Centro (50, 50) e Raio 10",
+                Passed = pass1,
+                Expected = "1 raio em (60, 50)",
+                Actual = $"{(spoke1?.Length > 0 ? $"({spoke1[0].X}, {spoke1[0].Y})" : "vazio")}",
+                Details = pass1 ? "Offset de centro aplicado corretamente." : "Erro na translação do centro da roda."
+            });
+        }
+
+        private static async Task RunLambertDualIntensityTestsAsync(string userCode, EvaluationReport report)
+        {
+            string script = $@"
+{userCode}
+
+(
+    CalculateLambertDualIntensity(0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 0.2),
+    CalculateLambertDualIntensity(0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.1)
+)
+";
+            var (iPerp, iOpp) = await CSharpScript.EvaluateAsync<(double, double)>(script, DefaultOptions);
+
+            bool passPerp = Math.Abs(iPerp - 0.7) < 0.05; // 0.2 ambient + 0.5 * 1.0 = 0.7
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 1: Luz Direcional Perpendicular (N=(0,1,0), L1=(0,1,0) -> Intensidade 0.7)",
+                Passed = passPerp,
+                Expected = "0.70",
+                Actual = iPerp.ToString("F2"),
+                Details = passPerp ? "Produto escalar N . L com clamping calculado corretamente." : "Erro na lei do cosseno de Lambert."
+            });
+
+            bool passOpp = Math.Abs(iOpp - 0.1) < 0.05; // L1 e L2 opostos à normal -> apenas ambiente
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 2: Luz Oposta à Normal (N=(0,0,1), L=(-1) -> Apenas Luz Ambiente)",
+                Passed = passOpp,
+                Expected = "0.10",
+                Actual = iOpp.ToString("F2"),
+                Details = passOpp ? "Clamping negativo max(0, N.L) preveniu iluminação reversa." : "Falha no descarte de faces traseiras na iluminação."
+            });
+        }
+
+        private static async Task RunLegJointAnglesTestsAsync(string userCode, EvaluationReport report)
+        {
+            string script = $@"
+{userCode}
+
+(
+    CalculateLegJointAngles(0.0, 0.0, 30.0),
+    CalculateLegJointAngles(Math.PI * 0.5, 0.0, 30.0),
+    CalculateLegJointAngles(Math.PI * 1.5, 0.0, 30.0)
+)
+";
+            var (j0, jHalfPi, jThreeHalfPi) = await CSharpScript.EvaluateAsync<((double, double), (double, double), (double, double))>(script, DefaultOptions);
+
+            bool pass0 = Math.Abs(j0.Item1) < 0.01;
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 1: Posição Neutra t=0 (Ângulo do Quadril = 0°)",
+                Passed = pass0,
+                Expected = "0.00",
+                Actual = j0.Item1.ToString("F2"),
+                Details = pass0 ? "Ponto neutro da onda senoidal de marcha correto." : "Erro na fase senoidal."
+            });
+
+            bool passPeak = Math.Abs(jHalfPi.Item1 - 30.0) < 0.1 && jHalfPi.Item2 <= 0.01; // quadril avança -> joelho estendido
+            bool passRecoil = Math.Abs(jThreeHalfPi.Item1 - (-30.0)) < 0.1 && jThreeHalfPi.Item2 > 10.0; // quadril recua -> joelho flexiona
+            bool passJoints = passPeak && passRecoil;
+            report.Tests.Add(new TestResult
+            {
+                Name = "Teste 2: Flexão Coordenada do Joelho no Recuo da Pata",
+                Passed = passJoints,
+                Expected = "Quadril=30°/Joelho=0° (Avanço) e Quadril=-30°/Joelho=24° (Recuo)",
+                Actual = $"Avanço: H={jHalfPi.Item1:F1}°,K={jHalfPi.Item2:F1}° | Recuo: H={jThreeHalfPi.Item1:F1}°,K={jThreeHalfPi.Item2:F1}°",
+                Details = passJoints ? "Cinemática de marcha coordenada validada com sucesso." : "Falha na coordenação de juntas coxa/joelho."
             });
         }
 

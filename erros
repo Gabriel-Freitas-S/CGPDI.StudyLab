@@ -1,0 +1,115 @@
+Com base na análise da documentação e das capturas de tela do **[CGPDI StudyLab](https://cgpdi.gabrielfs.dev/)**, o projeto apresenta uma proposta educacional excelente e bem estruturada para o ensino prático de Computação Gráfica (CG) e Processamento Digital de Imagens (PDI), combinando teoria matemática, manipulação de baixo nível via memória direta (`DirectBitmap`/`unsafe`) no ecossistema .NET 10 / WPF e execução dinâmica com Roslyn.
+
+Abaixo está um diagnóstico detalhado dividido entre correções necessárias, melhorias de usabilidade e sugestões de novas funcionalidades.
+
+---
+
+### 1. Erros e Inconsistências para Correção
+
+#### A. Documentação e Textos de Interface
+
+1. **Padrão de Cor NTSC:** Na aba de PDI, o modelo de luminância está rotulado como **`BT.6101 NTSC`**. A norma correta de vídeo analógico é **ITU-R BT.601** (há um `1` extra que deve ser removido).
+2. **Rótulos de Controles 3D:** O controle do robô articulado exibe **`Rotar da Base`**. Para seguir o padrão da língua portuguesa em interfaces, utilize **`Rotação da Base`** ou a forma infinitiva **`Rotacionar Base`**.
+3. **Acentuação no Estúdio de Projetos:** No menu de templates, alguns itens estão sem acentos ortográficos (ex.: `Rasterizacao` em vez de **`Rasterização`**, e `Padroes` em vez de **`Padrões`**). Padronize para manter a consistência visual.
+
+#### B. Bugs Visíveis nas Capturas de Tela
+
+1. **Exceção do Compilador Roslyn no Laboratório:**
+
+* Nas telas do laboratório interativo, a saída de diagnóstico exibe a mensagem de erro:
+`[Falha na Execução Roslyn]: Erro de execução: The type initializer for 'CGPDI.StudyLab.Core.LiveCodeCompiler' threw an exception.` (e em outras telas `[Erro de Compilação XAML]`).
+* **Causa provável:** O inicializador estático da classe `LiveCodeCompiler` está falhando ao tentar carregar ou localizar assemblies de referência do .NET/WPF em tempo de execução dinâmica.
+* **Ação:** Tratar a inicialização para capturar dependências ausentes e atualizar a captura de tela da documentação com um exemplo compilando com sucesso (`Status: Executado com sucesso`).
+
+1. **Truncamento de Texto na Trilha de Estudos:**
+
+* Títulos longos dos módulos na barra lateral esquerda aparecem cortados (ex.: `MÓDULO 1: REVISÃO DE C# ESSENCIAL PARA WPF - 1. C# Tipos Primitivos, Structs...`).
+* Adicione `TextWrapping="Wrap"` ou insira `ToolTip` com o nome completo ao passar o mouse sobre o item.
+
+---
+
+### 2. Sugestões de Melhorias de UI / UX
+
+1. **Grade de Pixels Zoomável (Pixel Inspector / Lupa):**
+
+* Ao ensinar algoritmos de rasterização 2D (Bresenham, Wu, etc.), uma tela em escala 1:1 dificulta ver a discretização dos pixels.
+* Adicionar uma ferramenta de zoom com grade que mostre os pixels individuais aumentados com suas respectivas coordenadas $(X, Y)$ e valores RGBA.
+
+1. **Comparador Visual Antes/Depois (Split-View Slider):**
+
+* Na aba de PDI, implementar um divisor interativo deslizável sobre a imagem para comparar a imagem original lado a lado com a imagem filtrada.
+
+1. **Modo Didático Passo a Passo (Debug Visual de Algoritmos):**
+
+* Para os algoritmos de linha e preenchimento (Flood Fill, Scanline), incluir botões de *Play/Pause* e *Próximo Passo* que executem uma iteração por vez, exibindo as variáveis internas de decisão ($d$, $p_k$, etc.) na lateral.
+
+1. **Exportação de Imagens e Projetos:**
+
+* Permitir que o usuário carregue suas próprias imagens (PNG, JPG, BMP) para testar os filtros de PDI e exporte o resultado final renderizado diretamente para o disco.
+
+---
+
+### 3. Propostas de Novas Funcionalidades
+
+#### A. Processamento Digital de Imagens (PDI)
+
+* **Binarização e Segmentação:**
+* Algoritmo de **Otsu** para determinação automática de limiar (*thresholding*).
+* Limiarização Adaptativa local (média e gaussiana).
+
+* **Morfologia Matemática:**
+* Operações de **Dilatação**, **Erosão**, **Abertura** e **Fechamento** com elemento estruturante configurável (cruz, quadrado, disco).
+
+* **Filtros Avançados:**
+* **Filtro de Mediana** (ideal para demonstração de remoção de ruído *salt and pepper*).
+* **Filtro Bilateral** (suavização preservando bordas).
+
+* **Equalização de Histograma:**
+* Botão de equalização global de histograma e CLAHE (*Contrast Limited Adaptive Histogram Equalization*).
+
+* **Transformada de Fourier 2D (FFT/DFT):**
+* Visualização do espectro de magnitude da frequência espacial e aplicação de filtros passa-baixa e passa-alta no domínio da frequência.
+
+#### B. Rasterização e Geometria 2D
+
+* **Recorte de Polígonos:** Implementação do algoritmo de **Sutherland-Hodgman** para complementar o algoritmo de Cohen-Sutherland de retas.
+* **Curvas Paramétricas Adicionais:** Adicionar curvas **B-Spline** e **Catmull-Rom** com pontos de controle manipuláveis via mouse.
+* **Anti-aliasing:** Comparação lado a lado entre o traçado de reta de Bresenham (com serrilhado) e o algoritmo de **Xiaolin Wu** (suavizado).
+
+#### C. Computação Gráfica 3D e Ray Tracing
+
+* **Importador de Modelos `.OBJ`:**
+* Permitir carregar malhas poligonais 3D simples em formato Wavefront `.obj` para renderizar no pipeline de software.
+
+* **Comparador de Modelos de Iluminação:**
+* Seletor rápido para alternar entre **Flat Shading**, **Gouraud Shading** e **Phong Shading** na mesma malha geométrica.
+
+* **Mapeamento de Texturas (UV Mapping):**
+* Projeção de textura com interpolação bilinear e correção de perspectiva no rasterizador 3D.
+
+* **Ray Tracing com Recursos Adicionais:**
+* Adicionar cálculo de sombras projetadas (*shadow rays*), refração (Lei de Snell para vidro/água) e aceleração paralela com `Parallel.For` ou `SIMD / Vector<T>`.
+
+#### D. Laboratório e Benchmarking
+
+* **Profiler / Comparador de Desempenho:**
+* Um painel de benchmark em tempo real medindo o tempo de processamento em microssegundos ($\mu s$) e taxa de quadros (FPS), permitindo que o aluno compare, por exemplo, o tempo de execução de um algoritmo usando ponteiros `unsafe` vs arrays convencionais ou código seguro.
+
+* **Desafios e Testes Unitários de Código:**
+* Propor exercícios práticos na Trilha de Estudos (ex.: "Complete a função de filtro Gaussiano 3x3") com verificação e feedback automáticos sobre a imagem resultante.
+
+---
+
+### 4. Melhorias na Documentação Web
+
+1. **Seção de FAQ e Solução de Problemas:**
+
+* Adicionar um tópico explicando os pré-requisitos de sistema (ex.: Desktop Runtime do .NET 10, suporte do Windows a aceleração por software) para usuários que possam encontrar erros ao rodar a versão portátil `.zip`.
+
+1. **GIFs / Vídeos de Demonstração:**
+
+* Substituir algumas capturas estáticas por pequenas animações ou GIFs mostrando os sliders em ação (como a rotação do robô 3D e a resposta em tempo real do histograma).
+
+Esse gifs/fotos foram feito usando Github actions pode se que para tirar. Será que alguns desses erros foi por causa disso ?
+
+Esse gifs/fotos foram feito usando Github actions pode se que para tirar. Será que alguns desses erros foi por causa disso ?

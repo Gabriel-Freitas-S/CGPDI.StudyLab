@@ -11,6 +11,19 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 ## [Unreleased]
 
 ### Adicionado
+- **Integração de Conteúdo Pedagógico e Teoria na Central de Estudos**:
+  - Adição de 6 novos módulos curriculares estruturados em pares de `[CONTEÚDO DE ESTUDO & TEORIA]` e `[ATIVIDADE PRÁTICA APLICADA]` cobrindo Computação Gráfica 2D, Modelagem 3D e Modelagem Hierárquica.
+  - Tópicos dedicados a Pipelines 2D, Matrizes Homogêneas 3x3, Rotação Pivotada, ControlTemplates, MeshGeometry3D, Câmeras de Perspectiva, Lei de Iluminação de Lambert, Gouraud Shading e Grafos de Cena com Transformações Hierárquicas.
+  - Cada tópico inclui formulação matemática renderizada, snippets de código C# e XAML, checklist passo a passo, dicas de complexidade e quizzes interativos com explicações fundamentadas.
+- **Novas Lições Interativas no Laboratório de Código**:
+  - Expansão do laboratório com as Lições 13, 14 e 15 (`XAMLAnimationTemplates2D`, `MeshGeometry3DLights`, `HierarchicalJoints3D`).
+  - Cada lição inclui teoria contextualizada, modelos em branco, código inicial guiado, solução de referência oficial e testes pedagógicos executados em tempo real via compilador Roslyn.
+  - Renderizador visual dinâmico com feedback analítico no DirectBitmap para distribuição de raios em rodas 2D, iluminação solar difusa 3D e cinemática de marcha em quadrúpedes.
+- **Templates Executáveis e Exportador para Visual Studio 2022**:
+  - 3 novos templates executáveis no Estúdio de Projetos: Veículo Articulado 2D com Eixo Triplo, Cena Arquitetônica 3D com Iluminação Solar Dupla e Modelo Hierárquico de Quadrúpede com 9 Juntas.
+  - Utilitário `AcademicProjectExporter` que gera soluções completas prontas para o Visual Studio 2022 (`.sln`, `.csproj` .NET 10 / WPF, `App.xaml`, `MainWindow.xaml` e `MainWindow.xaml.cs`) exportadas diretamente em arquivo `.zip` ou diretório local.
+  - Novos geradores procedurais de texturas (`GenerateStoneGraniteTexture` e `GenerateDesertSandTexture`) em `ImageSampleGenerator` com ruído fractal multifrequencial para superfícies 3D sem dependência de arquivos externos.
+  - Expansão da suíte de testes com `AcademicCurriculumAndExporterTests.cs` cobrindo 19 tópicos de estudo, 15 lições do laboratório, 9 templates de estúdio, geração procedural de texturas e integridade do exportador ZIP/VS2022 (total de 127 testes aprovados).
 - **Screenshots e GIF Animado Automatizados na Documentação**:
   - Novo script PowerShell `scripts/capture-screenshots.ps1` que compila o app, o inicia, navega por todas as 7 abas via UIAutomation e captura cada uma com `PrintWindow` (GDI32 P/Invoke), salvando em `docs/public/screenshots/`.
   - GIF animado `docs/public/gifs/demo.gif` gerado automaticamente via FFmpeg a partir dos frames de cada aba (slideshow 2 s/frame, paleta otimizada, escala 1280px).
@@ -40,11 +53,17 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
     - Criação de `SupplyChainSecurityTests.cs` (4 testes automatizados) e integração à suíte de testes xUnit (118 testes totais).
 
 ### Alterado
-- Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]`, eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
+- Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]` e timeout explícito de execução (2000ms), eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
 - Refatoração de comparadores de ponto flutuante em conversões de espaços de cores para tolerâncias seguras com epsilon (`1e-9`).
 - Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
+- Unificação de event handlers de edição de código e marcação (`TextChanged`) nos editores do Estúdio de Projetos, Laboratório e Janela Principal, eliminando código duplicado.
 
 ### Corrigido
+- **Conformidade Estática e Qualidade SonarQube**:
+  - Resolução de bugs assíncronos (`S3168`), métodos duplicados (`S4144`) e blocos de captura silenciosos (`S108`/`S2486`) com tratamento tipado e logs explicativos.
+  - Eliminação de vulnerabilidades regex (`S6444`) e migração para sobrecargas com `char` (`CA1866`) e arrays estáticos congelados (`CA1861`).
+  - Correção de propriedades CSS legadas (`word-break: break-word` substituído por `overflow-wrap: anywhere`) no portal de documentação Astro.
+  - Correção de acentuação ortográfica em comentários e textos dos modelos de projeto.
 - **Captura automática no GitHub Actions mais estável**: o pipeline de screenshots/GIF agora utiliza método em C# compilado para ajuste de resolução (`DisplayNative.ApplyResolution`), eliminando erro de marshaling de tipo do PowerShell 7 (`Type 'System.RuntimeType' cannot be marshaled as an unmanaged structure`), suprime diálogos modais de atualização durante o CI (`CGPDI_DISABLE_AUTO_UPDATE`) e prioriza a seleção da aba raiz (`MainTabControl`).
 - **Robustez do compilador ao vivo (Roslyn) em ambientes automatizados**: o `LiveCodeCompiler` passou a inicializar referências de compilação com fallback seguro (incluindo TPA) e tratamento resiliente de falhas, evitando quebra global por exceções de inicialização.
 - **Compatibilidade do Script de Screenshots no PowerShell 7 e CI**: Substituída a dependência de `System.Drawing.Bitmap` no script `scripts/capture-screenshots.ps1` por P/Invoke direto para Win32 GDI/GDI+ (`gdiplus.dll`/`gdi32.dll`), eliminando o erro de compilação dinâmica `CS1069` (tipo `Bitmap` não resolvido no runtime .NET Core do `pwsh` no GitHub Actions).

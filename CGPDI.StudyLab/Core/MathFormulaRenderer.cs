@@ -101,16 +101,16 @@ namespace CGPDI.StudyLab.Core
             { 'v', 'ᵥ' }, { 'x', 'ₓ' }
         };
 
-        [GeneratedRegex(@"\\frac\{([^}]+)\}\{([^}]+)\}")]
+        [GeneratedRegex(@"\\frac\{([^}]+)\}\{([^}]+)\}", RegexOptions.None, matchTimeoutMilliseconds: 2000)]
         private static partial Regex FracRegex();
 
-        [GeneratedRegex(@"_\{([^}]+)\}")]
+        [GeneratedRegex(@"_\{([^}]+)\}", RegexOptions.None, matchTimeoutMilliseconds: 2000)]
         private static partial Regex SubRegex();
 
-        [GeneratedRegex(@"\^\{([^}]+)\}")]
+        [GeneratedRegex(@"\^\{([^}]+)\}", RegexOptions.None, matchTimeoutMilliseconds: 2000)]
         private static partial Regex SuperRegex();
 
-        [GeneratedRegex(@"(?<Sub>_[a-zA-Z0-9α-ωΑ-Ω]+)|(?<Super>\^[a-zA-Z0-9α-ωΑ-Ω\-+]+)|(?<Greek>[α-ωΑ-ΩΔΣΩΦ])|(?<Op>[+\-*/=×·≈≠≤≥∞√⊖⊕○●∑∫∈±∇∂])|(?<Number>\b\d+(\.\d+)?\b)|(?<Ident>[a-zA-Z_]\w*)|(?<Other>[^\s])")]
+        [GeneratedRegex(@"(?<Sub>_[a-zA-Z0-9α-ωΑ-Ω]+)|(?<Super>\^[a-zA-Z0-9α-ωΑ-Ω\-+]+)|(?<Greek>[α-ωΑ-ΩΔΣΩΦ])|(?<Op>[+\-*/=×·≈≠≤≥∞√⊖⊕○●∑∫∈±∇∂])|(?<Number>\b\d+(\.\d+)?\b)|(?<Ident>[a-zA-Z_]\w*)|(?<Other>[^\s])", RegexOptions.None, matchTimeoutMilliseconds: 2000)]
         private static partial Regex MathTokensRegex();
 
         /// <summary>

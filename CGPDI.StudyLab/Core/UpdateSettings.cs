@@ -76,7 +76,7 @@ namespace CGPDI.StudyLab.Core
                 if (File.Exists(file))
                 {
                     string json = File.ReadAllText(file);
-                    var settings = JsonSerializer.Deserialize<UpdateSettings>(json);
+                    var settings = JsonSerializer.Deserialize<UpdateSettings>(json, IndentedJsonOptions);
                     if (settings != null) return settings;
                 }
             }

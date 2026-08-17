@@ -365,7 +365,6 @@ article.card,
   min-width: 0 !important;
   max-width: 100% !important;
   overflow-wrap: anywhere !important;
-  word-break: break-word !important;
   box-sizing: border-box !important;
 }
 
@@ -373,7 +372,6 @@ article.card,
 article.card .title,
 .card .title {
   overflow-wrap: anywhere !important;
-  word-break: break-word !important;
   font-size: 1.1rem !important;
   line-height: 1.4 !important;
 }
@@ -381,7 +379,6 @@ article.card .title,
 article.card .body,
 .card .body {
   overflow-wrap: anywhere !important;
-  word-break: break-word !important;
 }
 
 /* Card bullet lists formatting */
@@ -399,7 +396,6 @@ article.card li,
   margin: 0 !important;
   line-height: 1.5 !important;
   overflow-wrap: anywhere !important;
-  word-break: break-word !important;
 }
 
 /* Inline Code and Badges responsive wrapping */
@@ -407,7 +403,6 @@ article.card li,
 article.card code,
 .card code {
   overflow-wrap: anywhere !important;
-  word-break: break-word !important;
   white-space: pre-wrap !important;
   font-size: 0.85em !important;
 }
@@ -424,8 +419,7 @@ article.card code,
 .sl-markdown-content th,
 .sl-markdown-content td {
   min-width: 120px;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* Code Blocks & Pre Blocks */

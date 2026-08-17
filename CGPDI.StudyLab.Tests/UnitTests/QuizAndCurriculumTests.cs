@@ -7,10 +7,10 @@ namespace CGPDI.StudyLab.Tests.UnitTests
     public class QuizAndCurriculumTests
     {
         [Fact]
-        public void StudyGuideData_All13Topics_AreLoadedWithQuizzesAndFormulas()
+        public void StudyGuideData_All19Topics_AreLoadedWithQuizzesAndFormulas()
         {
             var topics = StudyGuideData.GetTopics();
-            topics.Should().HaveCount(13);
+            topics.Should().HaveCount(19);
 
             foreach (var topic in topics)
             {
@@ -19,7 +19,7 @@ namespace CGPDI.StudyLab.Tests.UnitTests
                 topic.MathFormulas.Should().NotBeNullOrWhiteSpace();
                 topic.CodeSnippet.Should().NotBeNullOrWhiteSpace();
                 topic.ComplexityAndTips.Should().NotBeNullOrWhiteSpace();
-                topic.TargetLessonNumber.Should().BeInRange(1, 12);
+                topic.TargetLessonNumber.Should().BeInRange(1, 15);
 
                 topic.Quiz.Should().NotBeNull();
                 topic.Quiz!.Question.Should().NotBeNullOrWhiteSpace();
@@ -30,10 +30,10 @@ namespace CGPDI.StudyLab.Tests.UnitTests
         }
 
         [Fact]
-        public void InteractiveLabManager_All12Lessons_HaveStarterAndQuizzes()
+        public void InteractiveLabManager_All15Lessons_HaveStarterAndQuizzes()
         {
             var lessons = InteractiveLabManager.GetLessons();
-            lessons.Should().HaveCount(12);
+            lessons.Should().HaveCount(15);
 
             foreach (var lesson in lessons)
             {

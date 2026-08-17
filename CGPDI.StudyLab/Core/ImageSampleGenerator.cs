@@ -236,5 +236,78 @@ namespace CGPDI.StudyLab.Core
             bmp.Unlock(true);
             return bmp;
         }
+
+        /// <summary>
+        /// Gera uma textura procedural de pedra/granito com ruído fractal multifrequencial para mapeamento 3D com TileMode="Tile".
+        /// </summary>
+        public static DirectBitmap GenerateStoneGraniteTexture(int width = 256, int height = 256)
+        {
+            DirectBitmap bmp = new DirectBitmap(width, height);
+            bmp.Lock();
+
+            unsafe
+            {
+                Parallel.For(0, height, y =>
+                {
+                    uint* row = (uint*)(bmp.BackBuffer + (y * bmp.Stride));
+                    for (int x = 0; x < width; x++)
+                    {
+                        double n1 = Math.Sin(x * 0.15) * Math.Cos(y * 0.15);
+                        double n2 = Math.Sin(x * 0.42 + y * 0.31) * 0.5;
+                        double n3 = Math.Sin((x ^ y) * 0.73) * 0.25;
+                        double val = (n1 + n2 + n3) / 1.75; // -1 .. 1
+
+                        int baseLum = (int)(140 + val * 55);
+                        int grain = ((x * 37 + y * 59) % 29) - 14;
+
+                        byte r = (byte)Math.Clamp(baseLum + grain + 10, 0, 255);
+                        byte g = (byte)Math.Clamp(baseLum + grain + 8, 0, 255);
+                        byte b = (byte)Math.Clamp(baseLum + grain + 15, 0, 255);
+
+                        row[x] = (uint)((255 << 24) | (r << 16) | (g << 8) | b);
+                    }
+                });
+            }
+
+            bmp.Unlock(true);
+            return bmp;
+        }
+
+        /// <summary>
+        /// Gera uma textura procedural de terreno desértico/dunas de areia para cenários 3D.
+        /// </summary>
+        public static DirectBitmap GenerateDesertSandTexture(int width = 256, int height = 256)
+        {
+            DirectBitmap bmp = new DirectBitmap(width, height);
+            bmp.Lock();
+
+            unsafe
+            {
+                Parallel.For(0, height, y =>
+                {
+                    uint* row = (uint*)(bmp.BackBuffer + (y * bmp.Stride));
+                    for (int x = 0; x < width; x++)
+                    {
+                        double dune = Math.Sin(x * 0.08 + Math.Sin(y * 0.04) * 2.0);
+                        double micro = Math.Sin(x * 0.35 + y * 0.25) * 0.2;
+                        double total = (dune + micro) * 0.5; // -0.6 .. 0.6
+
+                        int baseR = (int)(215 + total * 35);
+                        int baseG = (int)(175 + total * 30);
+                        int baseB = (int)(110 + total * 25);
+                        int grain = ((x * 43 + y * 71) % 17) - 8;
+
+                        byte r = (byte)Math.Clamp(baseR + grain, 0, 255);
+                        byte g = (byte)Math.Clamp(baseG + grain, 0, 255);
+                        byte b = (byte)Math.Clamp(baseB + grain, 0, 255);
+
+                        row[x] = (uint)((255 << 24) | (r << 16) | (g << 8) | b);
+                    }
+                });
+            }
+
+            bmp.Unlock(true);
+            return bmp;
+        }
     }
 }

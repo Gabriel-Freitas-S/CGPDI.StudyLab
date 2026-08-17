@@ -108,10 +108,16 @@ namespace CGPDI.StudyLab.Views
             if (LstProjectTemplates.SelectedItem is not ProjectTemplate tpl) return;
 
             TxtStudioCurrentProject.Text = $"[Projeto] {tpl.Title}";
-            TxtTemplateDesc.Text = tpl.Description;
+            TxtTemplateDesc.Text = !string.IsNullOrWhiteSpace(tpl.StepsGuide)
+                ? $"{tpl.Description}\n\n[Roteiro de Construção]:\n{tpl.StepsGuide}"
+                : tpl.Description;
 
             _isHighlighting = true;
             CSharpSyntaxHighlighter.SetCode(RtbFreeCode, tpl.InitialCode);
+            if (!string.IsNullOrWhiteSpace(tpl.XamlCode))
+            {
+                XamlSyntaxHighlighter.SetCode(RtbFreeXamlCode, tpl.XamlCode);
+            }
             _isHighlighting = false;
 
             ConfigureSliders(tpl);
@@ -119,6 +125,55 @@ namespace CGPDI.StudyLab.Views
             if (!_isInitializing)
             {
                 _ = ExecuteFreeScript();
+            }
+        }
+
+        private void BtnExportVsProject_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var tpl = LstProjectTemplates.SelectedItem as ProjectTemplate ?? new ProjectTemplate
+                {
+                    Title = "Projeto_CGPDI",
+                    Description = "Projeto exportado do CGPDI StudyLab.",
+                    InitialCode = CSharpSyntaxHighlighter.GetPlainText(RtbFreeCode),
+                    XamlCode = XamlSyntaxHighlighter.GetPlainText(RtbFreeXamlCode)
+                };
+
+                // Garante que o código mais recente editado pelo usuário seja o exportado
+                var exportTpl = new ProjectTemplate
+                {
+                    Id = tpl.Id,
+                    Title = tpl.Title,
+                    Description = tpl.Description,
+                    StepsGuide = tpl.StepsGuide,
+                    InitialCode = CSharpSyntaxHighlighter.GetPlainText(RtbFreeCode),
+                    XamlCode = !string.IsNullOrWhiteSpace(XamlSyntaxHighlighter.GetPlainText(RtbFreeXamlCode))
+                        ? XamlSyntaxHighlighter.GetPlainText(RtbFreeXamlCode)
+                        : tpl.XamlCode
+                };
+
+                string safeName = AcademicProjectExporter.SanitizeProjectName(exportTpl.Title);
+                var sfd = new SaveFileDialog
+                {
+                    Filter = "Arquivo ZIP (*.zip)|*.zip",
+                    FileName = $"{safeName}_VS2022.zip"
+                };
+
+                if (sfd.ShowDialog() == true)
+                {
+                    AcademicProjectExporter.ExportProjectToZip(exportTpl, sfd.FileName);
+                    TxtStudioStatus.Text = $"Solução do Visual Studio 2022 exportada com sucesso: {Path.GetFileName(sfd.FileName)}";
+                    MessageBox.Show(
+                        $"Projeto exportado com sucesso para:\n{sfd.FileName}\n\nContém:\n- Solução .sln (Visual Studio 2022)\n- Projeto .csproj (.NET 10 / WPF)\n- App.xaml / App.xaml.cs\n- MainWindow.xaml / MainWindow.xaml.cs\n- README.md com instruções",
+                        "Exportação Concluída",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao exportar projeto: {ex.Message}", "Erro de Exportação", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -174,6 +229,7 @@ namespace CGPDI.StudyLab.Views
         }
 
         private static readonly SolidColorBrush ConsoleCyanBrush = new((Color)ColorConverter.ConvertFromString("#38BDF8"));
+        private static readonly SolidColorBrush ConsoleGreenBrush = new((Color)ColorConverter.ConvertFromString("#86EFAC"));
         private static readonly SolidColorBrush ConsoleRedBrush = new((Color)ColorConverter.ConvertFromString("#F87171"));
 
         private void SliderDebounceTimer_Tick(object? sender, EventArgs e)
@@ -309,13 +365,13 @@ namespace CGPDI.StudyLab.Views
                     PnlFreeLiveXamlContainer.Child = result.Element;
                     TabStudioVisualizer.SelectedItem = TabItemFreeLiveXaml;
                     TxtFreeConsole.Text = $"[XAML Renderizado com Êxito em {result.ExecutionTimeMs:F1} ms]\n{result.Logs}";
-                    TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#86EFAC"));
+                    TxtFreeConsole.Foreground = ConsoleGreenBrush;
                     TxtStudioStatus.Text = $"Elemento WPF instanciado e ativo ({result.ExecutionTimeMs:F1} ms).";
                 }
                 else
                 {
                     TxtFreeConsole.Text = $"[Erro de Compilação XAML]:\n{result.ErrorMessage}";
-                    TxtFreeConsole.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                    TxtFreeConsole.Foreground = ConsoleRedBrush;
                     TxtStudioStatus.Text = "Falha ao analisar a marcação XAML.";
                 }
             }

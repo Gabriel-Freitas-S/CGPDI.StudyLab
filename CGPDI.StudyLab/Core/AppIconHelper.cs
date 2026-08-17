@@ -12,6 +12,7 @@ namespace CGPDI.StudyLab.Core
     /// </summary>
     public static class AppIconHelper
     {
+        private const string SegoeUiArialFont = "Segoe UI, Arial";
         private static ImageSource? _cachedIcon;
 
         /// <summary>
@@ -355,7 +356,7 @@ namespace CGPDI.StudyLab.Core
                     96.0);
                 dc.DrawText(titleText, new Point((width - titleText.Width) / 2.0, 160));
 
-                var subTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
+                var subTypeface = new Typeface(new FontFamily(SegoeUiArialFont), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
                 var subText = new FormattedText(
                     "Laboratório de Computação Gráfica & PDI (2D / 3D)",
                     System.Globalization.CultureInfo.InvariantCulture,
@@ -366,7 +367,7 @@ namespace CGPDI.StudyLab.Core
                     96.0);
                 dc.DrawText(subText, new Point((width - subText.Width) / 2.0, 195));
 
-                var footerTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                var footerTypeface = new Typeface(new FontFamily(SegoeUiArialFont), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 var footerText = new FormattedText(
                     "Instalador Velopack Oficial • .NET 10 • Zero-Admin",
                     System.Globalization.CultureInfo.InvariantCulture,
@@ -453,7 +454,7 @@ namespace CGPDI.StudyLab.Core
                 dc.DrawImage(iconBitmap, new Rect((width - 110) / 2.0, 35, 110, 110));
 
                 // Textos
-                var titleTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                var titleTypeface = new Typeface(new FontFamily(SegoeUiArialFont), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
                 var titleText = new FormattedText(
                     "CGPDI StudyLab",
                     System.Globalization.CultureInfo.InvariantCulture,
@@ -464,7 +465,7 @@ namespace CGPDI.StudyLab.Core
                     96.0);
                 dc.DrawText(titleText, new Point((width - titleText.Width) / 2.0, 165));
 
-                var subTypeface = new Typeface(new FontFamily("Segoe UI, Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                var subTypeface = new Typeface(new FontFamily(SegoeUiArialFont), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 var subText = new FormattedText(
                     "Plataforma de Computação Gráfica & PDI em .NET 10",
                     System.Globalization.CultureInfo.InvariantCulture,

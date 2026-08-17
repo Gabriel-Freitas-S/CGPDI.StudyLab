@@ -54,7 +54,7 @@ namespace CGPDI.StudyLab.Views
             CenterOnScreen();
             _isInitializing = false;
             RtbStudioEditableCode.TextChanged += RtbStudioEditableCode_TextChanged;
-            RtbStudioXamlCode.TextChanged += RtbStudioXamlCode_TextChanged;
+            RtbStudioXamlCode.TextChanged += RtbStudioEditableCode_TextChanged;
             UpdateStudioSimulation();
             LoadDefaultXamlSnippet();
         }
@@ -83,13 +83,6 @@ namespace CGPDI.StudyLab.Views
         }
 
         private void RtbStudioEditableCode_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_isHighlighting || _isInitializing) return;
-            _highlightDebounceTimer.Stop();
-            _highlightDebounceTimer.Start();
-        }
-
-        private void RtbStudioXamlCode_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_isHighlighting || _isInitializing) return;
             _highlightDebounceTimer.Stop();
