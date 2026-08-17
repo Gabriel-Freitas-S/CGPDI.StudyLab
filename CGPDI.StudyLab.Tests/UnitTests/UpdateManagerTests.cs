@@ -83,5 +83,34 @@ namespace CGPDI.StudyLab.Tests.UnitTests
             string tempDir = System.IO.Path.GetTempPath();
             UpdateManager.IsDirectoryWritable(tempDir).Should().BeTrue();
         }
+
+        [Fact]
+        public void ShouldCheckForUpdatesOnStartup_RespectsEnvironmentVariables()
+        {
+            string? prevCi = Environment.GetEnvironmentVariable("CI");
+            string? prevActions = Environment.GetEnvironmentVariable("GITHUB_ACTIONS");
+            string? prevDisable = Environment.GetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE");
+
+            try
+            {
+                Environment.SetEnvironmentVariable("CI", null);
+                Environment.SetEnvironmentVariable("GITHUB_ACTIONS", null);
+                Environment.SetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE", null);
+                UpdateManager.ShouldCheckForUpdatesOnStartup().Should().BeTrue();
+
+                Environment.SetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE", "1");
+                UpdateManager.ShouldCheckForUpdatesOnStartup().Should().BeFalse();
+
+                Environment.SetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE", null);
+                Environment.SetEnvironmentVariable("CI", "true");
+                UpdateManager.ShouldCheckForUpdatesOnStartup().Should().BeFalse();
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("CI", prevCi);
+                Environment.SetEnvironmentVariable("GITHUB_ACTIONS", prevActions);
+                Environment.SetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE", prevDisable);
+            }
+        }
     }
 }

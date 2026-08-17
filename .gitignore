@@ -10,6 +10,8 @@ obj/
 publish/
 Releases/
 Releases-msi/
+erro/
+ProcessamentoDeImagens/
 # Node.js & Astro Docs Build Artifacts
 node_modules/
 docs/node_modules/

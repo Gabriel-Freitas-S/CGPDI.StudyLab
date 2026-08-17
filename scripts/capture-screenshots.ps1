@@ -25,6 +25,7 @@ param (
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+$env:CGPDI_DISABLE_AUTO_UPDATE = '1'
 
 $RepoRoot       = (Resolve-Path "$PSScriptRoot\..").Path
 $ProjectFile    = Join-Path $RepoRoot "CGPDI.StudyLab\CGPDI.StudyLab.csproj"
@@ -133,10 +134,16 @@ function Select-Tab([IntPtr]$hWnd, [int]$idx) {
     try {
         $root = [System.Windows.Automation.AutomationElement]::FromHandle($hWnd)
         if (-not $root) { return $false }
-        $cond = New-Object System.Windows.Automation.PropertyCondition(
-            [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
-            [System.Windows.Automation.ControlType]::Tab)
-        $tc = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $cond)
+        $condId = New-Object System.Windows.Automation.PropertyCondition(
+            [System.Windows.Automation.AutomationElement]::AutomationIdProperty,
+            "MainTabControl")
+        $tc = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condId)
+        if (-not $tc) {
+            $cond = New-Object System.Windows.Automation.PropertyCondition(
+                [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
+                [System.Windows.Automation.ControlType]::Tab)
+            $tc = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $cond)
+        }
         if ($tc) {
             $items = $tc.FindAll([System.Windows.Automation.TreeScope]::Children,
                                  [System.Windows.Automation.Condition]::TrueCondition)
@@ -164,76 +171,87 @@ function Find-Window([int]$procId) {
 }
 
 function Set-VirtualDisplayResolution([int]$width = 1920, [int]$height = 1080) {
-    Add-Type -TypeDefinition @"
+    try {
+        if (-not ('DisplayNative' -as [type])) {
+            Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
+
 public static class DisplayNative {
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-  public struct DEVMODE {
-    private const int CCHDEVICENAME = 32;
-    private const int CCHFORMNAME = 32;
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)] public string dmDeviceName;
-    public short dmSpecVersion;
-    public short dmDriverVersion;
-    public short dmSize;
-    public short dmDriverExtra;
-    public int dmFields;
-    public int dmPositionX;
-    public int dmPositionY;
-    public int dmDisplayOrientation;
-    public int dmDisplayFixedOutput;
-    public short dmColor;
-    public short dmDuplex;
-    public short dmYResolution;
-    public short dmTTOption;
-    public short dmCollate;
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)] public string dmFormName;
-    public short dmLogPixels;
-    public int dmBitsPerPel;
-    public int dmPelsWidth;
-    public int dmPelsHeight;
-    public int dmDisplayFlags;
-    public int dmDisplayFrequency;
-    public int dmICMMethod;
-    public int dmICMIntent;
-    public int dmMediaType;
-    public int dmDitherType;
-    public int dmReserved1;
-    public int dmReserved2;
-    public int dmPanningWidth;
-    public int dmPanningHeight;
-  }
-  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
-  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern int ChangeDisplaySettings(ref DEVMODE lpDevMode, int dwflags);
-  public const int ENUM_CURRENT_SETTINGS = -1;
-  public const int CDS_UPDATEREGISTRY = 0x01;
-  public const int CDS_GLOBAL = 0x08;
-  public const int DISP_CHANGE_SUCCESSFUL = 0;
-  public const int DM_PELSWIDTH = 0x00080000;
-  public const int DM_PELSHEIGHT = 0x00100000;
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct DEVMODE {
+        private const int CCHDEVICENAME = 32;
+        private const int CCHFORMNAME = 32;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)] public string dmDeviceName;
+        public short dmSpecVersion;
+        public short dmDriverVersion;
+        public short dmSize;
+        public short dmDriverExtra;
+        public int dmFields;
+        public int dmPositionX;
+        public int dmPositionY;
+        public int dmDisplayOrientation;
+        public int dmDisplayFixedOutput;
+        public short dmColor;
+        public short dmDuplex;
+        public short dmYResolution;
+        public short dmTTOption;
+        public short dmCollate;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)] public string dmFormName;
+        public short dmLogPixels;
+        public int dmBitsPerPel;
+        public int dmPelsWidth;
+        public int dmPelsHeight;
+        public int dmDisplayFlags;
+        public int dmDisplayFrequency;
+        public int dmICMMethod;
+        public int dmICMIntent;
+        public int dmMediaType;
+        public int dmDitherType;
+        public int dmReserved1;
+        public int dmReserved2;
+        public int dmPanningWidth;
+        public int dmPanningHeight;
+    }
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern int ChangeDisplaySettings(ref DEVMODE lpDevMode, int dwflags);
+
+    public const int ENUM_CURRENT_SETTINGS = -1;
+    public const int CDS_UPDATEREGISTRY = 0x01;
+    public const int CDS_GLOBAL = 0x08;
+    public const int DISP_CHANGE_SUCCESSFUL = 0;
+    public const int DM_PELSWIDTH = 0x00080000;
+    public const int DM_PELSHEIGHT = 0x00100000;
+
+    public static int ApplyResolution(int width, int height) {
+        DEVMODE dm = new DEVMODE();
+        dm.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
+        if (!EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref dm)) {
+            return -1;
+        }
+        if (dm.dmPelsWidth == width && dm.dmPelsHeight == height) {
+            return 0;
+        }
+        dm.dmPelsWidth = width;
+        dm.dmPelsHeight = height;
+        dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        return ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY | CDS_GLOBAL);
+    }
 }
-"@
+"@ -ErrorAction SilentlyContinue
+        }
 
-    $dm = New-Object DisplayNative+DEVMODE
-    $dm.dmSize = [Runtime.InteropServices.Marshal]::SizeOf([DisplayNative+DEVMODE])
-    if (-not [DisplayNative]::EnumDisplaySettings($null, [DisplayNative]::ENUM_CURRENT_SETTINGS, [ref]$dm)) {
-        Write-Warning "Nao foi possivel ler a configuracao atual de display."
-        return
-    }
-
-    if ($dm.dmPelsWidth -eq $width -and $dm.dmPelsHeight -eq $height) {
-        Write-Host "Resolucao de display ja esta em ${width}x${height}."
-        return
-    }
-
-    $dm.dmPelsWidth = $width
-    $dm.dmPelsHeight = $height
-    $dm.dmFields = [DisplayNative]::DM_PELSWIDTH -bor [DisplayNative]::DM_PELSHEIGHT
-    $result = [DisplayNative]::ChangeDisplaySettings([ref]$dm, [DisplayNative]::CDS_UPDATEREGISTRY -bor [DisplayNative]::CDS_GLOBAL)
-    if ($result -eq [DisplayNative]::DISP_CHANGE_SUCCESSFUL) {
-        Write-Host "Resolucao alterada para ${width}x${height}."
-    } else {
-        Write-Warning "Nao foi possivel alterar resolucao para ${width}x${height}. Codigo: $result"
+        $result = [DisplayNative]::ApplyResolution($width, $height)
+        if ($result -eq 0) {
+            Write-Host "Resolucao de display ajustada para ${width}x${height}."
+        } elseif ($result -eq -1) {
+            Write-Warning "Nao foi possivel ler a configuracao atual de display."
+        } else {
+            Write-Warning "Nao foi possivel alterar resolucao para ${width}x${height}. Codigo: $result"
+        }
+    } catch {
+        Write-Warning "Falha ao ajustar resolucao de tela: $_"
     }
 }
 

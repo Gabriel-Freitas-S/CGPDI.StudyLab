@@ -145,6 +145,8 @@ namespace CGPDI.StudyLab
             // 8. Verificação não bloqueante de atualizações no GitHub Releases
             _ = Task.Run(async () =>
             {
+                if (!UpdateManager.ShouldCheckForUpdatesOnStartup()) return;
+
                 await Task.Delay(3000);
                 var release = await UpdateManager.CheckForUpdatesAsync();
                 if (release == null) return;

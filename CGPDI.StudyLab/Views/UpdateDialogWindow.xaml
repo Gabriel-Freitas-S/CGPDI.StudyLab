@@ -10,7 +10,7 @@
         FontFamily="Segoe UI, Inter, Arial, sans-serif">
 
     <Window.Resources>
-        <Style TargetType="Button">
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#1E202E"/>
             <Setter Property="Foreground" Value="#F8FAFC"/>
             <Setter Property="BorderBrush" Value="#33354A"/>
@@ -39,13 +39,15 @@
             </Setter>
         </Style>
 
-        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}"/>
+
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
             <Setter Property="Background" Value="#2563EB"/>
             <Setter Property="BorderBrush" Value="#3B82F6"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
 
-        <Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="#33354A"/>
             <Setter Property="Foreground" Value="#94A3B8"/>

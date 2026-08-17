@@ -81,6 +81,7 @@ jobs:
         timeout-minutes: 15
         run: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          $env:CGPDI_DISABLE_AUTO_UPDATE = "1"
 
           pwsh -File scripts/capture-screenshots.ps1 `
             -StartupWaitSec 15 `

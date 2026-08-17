@@ -154,6 +154,22 @@ namespace CGPDI.StudyLab.Core
         }
 
         /// <summary>
+        /// Determina se a verificação automática de atualização deve ser executada na inicialização no ambiente atual.
+        /// Retorna false em ambientes de CI, GitHub Actions ou quando desabilitado via variável de ambiente.
+        /// </summary>
+        public static bool ShouldCheckForUpdatesOnStartup()
+        {
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CI")) ||
+                !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")) ||
+                Environment.GetEnvironmentVariable("CGPDI_DISABLE_AUTO_UPDATE") == "1")
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Verifica de forma assíncrona se existe uma versão mais recente.
         /// Prefere o Velopack (instalado) e cai no GitHub Releases para execuções portáteis.
         /// </summary>
