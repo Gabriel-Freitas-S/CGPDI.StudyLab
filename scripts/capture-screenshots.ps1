@@ -203,7 +203,7 @@ public static class DisplayNative {
     public int dmPanningWidth;
     public int dmPanningHeight;
   }
-  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern bool EnumDisplaySettings(string? lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+  [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
   [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern int ChangeDisplaySettings(ref DEVMODE lpDevMode, int dwflags);
   public const int ENUM_CURRENT_SETTINGS = -1;
   public const int CDS_UPDATEREGISTRY = 0x01;
