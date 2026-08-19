@@ -278,8 +278,8 @@ for (int y = 1; y < Height - 1; y++)
         {
             for (int kx = -1; kx <= 1; kx++)
             {
-                uint pixel = source.GetPixel(x + kx, y + ky);
-                byte gray = (byte)(pixel & 0xFF);
+                var pixel = source.GetPixel(x + kx, y + ky);
+                byte gray = pixel.R;
                 sumX += gray * gx[ky + 1, kx + 1];
                 sumY += gray * gy[ky + 1, kx + 1];
             }
@@ -293,8 +293,8 @@ for (int y = 1; y < Height - 1; y++)
             edgeVal = edgeVal >= Param1 ? (byte)255 : (byte)0;
         }
         
-        uint orig = source.GetPixel(x, y);
-        byte origG = (byte)(orig & 0xFF);
+        var orig = source.GetPixel(x, y);
+        byte origG = orig.G;
         byte finalVal = (byte)Math.Clamp(edgeVal * (1.0 - blend) + origG * blend, 0, 255);
         
         Output.SetPixel(x, y, ColorSpaces.PackBgra(finalVal, finalVal, finalVal));

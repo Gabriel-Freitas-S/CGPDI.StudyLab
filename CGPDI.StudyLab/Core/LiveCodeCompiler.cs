@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -53,75 +55,98 @@ namespace CGPDI.StudyLab.Core
 
     public static partial class LiveCodeCompiler
     {
+        private static readonly Lazy<IReadOnlyList<MetadataReference>> CachedMetadataReferencesLazy = new(LoadMetadataReferences);
+        public static IReadOnlyList<MetadataReference> CachedMetadataReferences => CachedMetadataReferencesLazy.Value;
+
         private static readonly Lazy<ScriptOptions> DefaultOptionsLazy = new(CreateDefaultOptions);
         private static ScriptOptions DefaultOptions => DefaultOptionsLazy.Value;
 
-        private static ScriptOptions CreateDefaultOptions()
+        private static IReadOnlyList<MetadataReference> LoadMetadataReferences()
         {
-            try
-            {
-                var references = new Dictionary<string, MetadataReference>(StringComparer.OrdinalIgnoreCase);
-                AddAssemblyReference(references, typeof(object).Assembly);
-                AddAssemblyReference(references, typeof(Math).Assembly);
-                AddAssemblyReference(references, typeof(DirectBitmap).Assembly);
-                AddAssemblyReference(references, typeof(Vector3).Assembly);
-                AddAssemblyReference(references, typeof(System.Linq.Enumerable).Assembly);
-                AddAssemblyReference(references, typeof(System.Windows.UIElement).Assembly);
-                AddAssemblyReference(references, typeof(System.Windows.Media.Color).Assembly);
-                AddAssemblyReference(references, typeof(System.Windows.Media.Media3D.Vector3D).Assembly);
-                AddAssemblyReference(references, typeof(System.Text.RegularExpressions.Regex).Assembly);
+            var references = new Dictionary<string, MetadataReference>(StringComparer.OrdinalIgnoreCase);
 
-                if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trustedPlatformAssemblies)
+            // 1. Assemblies essenciais explicitamente referenciados
+            TryAddAssemblyReference(references, typeof(object).Assembly);
+            TryAddAssemblyReference(references, typeof(Math).Assembly);
+            TryAddAssemblyReference(references, typeof(Task).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Threading.Tasks.Task).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Runtime.CompilerServices.DynamicAttribute).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Linq.Expressions.Expression).Assembly);
+            TryAddAssemblyReference(references, typeof(System.ComponentModel.INotifyPropertyChanged).Assembly);
+            TryAddAssemblyReference(references, typeof(DirectBitmap).Assembly);
+            TryAddAssemblyReference(references, typeof(Vector3).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Linq.Enumerable).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Windows.UIElement).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Windows.Media.Color).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Windows.Media.Media3D.Vector3D).Assembly);
+            TryAddAssemblyReference(references, typeof(System.Text.RegularExpressions.Regex).Assembly);
+
+            // 2. Assemblies carregados no AppDomain atual
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                TryAddAssemblyReference(references, asm);
+            }
+
+            // 3. TRUSTED_PLATFORM_ASSEMBLIES (quando disponível em runtime padrão)
+            if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trustedPlatformAssemblies)
+            {
+                foreach (string path in trustedPlatformAssemblies.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    foreach (string path in trustedPlatformAssemblies.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        TryAddReferenceFromPath(references, path);
-                    }
+                    TryAddReferenceFromPath(references, path);
                 }
+            }
 
-                return ScriptOptions.Default
-                    .WithReferences(references.Values)
-                    .WithImports(
-                        "System",
-                        "System.Math",
-                        "System.Collections.Generic",
-                        "System.Text",
-                        "System.Text.RegularExpressions",
-                        "System.Numerics",
-                        "System.Windows",
-                        "System.Windows.Media",
-                        "CGPDI.StudyLab.Core");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[LiveCodeCompiler] Falha ao inicializar referências do Roslyn: {ex}");
-                return ScriptOptions.Default
-                    .WithImports(
-                        "System",
-                        "System.Math",
-                        "System.Collections.Generic",
-                        "System.Text",
-                        "System.Text.RegularExpressions",
-                        "System.Numerics",
-                        "System.Windows",
-                        "System.Windows.Media",
-                        "CGPDI.StudyLab.Core");
-            }
+            return new List<MetadataReference>(references.Values);
         }
 
-        private static void AddAssemblyReference(Dictionary<string, MetadataReference> references, Assembly assembly)
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000", Justification = "Fallback seguro para TryGetRawMetadata implementado para single-file.")]
+        private static void TryAddAssemblyReference(Dictionary<string, MetadataReference> references, Assembly assembly)
         {
             if (assembly.IsDynamic)
             {
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(assembly.Location))
+            string key = assembly.FullName ?? assembly.GetName().Name ?? Guid.NewGuid().ToString();
+            if (references.ContainsKey(key))
             {
                 return;
             }
 
-            TryAddReferenceFromPath(references, assembly.Location);
+            // Tenta primeiro por arquivo físico se Location estiver disponível e existir no disco
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(assembly.Location) && File.Exists(assembly.Location))
+                {
+                    var fileRef = MetadataReference.CreateFromFile(assembly.Location);
+                    references[key] = fileRef;
+                    references[assembly.Location] = fileRef;
+                    return;
+                }
+            }
+            catch
+            {
+                // Fallback para extração de metadados brutos em memória
+            }
+
+            // Fallback essencial para single-file publish e assemblies em memória
+            unsafe
+            {
+                try
+                {
+                    if (System.Reflection.Metadata.AssemblyExtensions.TryGetRawMetadata(assembly, out byte* blob, out int length))
+                    {
+                        var moduleMetadata = ModuleMetadata.CreateFromMetadata((IntPtr)blob, length);
+                        var assemblyMetadata = AssemblyMetadata.Create(moduleMetadata);
+                        var metaRef = assemblyMetadata.GetReference();
+                        references[key] = metaRef;
+                    }
+                }
+                catch
+                {
+                    // Ignora se o runtime não disponibilizar metadados para este assembly
+                }
+            }
         }
 
         private static void TryAddReferenceFromPath(Dictionary<string, MetadataReference> references, string path)
@@ -138,6 +163,43 @@ namespace CGPDI.StudyLab.Core
             catch (Exception)
             {
                 // Ignora referências indisponíveis no ambiente de execução atual
+            }
+        }
+
+        private static ScriptOptions CreateDefaultOptions()
+        {
+            try
+            {
+                return ScriptOptions.Default
+                    .WithReferences(CachedMetadataReferences)
+                    .WithImports(
+                        "System",
+                        "System.Math",
+                        "System.Collections.Generic",
+                        "System.Text",
+                        "System.Text.RegularExpressions",
+                        "System.Numerics",
+                        "System.Windows",
+                        "System.Windows.Media",
+                        "CGPDI.StudyLab.Core",
+                        "CGPDI.StudyLab.Graphics2D",
+                        "CGPDI.StudyLab.Graphics3D",
+                        "CGPDI.StudyLab.ImageProcessing");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LiveCodeCompiler] Falha ao inicializar referências do Roslyn: {ex}");
+                return ScriptOptions.Default
+                    .WithImports(
+                        "System",
+                        "System.Math",
+                        "System.Collections.Generic",
+                        "System.Text",
+                        "System.Text.RegularExpressions",
+                        "System.Numerics",
+                        "System.Windows",
+                        "System.Windows.Media",
+                        "CGPDI.StudyLab.Core");
             }
         }
 
@@ -1366,7 +1428,7 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
 
         #region Execução de Código e Projetos Livres (Criador do Zero)
 
-        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, ScriptRunner<object>> _customScriptCache = new();
+        private static readonly ConcurrentDictionary<string, Func<CustomScriptGlobals, Task>> _customScriptCache = new();
 
         /// <summary>
         /// Limpa o cache de scripts compilados.
@@ -1375,7 +1437,7 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
 
         /// <summary>
         /// Compila e executa qualquer script C# customizado sem limites, desenhando diretamente no Output DirectBitmap.
-        /// Utiliza cache de delegados Roslyn para renderização a 60 FPS durante o uso de sliders.
+        /// Utiliza compilação dinâmica direta e cache de delegados para renderização a 60 FPS durante o uso de sliders.
         /// </summary>
         public static async Task<CustomScriptResult> ExecuteCustomScriptAsync(
             string code,
@@ -1402,35 +1464,7 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
             {
                 if (!_customScriptCache.TryGetValue(code, out var runner))
                 {
-                    // Detecta se o usuário digitou uma classe completa com namespace (padrão code-behind WPF)
-                    string sanitizedCode = code;
-                    if (code.Contains("namespace ") && code.Contains("class "))
-                    {
-                        // Fornece aviso pedagógico no log
-                        logs.AppendLine("[Dica Pedagógica]: No editor de scripts C#, você tem acesso direto às variáveis Output (DirectBitmap), Input, e Param1..Param4.");
-                    }
-
-                    var script = CSharpScript.Create(sanitizedCode, DefaultOptions, typeof(CustomScriptGlobals));
-                    var compilation = script.Compile();
-                    if (compilation.Length > 0)
-                    {
-                        var errorSb = new StringBuilder();
-                        foreach (var diag in compilation)
-                        {
-                            if (diag.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
-                            {
-                                var lineSpan = diag.Location.GetLineSpan();
-                                errorSb.AppendLine($"Linha {lineSpan.StartLinePosition.Line + 1}, Coluna {lineSpan.StartLinePosition.Character + 1}: {diag.GetMessage()}");
-                            }
-                        }
-                        if (errorSb.Length > 0)
-                        {
-                            result.Success = false;
-                            result.ErrorMessage = errorSb.ToString();
-                            return result;
-                        }
-                    }
-                    runner = script.CreateDelegate();
+                    runner = CompileCustomScript(code);
                     _customScriptCache[code] = runner;
                 }
 
@@ -1451,6 +1485,12 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
                 result.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
                 result.Logs = logs.ToString();
             }
+            catch (InvalidOperationException ex)
+            {
+                sw.Stop();
+                result.Success = false;
+                result.ErrorMessage = ex.Message;
+            }
             catch (CompilationErrorException ex)
             {
                 sw.Stop();
@@ -1465,6 +1505,99 @@ CalculateEndEffectorX(100.0, 100.0, 0.0, 0.0)
             }
 
             return result;
+        }
+
+        private static Func<CustomScriptGlobals, Task> CompileCustomScript(string userCode)
+        {
+            string hostClassName = $"CustomScriptHost_{Guid.NewGuid():N}";
+            string wrappedSource = $@"
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Numerics;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
+using CGPDI.StudyLab.Core;
+using CGPDI.StudyLab.Graphics2D;
+using CGPDI.StudyLab.Graphics3D;
+using CGPDI.StudyLab.ImageProcessing;
+
+namespace CGPDI.StudyLab.DynamicScripts
+{{
+    public static class {hostClassName}
+    {{
+        public static async Task ExecuteAsync(CustomScriptGlobals globals)
+        {{
+            var Output = globals.Output;
+            var Input = globals.Input;
+            int Width = globals.Width;
+            int Height = globals.Height;
+            double Param1 = globals.Param1;
+            double Param2 = globals.Param2;
+            double Param3 = globals.Param3;
+            double Param4 = globals.Param4;
+            Action<string> Print = globals.Print;
+
+#line 1
+{userCode}
+
+            await Task.CompletedTask;
+        }}
+    }}
+}}";
+
+            var syntaxTree = CSharpSyntaxTree.ParseText(wrappedSource);
+            var compilation = CSharpCompilation.Create(
+                $"CGPDI_Dynamic_{Guid.NewGuid():N}",
+                new[] { syntaxTree },
+                CachedMetadataReferences,
+                new CSharpCompilationOptions(
+                    OutputKind.DynamicallyLinkedLibrary,
+                    optimizationLevel: OptimizationLevel.Release,
+                    allowUnsafe: true));
+
+            using var ms = new MemoryStream();
+            var emitResult = compilation.Emit(ms);
+
+            if (!emitResult.Success)
+            {
+                var errorSb = new StringBuilder();
+                foreach (var diag in emitResult.Diagnostics)
+                {
+                    if (diag.Severity == DiagnosticSeverity.Error)
+                    {
+                        var lineSpan = diag.Location.GetLineSpan();
+                        int line = lineSpan.StartLinePosition.Line + 1;
+                        int col = lineSpan.StartLinePosition.Character + 1;
+                        errorSb.AppendLine($"Linha {line}, Coluna {col}: {diag.GetMessage()}");
+                    }
+                }
+
+                string errText = errorSb.Length > 0 ? errorSb.ToString().TrimEnd() : "Erro desconhecido na compilação do script.";
+                throw new InvalidOperationException(errText);
+            }
+
+            ms.Seek(0, SeekOrigin.Begin);
+            var assembly = Assembly.Load(ms.ToArray());
+            var type = assembly.GetType($"CGPDI.StudyLab.DynamicScripts.{hostClassName}");
+            if (type == null)
+            {
+                throw new InvalidOperationException("Não foi possível carregar a classe executável dinâmica.");
+            }
+
+            var method = type.GetMethod("ExecuteAsync", BindingFlags.Public | BindingFlags.Static);
+            if (method == null)
+            {
+                throw new InvalidOperationException("Método ExecuteAsync não encontrado na classe de script compilada.");
+            }
+
+            return (Func<CustomScriptGlobals, Task>)Delegate.CreateDelegate(typeof(Func<CustomScriptGlobals, Task>), method);
         }
 
         [GeneratedRegex(@"\s+x:Class(Modifier)?=""[^""]*""")]

@@ -98,6 +98,20 @@ namespace CGPDI.StudyLab.Core
         }
 
         /// <summary>
+        /// Obtém o valor BGRA empacotado em uint de um pixel específico (x, y).
+        /// </summary>
+        public uint GetPixelBgra(int x, int y)
+        {
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+                return 0;
+
+            if (!_isLocked) Lock();
+
+            uint* row = (uint*)(_backBuffer + (y * Stride));
+            return row[x];
+        }
+
+        /// <summary>
         /// Define a cor de um pixel específico (x, y) via Color.
         /// </summary>
         public void SetPixel(int x, int y, Color color)

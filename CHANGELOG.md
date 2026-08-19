@@ -11,6 +11,9 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 ## [Unreleased]
 
 ### Adicionado
+- **Estilização Dark Slate Global de Barras de Rolagem (`ScrollBar` e `ScrollViewer`)**:
+  - Implementação de estilos temáticos customizados para barras de rolagem vertical e horizontal em `App.xaml` (`ScrollBarTrackRepeatButton`, `ScrollBarThumbStyle`, largura/altura compacta de 8px e cantos arredondados) utilizando a paleta nativa do app (`#080A10`, `#222C40`, com destaque de hover `#3B82F6` e arrasto `#60A5FA`).
+  - Aplicação automática e transparente em todos os controles de rolagem (`ListBox`, `ListView`, `TextBox`, `RichTextBox`, `ScrollViewer`), substituindo as barras de rolagem padrão brancas/cinzas do Windows por barras modernas perfeitamente integradas ao tema escuro.
 - **Integração de Conteúdo Pedagógico e Teoria na Central de Estudos**:
   - Adição de 6 novos módulos curriculares estruturados em pares de `[CONTEÚDO DE ESTUDO & TEORIA]` e `[ATIVIDADE PRÁTICA APLICADA]` cobrindo Computação Gráfica 2D, Modelagem 3D e Modelagem Hierárquica.
   - Tópicos dedicados a Pipelines 2D, Matrizes Homogêneas 3x3, Rotação Pivotada, ControlTemplates, MeshGeometry3D, Câmeras de Perspectiva, Lei de Iluminação de Lambert, Gouraud Shading e Grafos de Cena com Transformações Hierárquicas.
@@ -23,14 +26,7 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
   - 3 novos templates executáveis no Estúdio de Projetos: Veículo Articulado 2D com Eixo Triplo, Cena Arquitetônica 3D com Iluminação Solar Dupla e Modelo Hierárquico de Quadrúpede com 9 Juntas.
   - Utilitário `AcademicProjectExporter` que gera soluções completas prontas para o Visual Studio 2022 (`.sln`, `.csproj` .NET 10 / WPF, `App.xaml`, `MainWindow.xaml` e `MainWindow.xaml.cs`) exportadas diretamente em arquivo `.zip` ou diretório local.
   - Novos geradores procedurais de texturas (`GenerateStoneGraniteTexture` e `GenerateDesertSandTexture`) em `ImageSampleGenerator` com ruído fractal multifrequencial para superfícies 3D sem dependência de arquivos externos.
-  - Expansão da suíte de testes com `AcademicCurriculumAndExporterTests.cs` cobrindo 19 tópicos de estudo, 15 lições do laboratório, 9 templates de estúdio, geração procedural de texturas e integridade do exportador ZIP/VS2022 (total de 127 testes aprovados).
-- **Screenshots e GIF Animado Automatizados na Documentação**:
-  - Novo script PowerShell `scripts/capture-screenshots.ps1` que compila o app, o inicia, navega por todas as 7 abas via UIAutomation e captura cada uma com `PrintWindow` (GDI32 P/Invoke), salvando em `docs/public/screenshots/`.
-  - GIF animado `docs/public/gifs/demo.gif` gerado automaticamente via FFmpeg a partir dos frames de cada aba (slideshow 2 s/frame, paleta otimizada, escala 1280px).
-  - Novo workflow GitHub Actions `capture-screenshots.yml` que dispara a cada push em `main` (alterações em `CGPDI.StudyLab/**`), instala FFmpeg via Chocolatey e commita os assets atualizados com `[skip ci]`.
-  - Galeria visual interativa na homepage da documentação Astro (`index.mdx`) com abas (`Tabs`) mostrando screenshot de cada módulo.
-  - Seção "📸 Interface" no `README.md` com o GIF animado e tabela de screenshots em `<details>`, servidos pelo GitHub Pages em `cgpdi.gabrielfs.dev`.
-- **Versionamento automático no desenvolvimento com MinVer**: builds locais agora derivam a versão do histórico git (tags `v*` + altura de commits), eliminando a parametrização manual de versão para pacotes de desenvolvimento. O GitHub Actions continua usando versão explícita (`MinVerSkip=true`), sem impacto nos instaladores publicados.
+  - Expansão da suíte de testes com `AcademicCurriculumAndExporterTests.cs` e `CompilerAndXamlTests.cs` cobrindo 19 tópicos de estudo, 15 lições do laboratório, 9 templates de estúdio, geração procedural de texturas e integridade do exportador ZIP/VS2022 (total de 129 testes aprovados).
 - **Personalização Visual dos Instaladores**:
   - Tela Splash temática Dark Slate (`#0D0E18`) com barra de progresso em Ciano Elétrico (`#38BDF8`) e logotipo 3D cristalino para o instalador Velopack (`Setup.exe`).
   - Banner superior personalizado (`493x58 px`) e tela de diálogo com logotipo (`493x312 px`) no padrão WiX para o instalador corporativo MSI (`.msi`).
@@ -40,25 +36,18 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - **Identidade Visual e Favicon na Documentação**:
   - Configuração do favicon vetorial oficial transparente (`/favicon.svg`) e padronização do portal Astro sem uso de emojis nos títulos e diagramas, priorizando ícones nativos e tipografia limpa.
 
-### Segurança
-- **Blindagem contra Ataques na Cadeia de Suprimentos (Supply Chain Hardening)**:
-  - **Ecossistema .NET / NuGet**:
-    - Criação de `nuget.config` com `<clear />` e `Package Source Mapping` para prevenção contra *Dependency Confusion* e *Typosquatting*.
-    - Ativação de `RestorePackagesWithLockFile` e geração de lockfiles `packages.lock.json` com hashes criptográficos SHA-512 de todas as dependências diretas e transitivas.
-    - Ativação de `NuGetAudit` com auditoria em tempo de restore para todas as dependências (`NuGetAuditMode=all`).
-  - **Ecossistema Node.js / npm**:
-    - Criação de arquivos `.npmrc` (raiz e `docs/`) com `ignore-scripts=true` (bloqueio de execução arbitrária de código em `preinstall`/`postinstall`), `save-exact=true`, `package-lock=true` e `audit=true`.
-    - Fixação determinística de versões exatas no `docs/package.json`.
-  - **Testes Automatizados de Conformidade**:
-    - Criação de `SupplyChainSecurityTests.cs` (4 testes automatizados) e integração à suíte de testes xUnit (118 testes totais).
-
-### Alterado
-- Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]` e timeout explícito de execução (2000ms), eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
-- Refatoração de comparadores de ponto flutuante em conversões de espaços de cores para tolerâncias seguras com epsilon (`1e-9`).
-- Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
-- Unificação de event handlers de edição de código e marcação (`TextChanged`) nos editores do Estúdio de Projetos, Laboratório e Janela Principal, eliminando código duplicado.
-
 ### Corrigido
+- **Resolução de Metadados e Compilação Dinâmica Roslyn em Single-File e Runtime**:
+  - Correção da falha `[Falha na Execução Roslyn]: Não é possível criar uma referência de metadados para um assembly sem o local` que ocorria na compilação de scripts do Estúdio de Projetos e Lições em builds single-file ou assemblies em memória.
+  - Implementação de extração de metadados PE brutos em memória via `AssemblyExtensions.TryGetRawMetadata` e compilação direta via `CSharpCompilation` com isolamento de contexto e mapeamento direto de linha de erro com `#line 1`.
+  - Adição de `GetPixelBgra` em `DirectBitmap` e padronização da leitura de pixels de texturas em `ProjectTemplatesManager`.
+- **Screenshots e GIF Animado Automatizados na Documentação**:
+  - Novo script PowerShell `scripts/capture-screenshots.ps1` que compila o app, o inicia, navega por todas as 7 abas via UIAutomation e captura cada uma com `PrintWindow` (GDI32 P/Invoke), salvando em `docs/public/screenshots/`.
+  - GIF animado `docs/public/gifs/demo.gif` gerado automaticamente via FFmpeg a partir dos frames de cada aba (slideshow 2 s/frame, paleta otimizada, escala 1280px).
+  - Novo workflow GitHub Actions `capture-screenshots.yml` que dispara a cada push em `main` (alterações em `CGPDI.StudyLab/**`), instala FFmpeg via Chocolatey e commita os assets atualizados com `[skip ci]`.
+  - Galeria visual interativa na homepage da documentação Astro (`index.mdx`) com abas (`Tabs`) mostrando screenshot de cada módulo.
+  - Seção "📸 Interface" no `README.md` com o GIF animado e tabela de screenshots em `<details>`, servidos pelo GitHub Pages em `cgpdi.gabrielfs.dev`.
+- **Versionamento automático no desenvolvimento com MinVer**: builds locais agora derivam a versão do histórico git (tags `v*` + altura de commits), eliminando a parametrização manual de versão para pacotes de desenvolvimento. O GitHub Actions continua usando versão explícita (`MinVerSkip=true`), sem impacto nos instaladores publicados.
 - **Conformidade Estática e Qualidade SonarQube**:
   - Resolução de bugs assíncronos (`S3168`), métodos duplicados (`S4144`) e blocos de captura silenciosos (`S108`/`S2486`) com tratamento tipado e logs explicativos.
   - Eliminação de vulnerabilidades regex (`S6444`) e migração para sobrecargas com `char` (`CA1866`) e arrays estáticos congelados (`CA1861`).
@@ -78,6 +67,24 @@ ser adicionada em `## [Unreleased]`** (veja a regra em `AGENTS.md`).
 - **Responsividade e Contenção de Layout no Astro Docs**: adicionado sistema global de contenção de grid (`min-width: 0`, `overflow-wrap: anywhere`), scroll horizontal seguro para tabelas e quebra responsiva de cards e código inline, evitando colisões com o sumário lateral.
 - **Renderização de Componentes Starlight**: migração de arquivos com imports JSX para extensão `.mdx` e ajuste da configuração do Astro para execução adequada de `<CardGrid>`, `<Steps>` e `<Tabs>`.
 - **Formato de Imagens para o Instalador WiX MSI**: geração dos assets `msi_banner.bmp` (493x58) e `msi_dialog_logo.bmp` (493x312) no formato nativo Windows Bitmap (`.bmp`) exigido pelo WiX Toolset / Velopack, corrigindo a falha de empacotamento no GitHub Actions.
+
+### Alterado
+- Modernização de expressões regulares para geradores de código em tempo de compilação com `[GeneratedRegex]` e timeout explícito de execução (2000ms), eliminando riscos de ReDoS e melhorando a performance na renderização de sintaxe C#/XAML e fórmulas matemáticas.
+- Refatoração de comparadores de ponto flutuante em conversões de espaços de cores para tolerâncias seguras com epsilon (`1e-9`).
+- Otimização do gerenciamento de recursos gráficos WPF com congelamento (`Freeze()`) de pincéis estáticos, reduzindo alocação e prevenindo retenção desnecessária de memória.
+- Unificação de event handlers de edição de código e marcação (`TextChanged`) nos editores do Estúdio de Projetos, Laboratório e Janela Principal, eliminando código duplicado.
+
+### Segurança
+- **Blindagem contra Ataques na Cadeia de Suprimentos (Supply Chain Hardening)**:
+  - **Ecossistema .NET / NuGet**:
+    - Criação de `nuget.config` com `<clear />` e `Package Source Mapping` para prevenção contra *Dependency Confusion* e *Typosquatting*.
+    - Ativação de `RestorePackagesWithLockFile` e geração de lockfiles `packages.lock.json` com hashes criptográficos SHA-512 de todas as dependências diretas e transitivas.
+    - Ativação de `NuGetAudit` com auditoria em tempo de restore para todas as dependências (`NuGetAuditMode=all`).
+  - **Ecossistema Node.js / npm**:
+    - Criação de arquivos `.npmrc` (raiz e `docs/`) com `ignore-scripts=true` (bloqueio de execução arbitrária de código em `preinstall`/`postinstall`), `save-exact=true`, `package-lock=true` e `audit=true`.
+    - Fixação determinística de versões exatas no `docs/package.json`.
+  - **Testes Automatizados de Conformidade**:
+    - Criação de `SupplyChainSecurityTests.cs` (4 testes automatizados) e integração à suíte de testes xUnit (129 testes totais).
 
 ## [v1.0.5] - 2026-08-16
 

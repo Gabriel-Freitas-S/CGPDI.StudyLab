@@ -99,6 +99,40 @@ Output.Clear(0xFF0000);
             var result = await LiveCodeCompiler.ExecuteCustomScriptAsync(badScript, bmp, null, 1, 1, 1, 1);
             result.Success.Should().BeFalse();
             result.ErrorMessage.Should().NotBeNullOrEmpty();
+            result.ErrorMessage.Should().Contain("Linha");
+        }
+
+        [Fact]
+        public async Task ExecuteCustomScriptAsync_AllProjectStudioTemplates_ShouldCompileAndExecuteWithoutErrors()
+        {
+            var templates = ProjectTemplatesManager.GetTemplates();
+            templates.Should().NotBeEmpty();
+
+            foreach (var template in templates)
+            {
+                using var bmp = new DirectBitmap(64, 64);
+                LiveCodeCompiler.ClearCustomScriptCache();
+
+                var result = await LiveCodeCompiler.ExecuteCustomScriptAsync(
+                    template.InitialCode,
+                    bmp,
+                    null,
+                    template.Param1Default,
+                    template.Param2Default,
+                    template.Param3Default,
+                    template.Param4Default);
+
+                result.Success.Should().BeTrue($"Template '{template.Title}' ({template.Id}) deve compilar e executar sem erros: {result.ErrorMessage}");
+                result.ErrorMessage.Should().BeNull();
+            }
+        }
+
+        [Fact]
+        public void CachedMetadataReferences_ShouldContainCoreFrameworkAndApplicationAssemblies()
+        {
+            var refs = LiveCodeCompiler.CachedMetadataReferences;
+            refs.Should().NotBeEmpty();
+            refs.Count.Should().BeGreaterThan(5);
         }
     }
 }
